@@ -58,6 +58,15 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{38f1cd19-fcaf-4e33-b5a0-a4f2dce49718}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{f8db88dd-7015-4f36-b3b9-b7174ed01765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Component">
+      <UniqueIdentifier>{97fdc3f7-ff9f-4cc6-a576-235908c16fa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\ECS">
+      <UniqueIdentifier>{33ee274d-0afb-46ec-9dd3-edb5690056ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine_TypeDef.h">
@@ -66,10 +75,19 @@
     <ClInclude Include="Engine_Include.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Core\RHI\RHI.h">
+      <Filter>Core\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Core\RHI\DirectX12\RHI_DX12Device.h">
+      <Filter>Core\RHI\DX12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine_Define.h">
       <Filter>Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Core\RHI\DirectX12\RHI_DX12Device.cpp">
+      <Filter>Core\RHI\DX12</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

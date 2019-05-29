@@ -144,10 +144,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Core\RHI\DirectX12\RHI_DX12Device.h" />
+    <ClInclude Include="Code\Core\RHI\RHI.h" />
     <ClInclude Include="Engine_Include.h" />
     <ClInclude Include="Engine_TypeDef.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Core\RHI\DirectX12\RHI_DX12Device.cpp" />
     <ClCompile Include="Engine_Define.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
