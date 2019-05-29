@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcxproj", "{3664BCA4-4611-4595-89AB-176ADA946DC4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DelightEngine", "DelightEngine\DelightEngine.vcxproj", "{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Headers", "Headers", "{47C03F35-BA21-411F-BEFA-9D027DE83116}"
+	ProjectSection(SolutionItems) = preProject
+		Headers\DelightTypedef.h = Headers\DelightTypedef.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Debug|x64.ActiveCfg = Debug|x64
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Debug|x64.Build.0 = Debug|x64
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Debug|x86.ActiveCfg = Debug|Win32
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Debug|x86.Build.0 = Debug|Win32
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Release|x64.ActiveCfg = Release|x64
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Release|x64.Build.0 = Release|x64
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Release|x86.ActiveCfg = Release|Win32
+		{3664BCA4-4611-4595-89AB-176ADA946DC4}.Release|x86.Build.0 = Release|Win32
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Debug|x64.ActiveCfg = Debug|x64
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Debug|x64.Build.0 = Debug|x64
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Debug|x86.ActiveCfg = Debug|Win32
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Debug|x86.Build.0 = Debug|Win32
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Release|x64.ActiveCfg = Release|x64
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Release|x64.Build.0 = Release|x64
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Release|x86.ActiveCfg = Release|Win32
+		{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

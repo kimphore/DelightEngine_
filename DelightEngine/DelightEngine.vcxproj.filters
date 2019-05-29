@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{37dca6ad-ac75-4dcd-801a-9b60ac5c58cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\RHI">
+      <UniqueIdentifier>{e6a25d39-f64e-49ef-b743-3af7ce8d29ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Physics">
+      <UniqueIdentifier>{f08bf458-243b-44fc-a97a-e1c49f671143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Video">
+      <UniqueIdentifier>{e74306ee-c824-44ce-a37b-57e4cd8d6fd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Sound">
+      <UniqueIdentifier>{887e9b1d-0379-4b2e-ac75-6bf5afe00df0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Font">
+      <UniqueIdentifier>{9ff098f3-fc7f-4f17-bb4e-74bbb65a275f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Input">
+      <UniqueIdentifier>{bb7c42c2-31f0-482e-97a6-8270f9289160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SystemStat">
+      <UniqueIdentifier>{daf6b1cc-7945-422e-af2d-969011df5d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{ea052ce5-5727-4258-a4d1-e1c055e999ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{2619ac9e-dc39-4f2a-9a1d-39ce6b298de2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser\Text">
+      <UniqueIdentifier>{d9ee4d49-9048-46e8-8884-30ef9176e428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser\XML">
+      <UniqueIdentifier>{86c62d2c-094b-4900-81d1-db5f63ac0bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logger">
+      <UniqueIdentifier>{45c9f96f-e442-464a-aa4f-6b3efcd1d3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\RHI\DX11">
+      <UniqueIdentifier>{bc492b27-66e6-4682-91e2-3ecc33710067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\RHI\DX12">
+      <UniqueIdentifier>{a6c96aab-0540-4979-a5bc-15951737ae14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{c0158fef-ba46-4d2b-8d6b-b442c8281361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Kernel">
+      <UniqueIdentifier>{70299d09-7665-4f49-b128-cf836abd7271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{fddd63c7-054a-4a01-b479-b00fa8d486d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{38f1cd19-fcaf-4e33-b5a0-a4f2dce49718}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine_TypeDef.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine_Include.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine_Define.h">
+      <Filter>Headers</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
