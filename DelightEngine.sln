@@ -7,11 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DelightEngine", "DelightEngine\DelightEngine.vcxproj", "{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Headers", "Headers", "{47C03F35-BA21-411F-BEFA-9D027DE83116}"
-	ProjectSection(SolutionItems) = preProject
-		Headers\DelightTypedef.h = Headers\DelightTypedef.h
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

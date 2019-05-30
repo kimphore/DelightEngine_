@@ -1,27 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Core">
-      <UniqueIdentifier>{37dca6ad-ac75-4dcd-801a-9b60ac5c58cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\RHI">
-      <UniqueIdentifier>{e6a25d39-f64e-49ef-b743-3af7ce8d29ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Physics">
-      <UniqueIdentifier>{f08bf458-243b-44fc-a97a-e1c49f671143}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Video">
-      <UniqueIdentifier>{e74306ee-c824-44ce-a37b-57e4cd8d6fd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Sound">
-      <UniqueIdentifier>{887e9b1d-0379-4b2e-ac75-6bf5afe00df0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Font">
-      <UniqueIdentifier>{9ff098f3-fc7f-4f17-bb4e-74bbb65a275f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Input">
-      <UniqueIdentifier>{bb7c42c2-31f0-482e-97a6-8270f9289160}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SystemStat">
       <UniqueIdentifier>{daf6b1cc-7945-422e-af2d-969011df5d58}</UniqueIdentifier>
     </Filter>
@@ -40,17 +19,8 @@
     <Filter Include="Logger">
       <UniqueIdentifier>{45c9f96f-e442-464a-aa4f-6b3efcd1d3ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\RHI\DX11">
-      <UniqueIdentifier>{bc492b27-66e6-4682-91e2-3ecc33710067}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\RHI\DX12">
-      <UniqueIdentifier>{a6c96aab-0540-4979-a5bc-15951737ae14}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Thread">
       <UniqueIdentifier>{c0158fef-ba46-4d2b-8d6b-b442c8281361}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Kernel">
-      <UniqueIdentifier>{70299d09-7665-4f49-b128-cf836abd7271}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{fddd63c7-054a-4a01-b479-b00fa8d486d8}</UniqueIdentifier>
@@ -67,27 +37,75 @@
     <Filter Include="System\ECS">
       <UniqueIdentifier>{33ee274d-0afb-46ec-9dd3-edb5690056ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores">
+      <UniqueIdentifier>{37dca6ad-ac75-4dcd-801a-9b60ac5c58cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI">
+      <UniqueIdentifier>{e6a25d39-f64e-49ef-b743-3af7ce8d29ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX11">
+      <UniqueIdentifier>{bc492b27-66e6-4682-91e2-3ecc33710067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12">
+      <UniqueIdentifier>{a6c96aab-0540-4979-a5bc-15951737ae14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Physics">
+      <UniqueIdentifier>{f08bf458-243b-44fc-a97a-e1c49f671143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Video">
+      <UniqueIdentifier>{e74306ee-c824-44ce-a37b-57e4cd8d6fd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Sound">
+      <UniqueIdentifier>{887e9b1d-0379-4b2e-ac75-6bf5afe00df0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Font">
+      <UniqueIdentifier>{9ff098f3-fc7f-4f17-bb4e-74bbb65a275f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Input">
+      <UniqueIdentifier>{bb7c42c2-31f0-482e-97a6-8270f9289160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Kernel">
+      <UniqueIdentifier>{70299d09-7665-4f49-b128-cf836abd7271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SystemSettings">
+      <UniqueIdentifier>{8f445e44-900c-43db-a1b0-fab3b1048e80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine_TypeDef.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine_Include.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Core\RHI\RHI.h">
-      <Filter>Core\RHI</Filter>
+      <Filter>Cores\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Code\Core\RHI\DirectX12\RHI_DX12Device.h">
-      <Filter>Core\RHI\DX12</Filter>
+      <Filter>Cores\RHI\DX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Exception.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Define.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Include.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Typedef.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\EngineKernel.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SystemSettings\SystemSettings.h">
+      <Filter>SystemSettings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine_Define.h">
-      <Filter>Headers</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Core\RHI\DirectX12\RHI_DX12Device.cpp">
-      <Filter>Core\RHI\DX12</Filter>
+      <Filter>Cores\RHI\DX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\EngineKernel.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SystemSettings\SystemSettings.cpp">
+      <Filter>SystemSettings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
