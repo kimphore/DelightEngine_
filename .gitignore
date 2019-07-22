@@ -5,3 +5,21 @@ Client/x64/
 DelightEngine/x64/
 
 x64/
+DelightEngine/x64/Debug/DelightEngine.Build.CppClean.log
+DelightEngine/x64/Debug/DelightEngine.log
+DelightEngine/x64/Debug/DelightEngine.tlog/CL.command.1.tlog
+DelightEngine/x64/Debug/DelightEngine.tlog/CL.read.1.tlog
+DelightEngine/x64/Debug/DelightEngine.tlog/CL.write.1.tlog
+DelightEngine/x64/Debug/DelightEngine.tlog/DelightEngine.lastbuildstate
+DelightEngine/x64/Debug/DelightEngine.tlog/DelightEngine.write.1u.tlog
+DelightEngine/x64/Debug/DelightEngine.tlog/link.command.1.tlog
+DelightEngine/x64/Debug/DelightEngine.tlog/link.read.1.tlog
+DelightEngine/x64/Debug/DelightEngine.tlog/link.write.1.tlog
+DelightEngine/x64/Debug/EngineKernel.obj
+DelightEngine/x64/Debug/RHI_DX12Device.obj
+DelightEngine/x64/Debug/SystemSettings.obj
+DelightEngine/x64/Debug/tinyxml2.obj
+DelightEngine/x64/Debug/vc141.idb
+DelightEngine/x64/Debug/vc141.pdb
+.vs/DelightEngine/v15/Browse.VC.db
+.vs/DelightEngine/v15/.suo
