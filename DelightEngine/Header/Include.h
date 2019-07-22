@@ -27,6 +27,8 @@
 #include <utility>
 #include <memory>
 #include <fstream>
+#include <ostream>
+#include <stdio.h>
 
 // using namespace..?
 
@@ -40,3 +42,6 @@ using namespace Microsoft::WRL;
 #include "Enum.h"
 
 #pragma comment(lib, "D3D12.lib")
+
+// ignore warning.
+#pragma  warning(disable : 4251) // ignore std dll export warning..

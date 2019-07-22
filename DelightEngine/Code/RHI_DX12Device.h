@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RHI.h"
+#include "comptr.h"
 
 class ENGINE_DLL CRHIDirectX12 : CRHIInterface
 {

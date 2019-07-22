@@ -3,9 +3,13 @@
 class CDelightLogger
 {
 public:
+	CDelightLogger();
+	~CDelightLogger();
+
+public:
 	void Initialize();
 	void ToggleConsole();
 private:
-	FILE* LoggerFile;
+	wofstream logFile;
 	_bool bUseConsole;
 };
