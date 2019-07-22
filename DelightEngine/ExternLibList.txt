@@ -1,0 +1,5 @@
+1. eastl(https://github.com/electronicarts/EASTL)
+STL 대체용.. std STL을 사용하면 DLL내부에서 사용이 불가능하기 때문에..
+
+2. DirectXLibs(https://github.com/microsoft/DirectX-Graphics-Samples/tree/master/Libraries)
+외부는 아니지만 External처럼 쓰므로..

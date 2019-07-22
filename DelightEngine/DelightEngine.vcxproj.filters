@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="SystemStat">
-      <UniqueIdentifier>{daf6b1cc-7945-422e-af2d-969011df5d58}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers">
       <UniqueIdentifier>{ea052ce5-5727-4258-a4d1-e1c055e999ef}</UniqueIdentifier>
     </Filter>
@@ -24,9 +21,6 @@
     </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{fddd63c7-054a-4a01-b479-b00fa8d486d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine">
-      <UniqueIdentifier>{38f1cd19-fcaf-4e33-b5a0-a4f2dce49718}</UniqueIdentifier>
     </Filter>
     <Filter Include="System">
       <UniqueIdentifier>{f8db88dd-7015-4f36-b3b9-b7174ed01765}</UniqueIdentifier>
@@ -64,20 +58,23 @@
     <Filter Include="Cores\Input">
       <UniqueIdentifier>{bb7c42c2-31f0-482e-97a6-8270f9289160}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cores\Kernel">
-      <UniqueIdentifier>{70299d09-7665-4f49-b128-cf836abd7271}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SystemSettings">
       <UniqueIdentifier>{8f445e44-900c-43db-a1b0-fab3b1048e80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parser\XML\TinyXML">
+      <UniqueIdentifier>{2e1887b9-b691-48a4-9390-7a0dc1296eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kernel">
+      <UniqueIdentifier>{38f1cd19-fcaf-4e33-b5a0-a4f2dce49718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{fcfaf4bf-56e0-4f90-a6f3-e06a82099d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SystemStat">
+      <UniqueIdentifier>{daf6b1cc-7945-422e-af2d-969011df5d58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Core\RHI\RHI.h">
-      <Filter>Cores\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Core\RHI\DirectX12\RHI_DX12Device.h">
-      <Filter>Cores\RHI\DX12</Filter>
-    </ClInclude>
     <ClInclude Include="Header\Exception.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -90,22 +87,49 @@
     <ClInclude Include="Header\Typedef.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Engine\EngineKernel.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Header\Enum.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SystemSettings\SystemSettings.h">
+    <ClInclude Include="Code\RHI.h">
+      <Filter>Cores\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RHI_DX12Device.h">
+      <Filter>Cores\RHI\DX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\EngineKernel.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SystemSettings.h">
       <Filter>SystemSettings</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\tinyxml2.h">
+      <Filter>Parser\XML\TinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\comptr.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Logger.h">
+      <Filter>Logger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Core\RHI\DirectX12\RHI_DX12Device.cpp">
+    <ClCompile Include="Code\RHI_DX12Device.cpp">
       <Filter>Cores\RHI\DX12</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Engine\EngineKernel.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="Code\EngineKernel.cpp">
+      <Filter>Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="Code\SystemSettings\SystemSettings.cpp">
+    <ClCompile Include="Code\SystemSettings.cpp">
       <Filter>SystemSettings</Filter>
     </ClCompile>
+    <ClCompile Include="Code\tinyxml2.cpp">
+      <Filter>Parser\XML\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ExternLibList.txt" />
   </ItemGroup>
 </Project>

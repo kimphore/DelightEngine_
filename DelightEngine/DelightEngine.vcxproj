@@ -76,10 +76,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SourcePath)/Header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;</LibraryPath>
-    <OutDir>$(SolutionDir)$\Binary</OutDir>
-    <SourcePath>$(SourcePath)</SourcePath>
+    <OutDir>..\Binary\</OutDir>
+    <SourcePath>$(SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -105,12 +105,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;DELIGHTENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;./../External/;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>d3d12.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -146,19 +146,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Core\RHI\DirectX12\RHI_DX12Device.h" />
-    <ClInclude Include="Code\Core\RHI\RHI.h" />
-    <ClInclude Include="Code\Engine\EngineKernel.h" />
-    <ClInclude Include="Code\SystemSettings\SystemSettings.h" />
+    <ClInclude Include="Code\comptr.h" />
+    <ClInclude Include="Code\EngineKernel.h" />
+    <ClInclude Include="Code\Logger.h" />
+    <ClInclude Include="Code\RHI.h" />
+    <ClInclude Include="Code\RHI_DX12Device.h" />
+    <ClInclude Include="Code\SystemSettings.h" />
+    <ClInclude Include="Code\tinyxml2.h" />
     <ClInclude Include="Header\Define.h" />
+    <ClInclude Include="Header\Enum.h" />
     <ClInclude Include="Header\Exception.h" />
     <ClInclude Include="Header\Include.h" />
     <ClInclude Include="Header\Typedef.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Core\RHI\DirectX12\RHI_DX12Device.cpp" />
-    <ClCompile Include="Code\Engine\EngineKernel.cpp" />
-    <ClCompile Include="Code\SystemSettings\SystemSettings.cpp" />
+    <ClCompile Include="Code\EngineKernel.cpp" />
+    <ClCompile Include="Code\RHI_DX12Device.cpp" />
+    <ClCompile Include="Code\SystemSettings.cpp" />
+    <ClCompile Include="Code\tinyxml2.cpp" />
+    <ClCompile Include="Logger.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ExternLibList.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

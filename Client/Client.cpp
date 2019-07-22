@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "Client.h"
+#include <stdio.h>
+#include <iostream>
 
 #define MAX_LOADSTRING 100
 
@@ -41,6 +43,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+	if (AllocConsole())
+	{
+		freopen("CONIN$", "rb", stdin);
+		freopen("CONOUT$", "rb", stdout);
+		freopen("CONOUT$", "rb", stderr);
+
+		//std::ios::sync_with_stdio();
+	}
+
+	std::cout << "Test" << std::endl;
+
     // 기본 메시지 루프입니다.
     while (GetMessage(&msg, nullptr, 0, 0))
     {
@@ -50,6 +63,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+
+	FreeConsole();
 
     return (int) msg.wParam;
 }

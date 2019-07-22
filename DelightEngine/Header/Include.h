@@ -4,14 +4,16 @@
 //#include <d3dx11.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
-#include <d3dx12.h>
+#include <d3dcompiler.h>
+//#include <d3dx12.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
-#include <xnamath.h>
 #include <assert.h>
 #include <windows.h>
-#include <dinput.h>
+//#include <dinput.h>
 #include <wrl.h>
+#include <time.h>
+#include <memory.h>
 
 #include <vector>
 #include <map>
@@ -24,13 +26,17 @@
 #include <functional>
 #include <utility>
 #include <memory>
+#include <fstream>
 
 // using namespace..?
 
-using Microsoft.WRL;
+using namespace Microsoft::WRL;
 
 // internal include headers.
 
 #include "Exception.h"
 #include "Typedef.h"
 #include "Define.h"
+#include "Enum.h"
+
+#pragma comment(lib, "D3D12.lib")
