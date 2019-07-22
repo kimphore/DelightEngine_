@@ -23,3 +23,9 @@ DelightEngine/x64/Debug/vc141.idb
 DelightEngine/x64/Debug/vc141.pdb
 .vs/DelightEngine/v15/Browse.VC.db
 .vs/DelightEngine/v15/.suo
+*.obj
+*.tlog
+*.log
+.vs/DelightEngine/v15/.suo
+*.db
+DelightEngine/x64/Debug/vc141.pdb
