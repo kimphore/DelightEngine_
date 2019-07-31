@@ -78,7 +78,7 @@
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;</LibraryPath>
-    <OutDir>..\Binary\</OutDir>
+    <OutDir>..\Binaries\</OutDir>
     <SourcePath>$(SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,6 +112,9 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>d3d12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>call "$(SolutionDir)BuildCopy.bat"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -161,10 +164,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\EngineKernel.cpp" />
+    <ClCompile Include="Code\Logger.cpp" />
     <ClCompile Include="Code\RHI_DX12Device.cpp" />
     <ClCompile Include="Code\SystemSettings.cpp" />
     <ClCompile Include="Code\tinyxml2.cpp" />
-    <ClCompile Include="Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />

@@ -125,7 +125,7 @@
     <ClCompile Include="Code\tinyxml2.cpp">
       <Filter>Parser\XML\TinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
+    <ClCompile Include="Code\Logger.cpp">
       <Filter>Logger</Filter>
     </ClCompile>
   </ItemGroup>

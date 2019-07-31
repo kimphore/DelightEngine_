@@ -6,6 +6,12 @@
 #include <stdio.h>
 #include <iostream>
 
+#pragma comment(lib, "../Binaries/DelightEngine.lib")
+
+#include "Include.h"
+
+#include "Logger.h"
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -42,17 +48,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
     MSG msg;
+	
+	CDelightLogger GLogger;
+	
+	GLogger.ToggleConsole();
 
-	if (AllocConsole())
+	GLogger.SetIgnoreLogLevel(5);
+
+	GLogger.LogW(LOG_NORMAL, 10, TEXT("This is Normal"));
+	GLogger.LogW(LOG_NORMAL, 3, TEXT("Lower LogLevel"));
+	GLogger.LogW(LOG_ERROR, 10, TEXT("This is Error"));
+	GLogger.LogW(LOG_INFO, 10, TEXT("This is Error"));
+	GLogger.LogW(LOG_WARN, 10, TEXT("This is Warning"));
+
+	for (int i = 0; i < 100; ++i)
 	{
-		freopen("CONIN$", "rb", stdin);
-		freopen("CONOUT$", "rb", stdout);
-		freopen("CONOUT$", "rb", stderr);
-
-		//std::ios::sync_with_stdio();
+		GLogger.LogW(LOG_NORMAL, 15, TEXT("Loop Test : %d"), i);
+		Sleep(100);
 	}
-
-	std::cout << "Test" << std::endl;
 
     // 기본 메시지 루프입니다.
     while (GetMessage(&msg, nullptr, 0, 0))
@@ -64,7 +77,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
-	FreeConsole();
 
     return (int) msg.wParam;
 }
