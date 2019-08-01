@@ -48,9 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
     MSG msg;
-	
-	CDelightLogger GLogger;
-	
+
 	GLogger.ToggleConsole();
 
 	GLogger.SetIgnoreLogLevel(5);
@@ -61,9 +59,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GLogger.LogW(LOG_INFO, 10, TEXT("This is Error"));
 	GLogger.LogW(LOG_WARN, 10, TEXT("This is Warning"));
 
-	for (int i = 0; i < 100; ++i)
+	FOR_RANGE(index, 0, 555)
 	{
-		GLogger.LogW(LOG_NORMAL, 15, TEXT("Loop Test : %d"), i);
+		GLogger.LogW(LOG_NORMAL, 15, TEXT("Loop Test : %d"), index);
 		Sleep(100);
 	}
 

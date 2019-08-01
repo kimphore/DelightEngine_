@@ -20,3 +20,5 @@ private:
 	_int  ignoreLogLevel;
 	_bool bUseConsole;
 };
+
+extern ENGINE_DLL CDelightLogger GLogger;
