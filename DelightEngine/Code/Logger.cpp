@@ -7,6 +7,8 @@
 #define LOGFILENAME_FORMAT "..\\Log\\Launch[%04d-%02d-%02d %02d.%02d.%02d].txt"
 #define TIME_FORMAT "[%04d-%02d-%02d %02d.%02d.%02d]"
 
+CDelightLogger GLogger;
+
 const _int logColorIndex[5] = {
 	15, // LOG_NORMAL
 	7,  // LOG_INFO
@@ -50,7 +52,7 @@ void CDelightLogger::Initialize()
 	
 	logFile.open(filename);
 
-	_bool a = logFile.is_open();
+	GLogger.LogW(LOG_INFO, SYSTEM_LOG_LEVEL, TEXT("Logger Initialized."));
 }
 
 void CDelightLogger::ToggleConsole()
