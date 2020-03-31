@@ -1,0 +1,100 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Configuring the Memory Allocator" />
+<meta name="DC.subject" content="allocator configuration" />
+<meta name="keywords" content="allocator configuration" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Memory_Allocation.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Allocator_Configuration" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Configuring the Memory Allocator</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Allocator_Configuration">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">Configuring the Memory Allocator</h1>
+
+    
+    <div>
+        <p>
+            The TBB memory allocator provides the following API functions and environment variables to configure its behavior:
+            <ul>
+               <li>
+                  <p>the <samp class="codeph">scalable_allocation_command</samp> function instructs the allocator to perform
+                  a certain action, such as cleaning up its internal memory buffers.</p>
+
+               </li>
+
+               <li>
+                  <p>the <samp class="codeph">scalable_allocation_mode</samp> function allows an application to set certain parameters
+                    for the memory allocator, such as an option to map memory in huge pages or define a recommended heap size.
+                    These settings take effect until modified by another call to <samp class="codeph">scalable_allocation_mode</samp>.</p>
+
+               </li>
+
+            </ul>
+
+        </p>
+
+        <p>
+            Some of the memory allocator parameters can also be set via system environment variables.
+            It can be useful to adjust the behavior without modifying application source code, to ensure that
+            a setting takes effect as early as possible, or to avoid explicit dependency on the TBB allocator binaries.
+            The following environment variables are recognized:
+            <ul>
+               <li>
+                  <p><samp class="codeph">TBB_MALLOC_USE_HUGE_PAGES</samp> controls usage of huge pages for memory mapping.</p>
+
+               </li>
+
+               <li>
+                   <p><samp class="codeph">TBB_MALLOC_SET_HUGE_OBJECT_THRESHOLD</samp> defines the lower bound for the size (bytes),
+                       that is interpreted as huge and not released during regular cleanup operations.</p>
+
+               </li>
+
+            </ul>
+
+        </p>
+
+        <p>
+            These variables only take effect at the time the memory manager is initialized; later environment changes are ignored.
+            A call to <samp class="codeph">scalable_allocation_mode</samp> overrides the effect of the corresponding environment variable.
+        </p>
+
+        <p>
+            Refer to the
+            <a href="../reference/memory_allocation/c_interface_to_scalable_allocator.html">
+                "C Interface to Scalable Allocator"
+            </a>
+            in Developer Reference section for more details.
+        </p>
+
+    </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Memory_Allocation.html">Memory Allocation</a></div>
+</div>
+<div></div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Overview" />
+<meta name="DC.subject" content="Flow Graph overview" />
+<meta name="keywords" content="Flow Graph overview" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/dependency_flow_graph_example.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/message_flow_graph_example.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/body_objects.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/message_passing_protocol.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/sender_and_buffer_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/lightweight_policy.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="overview" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Overview</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="overview">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">Overview</h1>
+
+    
+    <div>
+        <p>In addition to loop parallelism, the Intel&reg; Threading Building Blocks (Intel&reg; TBB)
+        library also supports graph parallelism. It's possible to create graphs that are highly scalable,
+        but it is also possible to create graphs that are completely sequential.</p>
+
+        <p>There are 3 types of components used to implement a graph:</p>
+
+            <ul>
+                <li>
+                    <p>A <samp class="codeph">graph</samp> object</p>
+
+                </li>
+
+                <li>
+                    <p>Nodes</p>
+
+                </li>
+
+                <li>
+                    <p>Edges</p>
+
+                </li>
+
+            </ul>
+
+        <p>Nodes invoke user-provided function objects or manage messages flow to/from
+        other nodes. There are pre-defined nodes that buffer, filter,
+        broadcast or order items as they flow through the graph. 
+        </p>
+
+        <p>Edges are the connections between the nodes, managed by calls to the 
+        <samp class="codeph">make_edge</samp> and <samp class="codeph">remove_edge</samp> functions. 
+        </p>
+
+        <p>The <samp class="codeph">graph</samp> object is the owner of the tasks created on
+        behalf of the flow graph. Users can wait on the
+        <samp class="codeph">graph</samp> if they need to wait for the completion of all
+        of the tasks related to the flow graph execution. One can also register
+        external interactions with the
+        <samp class="codeph">graph</samp> and run tasks under the ownership of the flow
+        graph.
+        </p>
+
+        <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+            <p>
+            The tasks related to the flow graph are executed in the <samp class="codeph">task_group_context</samp>
+            of that flow graph.  If no context is specified when a flow graph is created, a
+            new context is created and bound to the enclosing context.
+            </p>
+
+            <p>
+            The context a body of a flow graph node is executed in is that node's graph.
+            If a cancellation or exception occurs in that node, the context of its
+            graph is cancelled, and if necessary the exception thrown is passed to
+            the enclosing context for further processing.
+            </p>
+
+        </div>
+
+    </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph.html">Flow Graph</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/flow_graph/dependency_flow_graph_example.html">Dependency Flow Graph Example</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/flow_graph/message_flow_graph_example.html">Message Flow Graph Example</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/flow_graph/body_objects.html">Body Objects</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/flow_graph/message_passing_protocol.html">Message Passing Protocol</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/flow_graph/sender_and_buffer_policy.html">Fowarding, Buffering and Reception Policy</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/flow_graph/lightweight_policy.html">Lightweight policy for functional nodes</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

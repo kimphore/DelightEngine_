@@ -1,0 +1,80 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="parallel_invoke Variadic Template Function" />
+<meta name="DC.subject" content="parallel_invoke Variadic Template Function" />
+<meta name="keywords" content="parallel_invoke Variadic Template Function" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../algorithms/parallel_invoke_func.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="parallel_invoke_func" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>parallel_invoke Variadic Template Function</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="parallel_invoke_func">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">parallel_invoke Variadic Template Function</h1>
+
+  
+<div>
+ <div class="section"><h2 class="sectiontitle">Summary</h2>
+   <p>An implementation of <samp class="codeph">parallel_invoke</samp> that uses C++11 variadic templates
+      to evaluate an arbitrary number of functions in parallel.</p>
+
+ </div>
+
+ <div class="section"><h2 class="sectiontitle">Header</h2> 
+   <pre>
+#define TBB_PREVIEW_VARIADIC_PARALLEL_INVOKE 1
+#include "tbb/parallel_invoke.h"
+   </pre>
+ </div>
+
+ <div class="section"><h2 class="sectiontitle">Syntax</h2> 
+   <pre>
+template&lt;typename Func0, typename Func1, typename... Functions&gt;
+void parallel_invoke(Func0&amp;&amp; f0, Func1&amp;&amp; f1, Functions&amp;&amp;... f);
+   </pre>
+ </div>
+
+ <div class="section"><h2 class="sectiontitle">Description</h2>
+   <p>This implementation of <samp class="codeph">parallel_invoke</samp> uses C++11 variadic templates
+      to accept an arbitrary number of arguments (subject to limitations by a particular compiler).
+      If <samp class="codeph">TBB_PREVIEW_VARIADIC_PARALLEL_INVOKE</samp> is set to non-zero,
+      this implementation replaces the default implementation limited by 10 arguments.
+   </p>
+
+ </div>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/preview_features.html">Preview Features</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../algorithms/parallel_invoke_func.html">parallel_invoke Template Function</a></div></div></div>
+
+</body>
+</html>

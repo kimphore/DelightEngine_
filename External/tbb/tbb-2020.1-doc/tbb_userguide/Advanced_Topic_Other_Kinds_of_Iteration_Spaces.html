@@ -1,0 +1,139 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Advanced Topic: Other Kinds of Iteration Spaces" />
+<meta name="DC.subject" content="Advanced Topic: Other Kinds of Iteration Spaces" />
+<meta name="keywords" content="Advanced Topic: Other Kinds of Iteration Spaces" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Parallelizing_Simple_Loops.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Advanced_Topic_Other_Kinds_of_Iteration_Spaces" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Advanced Topic: Other Kinds of Iteration Spaces</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Advanced_Topic_Other_Kinds_of_Iteration_Spaces">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Advanced Topic: Other Kinds of Iteration Spaces</h1>
+ 
+  
+  <div>
+    <p>
+      The examples so far have used the class <samp class="codeph">blocked_range&lt;T&gt;</samp> to specify ranges. This class is useful in many situations, but
+      it does not fit every situation. You can use Intel&reg; Threading Building Blocks to define your own iteration space objects. The object must
+      specify how it can be split into subspaces by providing a basic splitting constructor, an optional proportional splitting constructor
+      (accompanied with a trait value that enables its usage), and two predicate methods. If your class is called <samp class="codeph">R</samp>, the methods and
+      constructors should be as follows:
+    </p>
+
+    <pre>
+class R {
+    // True if range is empty
+    bool empty() const;
+    // True if range can be split into non-empty subranges
+    bool is_divisible() const;
+    // Splits r into subranges r and *this
+    R( R&amp; r, split );
+    // Splits r into subranges r and *this in proportion p
+    R( R&amp; r, proportional_split p );
+    // Allows usage of proportional splitting constructor
+    static const bool is_splittable_in_proportion = true;
+    ...
+};
+    </pre>
+    <p>
+      The method <samp class="codeph">empty</samp> should return true if the range is empty. The method <samp class="codeph">is_divisible</samp> should return true if the
+      range can be split into two non-empty subspaces, and such a split is worth the overhead. The basic splitting constructor should take two
+      arguments:
+    </p>
+
+	 <ul>
+		<li>
+		  <p>The first of type 
+			 <samp class="codeph">R</samp> 
+		  </p>
+
+		</li>
+
+		<li>
+		  <p>The second of type 
+	 <span class="option">tbb::split</span>
+	 </p>
+
+	 </li>
+
+	 </ul>
+
+	 <p>
+           The second argument is not used; it serves only to distinguish the constructor from an ordinary copy constructor. The basic splitting
+           constructor should attempt to split <samp class="codeph">r</samp> roughly into two halves, and update <samp class="codeph">r</samp> to be the first half, and set
+           the constructed object as the second half.
+	 </p>
+
+         <p>
+           Unlike the basic splitting constructor, the proportional splitting constructor is optional and takes the second argument of type
+           <samp class="codeph">tbb::proportional_split</samp>. The type has methods <samp class="codeph">left</samp> and <samp class="codeph">right</samp> that return the values of
+           the proportion. These values should be used to split <samp class="codeph">r</samp> accordingly, so that the updated <samp class="codeph">r</samp> corresponds to
+           the left part of the proportion, and the constructed object corresponds to the right part. The proportional splitting constructor will be
+           used only if the static constant <samp class="codeph">is_splittable_in_proportion</samp> is defined in the class and assigned the value of
+           <samp class="codeph">true</samp>.
+	 </p>
+
+         <p>
+           Both splitting constructors should guarantee that the updated <samp class="codeph">r</samp> part and the constructed object are not empty. The
+           parallel algorithm templates call the splitting constructors on <samp class="codeph">r</samp> only if <samp class="codeph">r.is_divisible</samp> is true.
+         </p>
+
+	 <p>The iteration space does not have to be linear. Look at 
+		<samp class="codeph">tbb/blocked_range2d.h</samp> for an example of a range that is
+		two-dimensional. Its splitting constructor attempts to split the range along
+		its longest axis. When used with 
+		<samp class="codeph">parallel_for</samp>, it causes the loop to be "recursively
+		blocked" in a way that improves cache usage. This nice cache behavior means
+		that using 
+		<samp class="codeph">parallel_for</samp> over a 
+		<samp class="codeph">blocked_range2d&lt;T&gt;</samp> can make a loop run faster than
+		the sequential equivalent, even on a single processor.
+	 </p>
+
+	 <div class="section"><h2 class="sectiontitle">Code Samples</h2>
+		
+		<p>The directory 
+		  <samp class="codeph">examples/parallel_for/seismic</samp> contains a simple
+		  seismic wave simulation based on 
+		  <samp class="codeph">parallel_for</samp> and 
+		  <samp class="codeph">blocked_range</samp>. The directory 
+		  <samp class="codeph">examples/parallel_for/tachyon</samp> contains a more complex
+		  example of a ray tracer based on 
+		  <samp class="codeph">parallel_for</samp> and 
+		  <samp class="codeph">blocked_range2d</samp>.
+		</p>
+
+	 </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Parallelizing_Simple_Loops.html">Parallelizing Simple Loops</a></div>
+</div>
+<div></div>
+</body>
+</html>

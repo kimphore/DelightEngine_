@@ -1,0 +1,114 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Avoiding Data Races" />
+<meta name="DC.subject" content="flow graph tips, avoid data races, avoiding data races" />
+<meta name="keywords" content="flow graph tips, avoid data races, avoiding data races" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_making_edges_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_make_edge.html#use_make_edge" />
+<meta name="DC.Relation" scheme="URI" content="broadcast_or_send.html#broadcast_or_send" />
+<meta name="DC.Relation" scheme="URI" content="communicate_with_nodes.html#communicate_with_nodes" />
+<meta name="DC.Relation" scheme="URI" content="use_source_node.html#use_source_node" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="avoiding_data_races" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Avoiding Data Races</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="avoiding_data_races">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Avoiding Data Races</h1>
+ 
+   
+  <div> 
+	 <p>The edges in a flow graph make explicit the dependence relationships
+		that you want the library to enforce. Similarly, the concurrency limits on 
+		<span class="keyword">function_node</span> and 
+		<span class="keyword">multifunction_node</span> objects limit the maximum number of
+		concurrent invocations that the runtime library will allow. These are the
+		limits that are enforced by the library; the library does not automatically
+		protect you from data races. You must explicitly prevent data races by using
+		these mechanisms. 
+	 </p>
+ 
+	 <p>For example, the follow code has a data race because there is nothing to
+		prevent concurrent accesses to the global count object referenced by node 
+		<span class="keyword">f</span>: 
+		<pre>  graph g;
+  int src_count = 1;
+  int global_sum = 0;
+  int limit = 100000;
+
+  source_node&lt; int &gt; src( g, [&amp;]( int &amp;i ) -&gt; bool {
+    if ( src_count &lt;= limit ) {
+      i = src_count++;
+      return true;
+    } else {
+      return false;
+    }
+  } );
+
+  function_node&lt; int, int &gt; f( g, unlimited, [&amp;]( int i ) -&gt; int {
+    global_sum += i;  // data race on global_sum
+    return i; 
+  } );
+
+  make_edge( src, f );
+  g.wait_for_all();
+
+  cout &lt;&lt; "global sum = " &lt;&lt; global_sum 
+       &lt;&lt; " and closed form = " &lt;&lt; limit*(limit+1)/2 &lt;&lt; "\n";
+</pre> 
+	 </p>
+ 
+	 <p>If you run the above example, it will likely calculate a global sum that
+		is a bit smaller than the expected solution due to the data race. The data race
+		could be avoided in this simple example by changing the allowed concurrency in 
+		<span class="keyword">f</span> from 
+		<span class="keyword">unlimited</span> to 
+		<span class="keyword">1</span>, forcing each value to be processed sequentially by 
+		<span class="keyword">f</span>. You may also note that the 
+		<span class="keyword">source_node</span> also updates a global value, 
+		<span class="keyword">src_count</span>. However, since a 
+		<span class="keyword">source_node</span> always executes serially, there is no race
+		possible. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_making_edges_tips.html">Flow Graph Tips on Making Edges</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_make_edge.html#use_make_edge">Use make_edge and remove_edge 
+		  </a></div>
+<div><a href="broadcast_or_send.html#broadcast_or_send">Sending to One or Multiple Successors 
+		  </a></div>
+<div><a href="communicate_with_nodes.html#communicate_with_nodes">Communication Between Graphs 
+		  </a></div>
+<div><a href="use_source_node.html#use_source_node">Using source_node 
+		  </a></div></div></div> 
+
+</body>
+</html>

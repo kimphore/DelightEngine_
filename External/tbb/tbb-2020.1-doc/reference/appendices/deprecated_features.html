@@ -1,0 +1,147 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Deprecated features" />
+<meta name="DC.subject" content="Deprecated Features" />
+<meta name="keywords" content="Deprecated Features" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/appendices.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/appendices/deprecated_features/cpp_obsolete.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/appendices/deprecated_features/ppl_compatibility_synch.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/appendices/deprecated_features/outdated_and_redundant.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/appendices/deprecated_features/considered_for_reworking.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="deprecated_features" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Deprecated features</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="deprecated_features">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Deprecated features</h1>
+
+  
+  <div>
+    <p>This appendix describes features of Intel&reg; Threading Building Blocks (Intel&reg; TBB)
+    that has been deprecated. This functionality will eventually be removed in the future.
+    </p>
+
+    <div class="Note"><h3 class="NoteTipHead">Note</h3> <p>
+    Support for C++98/03 is deprecated. Please use the compiler that supports C++11 features at least.
+    </p>
+</div>
+
+    <p>If supported, the compilation warnings are enabled for the deprecated functionality in accordance with the table below.
+    </p>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          <samp class="codeph">TBB_SUPPRESS_DEPRECATED_MESSAGES</samp> macro controls which warnings are issued.
+          The following table describes the possible values:
+        </span>
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="50%" id="d10567e61">Value</th>
+
+              <th class="cellrowborder" valign="top" width="50%" id="d10567e64">Verbosity level</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="50%" headers="d10567e61 ">
+                <p>
+                  <samp class="codeph">undefined (default)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="50%" headers="d10567e64 ">
+                <p>Warnings are issued for each included deprecated header file
+                and for each used deprecated interface that is not declared in header file.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50%" headers="d10567e61 ">
+                <p>
+                  <samp class="codeph">0</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="50%" headers="d10567e64 ">
+                <p>Warnings are issued for each used deprecated interface.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50%" headers="d10567e61 ">
+                <p>
+                  <samp class="codeph">1</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="50%" headers="d10567e64 ">
+                <p>All warnings related to deprecated content are suppressed.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/appendices.html">Appendices</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/appendices/deprecated_features/cpp_obsolete.html">Obsolete C++ functionality</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/appendices/deprecated_features/ppl_compatibility_synch.html">PPL Compatibility API</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/appendices/deprecated_features/outdated_and_redundant.html">Outdated and redundant API</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/appendices/deprecated_features/considered_for_reworking.html">Functionality considered for reworking</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

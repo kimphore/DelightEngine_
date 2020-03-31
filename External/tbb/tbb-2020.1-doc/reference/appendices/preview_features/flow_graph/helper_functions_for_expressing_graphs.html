@@ -1,0 +1,228 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Helper Functions for Expressing Graphs" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs/follows_and_precedes.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs/make_node_set.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs/make_edges.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="helper_functions_for_expressing_graphs" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Helper Functions for Expressing Graphs</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="helper_functions_for_expressing_graphs">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Helper Functions for Expressing Graphs</h1>
+
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        The feature introduces helper functions to make creation of the graphs less verbose.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          The feature requires at least C++11-compliant compiler.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <p>
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+</pre>
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        The feature adds <samp class="codeph">make_edges</samp>, <samp class="codeph">make_node_set</samp>, <samp class="codeph">follows</samp>
+        and <samp class="codeph">precedes</samp> functions into <samp class="codeph">tbb::flow</samp> namespace.
+        These functions simplify building of the graphs by allowing to gather nodes into sets and
+        connect them to other nodes in the graph.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        Consider the graph depicted below.
+      </p>
+
+      <p>
+         <div class="fignone" id="flow-graph-api-graph-structure">
+            <br /><div class="imagecenter"><img src="../../../Resources/flow_graph_api_graph_structure.png" height="323" width="505" align="center" /></div><br />
+         </div>
+
+      </p>
+
+      <p>
+        The following table builds and runs this graph using the existing API (column 1) and the preview API (column 2).
+        C++17 class template argument deduction is used in both implementations to avoid template parameter specification where possible.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all">
+        <thead align="left">
+          <tr>
+            <th class="cellrowborder" valign="top" width="50%" id="d36687e92">
+              <p>
+                Expression of the graph structure using existing API
+              </p>
+
+            </th>
+
+            <th class="cellrowborder" valign="top" width="50%" id="d36687e98">
+              <p>
+                Expression of the graph structure using preview API
+              </p>
+
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+          <tr valign="top">
+            <td class="cellrowborder" valign="top" width="50%" headers="d36687e92 ">
+              <p>
+<pre>
+#include "tbb/flow_graph.h"
+
+int main() {
+    using namespace tbb::flow;
+
+    graph g;
+
+    broadcast_node&lt;int&gt; input(g);
+
+    function_node doubler(g, unlimited, [](const int&amp; v) { return 2*v; });
+    function_node squarer(g, unlimited, [](const int&amp; v) { return v*v; });
+    function_node cuber(g, unlimited, [](const int&amp; v) { return v*v*v; });
+
+    join_node&lt;std::tuple&lt;int, int, int&gt;&gt; join(g);
+
+    int sum = 0;
+    function_node summer(
+        g,
+        serial, [&amp;](const std::tuple&lt;int, int, int&gt;&amp; v) {
+            int sub_sum = std::get&lt;0&gt;(v) + std::get&lt;1&gt;(v) + std::get&lt;2&gt;(v);
+            sum += sub_sum;
+            return sub_sum;
+        }
+    );
+
+    make_edge(input, doubler);
+    make_edge(input, squarer);
+    make_edge(input, cuber);
+    make_edge(doubler, std::get&lt;0&gt;(join.input_ports()));
+    make_edge(squarer, std::get&lt;1&gt;(join.input_ports()));
+    make_edge(cuber, std::get&lt;2&gt;(join.input_ports()));
+    make_edge(join, summer);
+
+    for(int i = 1; i &lt;= 10; ++i) {
+        input.try_put(i);
+    }
+    g.wait_for_all();
+}
+</pre>
+              </p>
+
+            </td>
+
+            <td class="cellrowborder" valign="top" width="50%" headers="d36687e98 ">
+              <p>
+<pre>
+<span class="color(blue)" style="color:blue"><strong>#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1</strong></span>
+#include "tbb/flow_graph.h"
+
+int main() {
+    using namespace tbb::flow;
+
+    graph g;
+
+    function_node doubler(g, unlimited, [](const int&amp; v) { return 2*v; });
+    function_node squarer(g, unlimited, [](const int&amp; v) { return v*v; });
+    function_node cuber(g, unlimited, [](const int&amp; v) { return v*v*v; });
+    <span class="color(blue)" style="color:blue"><strong>auto handlers = make_node_set(doubler, squarer, cuber);</strong></span>
+
+    <span class="color(blue)" style="color:blue"><strong>broadcast_node input(precedes(handlers));</strong></span>
+    <span class="color(blue)" style="color:blue"><strong>join_node join(follows(handlers));</strong></span>
+
+    int sum = 0;
+    <span class="color(blue)" style="color:blue"><strong>function_node summer(
+        follows(join)</strong></span>,
+        serial, [&amp;](const std::tuple&lt;int, int, int&gt;&amp; v) {
+            int sub_sum = std::get&lt;0&gt;(v) + std::get&lt;1&gt;(v) + std::get&lt;2&gt;(v);
+            sum += sub_sum;
+            return sub_sum;
+        }
+    );
+
+    for(int i = 1; i &lt;= 10; ++i) {
+        input.try_put(i);
+    }
+    g.wait_for_all();
+}
+</pre>
+            </p>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+        </table>
+</div>
+
+      <p>
+        Please read the corresponding documentation page for the description of individual preview API.
+      </p>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/flow_graph_features.html">Flow Graph</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs/follows_and_precedes.html">follows and precedes helper functions</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs/make_node_set.html">make_node_set helper function</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs/make_edges.html">make_edges helper function</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

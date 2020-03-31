@@ -1,0 +1,61 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Abstract Interfaces" />
+<meta name="DC.subject" content="abstract flow graph interfaces" />
+<meta name="keywords" content="abstract flow graph interfaces" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/graph_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/deprecated_features/considered_for_reworking/fg_abstract_interfaces.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="abstract_interfaces" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Abstract Interfaces</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="abstract_interfaces">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Abstract Interfaces</h1>
+
+   
+  <div>
+     <p>In order to be used as a graph node type, a class needs to inherit certain abstract types and implement the
+      corresponding interfaces. <samp class="codeph">graph_node</samp> is the base class for any other node type; its interfaces
+      always have to be implemented. If a node sends messages to other nodes, it has to implement the <samp class="codeph">sender</samp>
+      interface, while with <samp class="codeph">receiver</samp> interface the node may accept messages. For nodes that have multiple
+      inputs and/or outputs, each input port is a <samp class="codeph">receiver</samp> and each output port is a <samp class="codeph">sender</samp>.
+     </p>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph.html">Flow Graph</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/flow_graph/graph_node_cls.html">graph_node Class</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="../appendices/deprecated_features/considered_for_reworking/fg_abstract_interfaces.html">
+        Flow Graph Abstract Interfaces (deprecated)
+      </a></div></div></div>
+
+</body>
+</html>

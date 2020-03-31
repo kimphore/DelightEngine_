@@ -1,0 +1,103 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Estimating Flow Graph Performance" />
+<meta name="DC.subject" content="Flow Graph Performance, Performance, Flow Graph" />
+<meta name="keywords" content="Flow Graph Performance, Performance, Flow Graph" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph.html" />
+<meta name="DC.Relation" scheme="URI" content="Data_Flow_Graph.html#Data_Flow_Graph" />
+<meta name="DC.Relation" scheme="URI" content="Dependence_Graph.html#Dependence_Graph" />
+<meta name="DC.Relation" scheme="URI" content="../reference/flow_graph/lightweight_policy.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="estimating_flow_graph_performance" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Estimating Flow Graph Performance</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="estimating_flow_graph_performance">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Estimating Flow Graph Performance</h1>
+
+  
+  <div>
+	 <p> The performance or scalability of a flow graph is not easy to predict.
+		However there are a few key points that can guide you in estimating the limits
+		on performance and speedup of some graphs.
+	 </p>
+
+	 <div class="section"><h2 class="sectiontitle">The Critical Path Limits the Scalability in a Dependence
+		  Graph</h2>
+		
+		<p>A critical path is the most time consuming path from a node with no
+		  predecessors to a node with no successors. In a dependence graph, the execution
+		  of the nodes along a path cannot be overlapped since they have a strict
+		  ordering. Therefore, for a dependence graph, the critical path limits
+		  scalability.
+		</p>
+
+		<p>More formally, let
+		  <span class="keyword">T</span> be the total time consumed by all of the nodes in
+		  your graph if executed sequentially. Then let
+		  <span class="keyword">C</span> be the time consumed along the path that takes the
+		  most time. The nodes along this path cannot be overlapped even in a parallel
+		  execution. Therefore, even if all other paths are executed in parallel with
+		  <span class="keyword">C</span>, the wall clock time for the parallel execution is
+		  at least
+		  <span class="keyword">C</span>, and the maximum possible speedup (ignoring
+		  microarchitectural and memory effects) is
+		  <span class="keyword">T/C</span>.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">There is Overhead in Spawning a Node's Body as a Task</h2>
+		
+		<p>The bodies of
+		  <span class="keyword">source_nodes</span>,
+		  <span class="keyword">function_nodes</span>,
+		  <span class="keyword">continue_nodes</span> and
+		  <span class="keyword">multifunction_nodes</span> execute within spawned tasks by
+		  default. This means that you need to take into account the overhead of task
+		  scheduling when estimating the time it takes for a node to execute its body.
+		  All of the rules of thumb for determining the appropriate granularity of tasks
+		  therefore also apply to node bodies as well. If you have many fine-grained
+		  nodes in your flow graph, the impact of these overheads can noticeably impact
+		  your performance. However, depending on the graph structure, you can reduce
+		  such overheads by using <span class="keyword">lightweight</span> policy with these nodes.
+		</p>
+
+	 </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph.html">Parallelizing Data Flow and Dependence Graphs</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Data_Flow_Graph.html#Data_Flow_Graph">Data Flow Graph</a></div>
+<div><a href="Dependence_Graph.html#Dependence_Graph">Dependence Graph</a></div>
+<div><a href="../reference/flow_graph/lightweight_policy.html">Lightweight policy for functional nodes</a></div></div></div>
+
+</body>
+</html>

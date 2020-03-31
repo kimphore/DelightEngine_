@@ -9,7 +9,7 @@
 
 CDelightLogger GLogger;
 
-const _int logColorIndex[5] = {
+const Int32 logColorIndex[5] = {
 	15, // LOG_NORMAL
 	7,  // LOG_INFO
 	14, // LOG_WARN
@@ -38,11 +38,11 @@ void CDelightLogger::Initialize()
 	std::locale::global(std::locale("kor"));
 
 	// 시간기반 파일생성.	
-	_tchar filename[256];
+	Tchar filename[256];
 	time_t timer;
 	tm timeInfo;
 
-	memset(filename, 0, sizeof(_tchar) * 256);
+	memset(filename, 0, sizeof(Tchar) * 256);
 
 	timer = time(NULL);
 	localtime_s(&timeInfo, &timer);
@@ -52,7 +52,7 @@ void CDelightLogger::Initialize()
 	
 	logFile.open(filename);
 
-	GLogger.LogW(LOG_INFO, SYSTEM_LOG_LEVEL, TEXT("Logger Initialized."));
+	infof(TEXT("Logger Initialized."));
 }
 
 void CDelightLogger::ToggleConsole()
@@ -81,14 +81,14 @@ void CDelightLogger::ToggleConsole()
 	}
 }
 
-void CDelightLogger::LogW(ELogType logType, _int LogLevel, _tchar* format, ...)
+void CDelightLogger::LogW(ELogType logType, Int32 LogLevel, Tchar* format, ...)
 {
-	_tchar StringBuffer[512] = TEXT("");
-	_tchar header[64] = TEXT("");
-	_tchar timeHeader[64] = TEXT("");
+	Tchar StringBuffer[512] = TEXT("");
+	Tchar header[64] = TEXT("");
+	Tchar timeHeader[64] = TEXT("");
 	time_t timer;
 	tm timeInfo;
-	_int logColor = _int(logType);
+	Int32 logColor = Int32(logType);
 
 	timer = time(NULL);
 	localtime_s(&timeInfo, &timer);
@@ -124,4 +124,49 @@ void CDelightLogger::LogW(ELogType logType, _int LogLevel, _tchar* format, ...)
 	logFile << timeHeader;
 	logFile << header;
 	logFile << StringBuffer<< std::endl;
+}
+// for char based log
+void CDelightLogger::Log(ELogType logType, Int32 LogLevel, Char* format, ...)
+{
+	Char StringBuffer[512] = "";
+	Char header[64] = "";
+	Char timeHeader[64] = "";
+	time_t timer;
+	tm timeInfo;
+	Int32 logColor = Int32(logType);
+
+	timer = time(NULL);
+	localtime_s(&timeInfo, &timer);
+
+	switch (logType)
+	{
+	case LOG_INFO:
+		sprintf_s(header, sizeof(Char) * 64, "[INFO]");
+		break;
+	case LOG_WARN:
+		sprintf_s(header, sizeof(Char) * 64, "[WARN]");
+		break;
+	case LOG_ERROR:
+		sprintf_s(header, sizeof(Char) * 64, "[ERR]");
+		break;
+	}
+
+	sprintf_s(timeHeader, sizeof(Char) * 64, TIME_FORMAT, timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
+		timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
+
+	va_list Marker;
+
+	va_start(Marker, format);
+	vsprintf(StringBuffer, format, Marker);
+	va_end(Marker);
+
+	if (bUseConsole && ignoreLogLevel < LogLevel)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), logColorIndex[logColor]);
+		std::cout << timeHeader << header << StringBuffer << std::endl;
+	}
+
+	logFile << timeHeader;
+	logFile << header;
+	logFile << StringBuffer << std::endl;
 }

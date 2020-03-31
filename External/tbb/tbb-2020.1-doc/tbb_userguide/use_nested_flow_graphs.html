@@ -1,0 +1,177 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Use Nested Flow Graphs" />
+<meta name="DC.subject" content="flow graph tips, use nested flow graphs, use nested flow graphs, nested flow graphs" />
+<meta name="keywords" content="flow graph tips, use nested flow graphs, use nested flow graphs, nested flow graphs" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_nested_parallelism_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_nested_algorithms.html#use_nested_algorithms" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="use_nested_flow_graphs" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Use Nested Flow Graphs</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="use_nested_flow_graphs">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Use Nested Flow Graphs</h1>
+ 
+   
+  <div> 
+	 <p>In addition to nesting algorithms within a flow graph node, it is also
+		possible to nest flow graphs. For example, below there is a graph 
+		<span class="keyword">g</span> with two nodes, 
+		<span class="keyword">a</span> and 
+		<span class="keyword">b</span>. When node a receives a message, it constructs and
+		executes an inner dependence graph. When node b receives a message, it
+		constructs and executes an inner data flow graph: 
+	 </p>
+ 
+	 <pre>	graph g;
+	function_node&lt; int, int &gt; a( g, unlimited, []( int i ) -&gt; int {
+		graph h;
+		node_t n1( h, [=]( msg_t ) { cout &lt;&lt; "n1: " &lt;&lt; i &lt;&lt; "\n"; } );
+		node_t n2( h, [=]( msg_t ) { cout &lt;&lt; "n2: " &lt;&lt; i &lt;&lt; "\n"; } );
+		node_t n3( h, [=]( msg_t ) { cout &lt;&lt; "n3: " &lt;&lt; i &lt;&lt; "\n"; } );
+		node_t n4( h, [=]( msg_t ) { cout &lt;&lt; "n4: " &lt;&lt; i &lt;&lt; "\n"; } );
+		make_edge( n1, n2 );
+		make_edge( n1, n3 );
+		make_edge( n2, n4 );
+		make_edge( n3, n4 );
+		n1.try_put(continue_msg());
+		h.wait_for_all();
+		return i;
+	} );
+	function_node&lt; int, int &gt; b( g, unlimited, []( int i ) -&gt; int {
+		graph h;
+		function_node&lt; int, int &gt; m1( h, unlimited, []( int j ) -&gt; int {
+			cout &lt;&lt; "m1: " &lt;&lt; j &lt;&lt; "\n";
+			return j;
+		} );
+		function_node&lt; int, int &gt; m2( h, unlimited, []( int j ) -&gt; int {
+			cout &lt;&lt; "m2: " &lt;&lt; j &lt;&lt; "\n";
+			return j;
+		} );
+		function_node&lt; int, int &gt; m3( h, unlimited, []( int j ) -&gt; int {
+			cout &lt;&lt; "m3: " &lt;&lt; j &lt;&lt; "\n";
+			return j;
+		} );
+		function_node&lt; int, int &gt; m4( h, unlimited, []( int j ) -&gt; int {
+			cout &lt;&lt; "m4: " &lt;&lt; j &lt;&lt; "\n";
+			return j;
+		} );
+		make_edge( m1, m2 );
+		make_edge( m1, m3 );
+		make_edge( m2, m4 );
+		make_edge( m3, m4 );
+		m1.try_put(i);
+		h.wait_for_all();
+		return i;
+	} );
+	make_edge( a, b );
+	for ( int i = 0; i &lt; 3; ++i ) {
+		a.try_put(i);
+	}
+	g.wait_for_all();
+</pre> 
+	 <p>If the nested graph remains unchanged in structure between invocations
+		of the node, it is redundant to construct it each time. Reconstructing the
+		graph only adds overhead to the execution. You can modify the example above,
+		for example, to have node 
+		<span class="keyword">b</span> reuse a graph that is persistent across its
+		invocations: 
+	 </p>
+ 
+	 <pre>	graph h;
+	function_node&lt; int, int &gt; m1( h, unlimited, []( int j ) -&gt; int {
+		cout &lt;&lt; "m1: " &lt;&lt; j &lt;&lt; "\n";
+		return j;
+	} );
+	function_node&lt; int, int &gt; m2( h, unlimited, []( int j ) -&gt; int {
+		cout &lt;&lt; "m2: " &lt;&lt; j &lt;&lt; "\n";
+		return j;
+	} );
+	function_node&lt; int, int &gt; m3( h, unlimited, []( int j ) -&gt; int {
+		cout &lt;&lt; "m3: " &lt;&lt; j &lt;&lt; "\n";
+		return j;
+	} );
+	function_node&lt; int, int &gt; m4( h, unlimited, []( int j ) -&gt; int {
+		cout &lt;&lt; "m4: " &lt;&lt; j &lt;&lt; "\n";
+		return j;
+	} );
+	make_edge( m1, m2 );
+	make_edge( m1, m3 );
+	make_edge( m2, m4 );
+	make_edge( m3, m4 );
+
+	graph g;
+	function_node&lt; int, int &gt; a( g, unlimited, []( int i ) -&gt; int {
+		graph h;
+		node_t n1( h, [=]( msg_t ) { cout &lt;&lt; "n1: " &lt;&lt; i &lt;&lt; "\n"; } );
+		node_t n2( h, [=]( msg_t ) { cout &lt;&lt; "n2: " &lt;&lt; i &lt;&lt; "\n"; } );
+		node_t n3( h, [=]( msg_t ) { cout &lt;&lt; "n3: " &lt;&lt; i &lt;&lt; "\n"; } );
+		node_t n4( h, [=]( msg_t ) { cout &lt;&lt; "n4: " &lt;&lt; i &lt;&lt; "\n"; } );
+		make_edge( n1, n2 );
+		make_edge( n1, n3 );
+		make_edge( n2, n4 );
+		make_edge( n3, n4 );
+		n1.try_put(continue_msg());
+		h.wait_for_all();
+		return i;
+	} );
+	function_node&lt; int, int &gt; b( g, unlimited, [&amp;]( int i ) -&gt; int {
+		m1.try_put(i);
+		h.wait_for_all(); // optional since h is not destroyed
+		return i;
+	} );
+	make_edge( a, b );
+	for ( int i = 0; i &lt; 3; ++i ) {
+		a.try_put(i);
+	}
+	g.wait_for_all();
+</pre> 
+	 <p>It is only necessary to call 
+		<span class="keyword">h.wait_for_all()</span> at the end of each invocation of 
+		<span class="keyword">b</span>'s body in our modified code, if you wish for this
+		b's body to block until the inner graph is done. In the first implementation of
+		
+		<span class="keyword">b</span>, it was necessary to call 
+		<span class="keyword">h.wait_for_all</span> at the end of each invocation since the
+		graph was destroyed at the end of the scope. So it would be valid in the body
+		of b above to call 
+		<span class="keyword">m1.try_put(i)</span> and then return without waiting for 
+		<span class="keyword">h</span> to become idle. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_nested_parallelism_tips.html">Flow Graph Tips on Nested Parallelism</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_nested_algorithms.html#use_nested_algorithms">Use Nested Algorithms to Increase Scalability 
+		  </a></div></div></div> 
+
+</body>
+</html>

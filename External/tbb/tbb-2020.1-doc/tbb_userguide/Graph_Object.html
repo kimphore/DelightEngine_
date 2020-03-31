@@ -1,0 +1,76 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Graph Object" />
+<meta name="DC.subject" content="Flow Graph Concepts, Graph Object, Graph Object" />
+<meta name="keywords" content="Flow Graph Concepts, Graph Object, Graph Object" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Relation" scheme="URI" content="Edges.html#Edges" />
+<meta name="DC.Relation" scheme="URI" content="Nodes.html#Nodes" />
+<meta name="DC.Relation" scheme="URI" content="Mapping_Nodes2Tasks.html#Mapping_Nodes2Tasks" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="Graph_Object" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Graph Object</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="Graph_Object">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Graph Object</h1>
+ 
+   
+  <div> 
+	 <p>Conceptually a flow graph is a collection of nodes and edges. Each node
+		belongs to exactly one graph and edges are made only between nodes in the same
+		graph. In the flow graph interface, a graph object represents this collection
+		of nodes and edges, and is used for invoking whole graph operations such as
+		waiting for all tasks related to the graph to complete, resetting the state of
+		all nodes in the graph, and canceling the execution of all nodes in the graph. 
+	 </p>
+ 
+	 <p>The code below creates a graph object and then waits for all tasks
+		spawned by the graph to complete. The call to 
+		<span class="keyword">wait_for_all</span> in this example returns immediately since
+		this is a trivial graph with no nodes or edges, and therefore no tasks are
+		spawned. 
+		<pre>graph g;
+g.wait_for_all();
+</pre> 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Edges.html#Edges">Edges 
+		  </a></div>
+<div><a href="Nodes.html#Nodes">Nodes 
+		  </a></div>
+<div><a href="Mapping_Nodes2Tasks.html#Mapping_Nodes2Tasks">Mapping Nodes to Tasks 
+		  </a></div></div></div> 
+
+</body>
+</html>

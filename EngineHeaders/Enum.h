@@ -22,3 +22,11 @@ enum ELogType
 	LOG_ERROR,
 	LOG_END
 };
+
+enum EShaderType
+{
+	SHADER_VERTEX,
+	SHADER_PIXEL,
+	// geometry, tessl, ray, etc..
+	SHADER_END
+};

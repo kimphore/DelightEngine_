@@ -1,0 +1,340 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Node handles" />
+<meta name="DC.subject" content="Containers, node_type, Node handles (containers), node_type (containers)" />
+<meta name="keywords" content="Containers, node_type, Node handles (containers), node_type (containers)" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="node_handles_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Node handles</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="node_handles_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Node handles</h1>
+
+  
+  <div>
+	<div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>Concurrent associative containers in TBB (<samp class="codeph">concurrent_unordered_{map, multimap, set, multiset}</samp>,
+		<samp class="codeph">concurrent_{map, multimap, set, multiset}</samp>) store data in individually allocated, connected nodes.
+		It makes possible to transfer data between containers with compatible node types by changing the connections,
+		without copying or moving the actual data.
+		</p>
+
+		<p>A node handle (supported since C++11) is a container-specific move-only nested type
+		(exposed as <samp class="codeph"><em>container</em>::node_type</samp>) that represents a node outside of any
+		container instance. It allows reading and modifying the data stored in the node, and
+		inserting the node into a compatible container instance. The following containers have
+		compatible node types and may exchange nodes:
+		</p>
+
+		<ul>
+			<li>
+				<p><samp class="codeph">concurrent_unordered_{map,multimap}</samp> classes with the same
+				<samp class="codeph">key_type</samp>, <samp class="codeph">mapped_type</samp> and <samp class="codeph">allocator_type</samp>
+				</p>
+
+			</li>
+
+			<li>
+				<p><samp class="codeph">concurrent_unordered_{set,multiset}</samp> classes with the same
+				<samp class="codeph">value_type</samp> and <samp class="codeph">allocator_type</samp>
+				</p>
+
+			</li>
+
+			<li>
+				<p>Preview <samp class="codeph">concurrent_{map,multimap}</samp> classes with the same
+				<samp class="codeph">key_type</samp>, <samp class="codeph">mapped_type</samp> and <samp class="codeph">allocator_type</samp>
+				</p>
+
+			</li>
+
+			<li>
+				<p>Preview <samp class="codeph">concurrent_{set,multiset}</samp> classes with the same
+				<samp class="codeph">value_type</samp> and <samp class="codeph">allocator_type</samp>
+				</p>
+
+			</li>
+
+		</ul>
+
+		<p>Default-constructed node handles are empty, i.e. do not represent a valid node.
+		A non-empty node handle is typically created when a node is extracted out of a container,
+		e.g. with the <samp class="codeph">unsafe_extract</samp> method. It stores the node along with a copy of the container’s
+		allocator. If the node is then moved into another handle or inserted into a container, the
+		moved-from handle becomes empty. Upon assignment or destruction, a non-empty node handle
+		destroys the stored data and deallocates the node.
+		</p>
+
+	</div>
+
+	<div class="section"><h2 class="sectiontitle">Members</h2>
+		
+<pre>
+class <em>node-handle</em> { // Exposition-only name; use <em>container</em>::node_type instead
+public:
+    typedef <em>container-specific</em> key_type;    // Only for maps
+    typedef <em>container-specific</em> mapped_type; // Only for maps
+    typedef <em>container-specific</em> value_type;  // Only for sets
+    typedef <em>container-specific</em> allocator_type;
+
+    <em>node-handle</em>();
+    <em>node-handle</em>(<em>node-handle</em>&amp;&amp; nh);
+    ~<em>node-handle</em>();
+
+    <em>node-handle</em>&amp; operator=(<em>node-handle</em>&amp;&amp; nh);
+
+    void swap(<em>node-handle</em>&amp; nh);
+
+    bool empty() const;
+    explicit operator bool() const;
+
+    key_type&amp; key() const;       // Only for maps
+    mapped_type&amp; mapped() const; // Only for maps
+    value_type&amp; value() const;   // Only for sets
+    allocator_type get_allocator() const;
+};
+</pre>
+	</div>
+
+	<div class="section">
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members of a node handle class:</span><thead align="left">
+				 <tr>
+					<th class="cellrowborder" valign="top" width="33.89830508474576%" id="d64632e190">Member
+					</th>
+
+					<th class="cellrowborder" valign="top" width="66.10169491525423%" id="d64632e193">Description
+					</th>
+
+				 </tr>
+</thead>
+
+			<tbody>
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 ">
+						<samp class="codeph"><em>node-handle</em>()</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Constructs an empty node handle.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 ">
+						<samp class="codeph"><em>node-handle</em>(<em>node-handle</em>&amp;&amp; nh)</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Constructs a node handle that takes ownership of the node from
+							<samp class="codeph">nh</samp>, leaving it in the empty state.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">~<em>node-handle</em>()</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							If <samp class="codeph">*this</samp> is not empty, destroys and deallocates the owned node.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph"><em>node-handle</em>&amp; operator=(<em>node-handle</em>&amp;&amp; nh)</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							If <samp class="codeph">*this</samp> is not empty, destroys and deallocates the owned node.
+							In either case, takes ownership of the node from <samp class="codeph">nh</samp>, leaving it in the empty state.
+						</p>
+
+						<p><strong>Returns</strong>:
+							A reference to <samp class="codeph">*this</samp>.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">void swap(<em>node-handle</em>&amp; nh)</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Exchanges the nodes owned by <samp class="codeph">*this</samp> and <samp class="codeph">nh</samp>.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">bool empty()</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p><strong>Returns</strong>:
+							<samp class="codeph">true</samp> if the node handle is empty, <samp class="codeph">false</samp> otherwise.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">explicit operator bool() const</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Equivalent to <samp class="codeph">!nh.empty()</samp>.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">key_type&amp; key() const</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Available only for map node handles.
+						</p>
+
+						<p><strong>Returns</strong>:
+							Reference to the key of the element stored in the owned node.
+							The behavior is undefined if the node handle is empty.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">mapped_type&amp; mapped() const</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Available only for map node handles.
+						</p>
+
+						<p><strong>Returns</strong>:
+							Reference to the value of the element stored in the owned node.
+							The behavior is undefined if the node handle is empty.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">value_type&amp; value() const</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p>
+							Available only for set node handles.
+						</p>
+
+						<p><strong>Returns</strong>:
+							Reference to the element stored in the owned node.
+							The behavior is undefined if the node handle is empty.
+						</p>
+
+					</td>
+
+				</tr>
+
+				<tr>
+					<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d64632e190 "><samp class="codeph">allocator_type get_allocator() const;</samp>
+					</td>
+
+					<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d64632e193 ">
+						<p><strong>Returns</strong>:
+							Copy of the stored allocator instance.
+							The behavior is undefined if the node handle is empty.
+						</p>
+
+					</td>
+
+				</tr>
+
+			</tbody>
+
+			</table>
+</div>
+
+	</div>
+
+	<div class="section"><h2 class="sectiontitle">Example</h2>
+		
+		<p>The following simplified example shows how to transfer data between containers with the
+		help of a node handle:
+		</p>
+
+		<pre>#include "tbb/concurrent_unordered_map.h"
+
+int main() {
+    using Map = tbb::concurrent_unordered_map&lt;int, int&gt;;
+    Map map = {{1, 1}, {2, 2}, {3, 3}};
+
+    // Extract an element from the container
+    Map::node_type nh = map.unsafe_extract(2);
+
+    // Change key/value of handled element
+    nh.key() = 7;
+    nh.mapped() = 9;
+
+    // Insert an element to the new container
+    Map map2;
+    map2.insert(std::move(nh));
+}</pre>
+	</div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/containers_overview.html">Containers Overview</a></div>
+</div>
+<div></div>
+</body>
+</html>

@@ -6,3 +6,6 @@ STL 대체용.. std STL을 사용하면 DLL내부에서 사용이 불가능하기 때문에..
 
 3. imgui(https://github.com/ocornut/imgui)
 플로팅 ui용 라이브러리.
+
+4. tbb(https://www.threadingbuildingblocks.org/download)
+multi threading, memory pool등을 위한 라이브러리

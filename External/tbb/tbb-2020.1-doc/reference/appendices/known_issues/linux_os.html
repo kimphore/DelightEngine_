@@ -1,0 +1,74 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Linux* OS" />
+<meta name="DC.subject" content="Known Issues, Linux* OS" />
+<meta name="keywords" content="Known Issues, Linux* OS" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/known_issues.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../tbb_userguide/Linux_OS.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../tbb_userguide/Linux_C_Dynamic_Memory_Interface_Replacement.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="linux_os" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Linux* OS</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="linux_os">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">Linux* OS</h1>
+
+
+<div>
+  <p>If an open source version of Intel&reg; Threading Building Blocks
+    (Intel&reg; TBB) has been installed to a system folder like <samp class="codeph">/usr/lib64</samp>,
+    examples may fail to link because the linker may search for libraries in an unexpected
+    order. To resolve this, use the <samp class="codeph">-L</samp> linker option to specify the correct
+    location of Intel TBB libraries. This issue does not affect program execution.
+  </p>
+
+  <p>If an application that uses dynamic memory allocator replacement
+    via <samp class="codeph">LD_PRELOAD</samp> is analyzed with Intel&reg; VTune&#8482; Amplifier XE,
+    the analysis may fail to start. For a workaround, either specify the full path to both
+    <samp class="codeph">libtbbmalloc_proxy.so.2</samp> and <samp class="codeph">libtbbmalloc.so.2</samp>
+    in <samp class="codeph">LD_PRELOAD</samp>, or set up the project for Intel VTune Amplifier XE
+    to use a shell script that sets <samp class="codeph">LD_PRELOAD</samp> and starts the application.
+  </p>
+
+  <p>If you compile with Clang and the GNU libstdc++ library of a version older than GCC 7,
+    Intel TBB headers cannot correctly detect availability of C++11 features. To overcome the issue,
+    define the <samp class="codeph">TBB_USE_GLIBCXX_VERSION</samp> macro to the proper version of
+    libstdc++ before including any Intel TBB header file.
+  </p>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/known_issues.html">Known Issues</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../../tbb_userguide/Linux_OS.html">Package Contents: Linux* OS</a></div>
+<div><a href="../../../tbb_userguide/Linux_C_Dynamic_Memory_Interface_Replacement.html">Linux* OS C/C++ Dynamic Memory Interface Replacement</a></div></div></div>
+
+</body>
+</html>

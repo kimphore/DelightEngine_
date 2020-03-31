@@ -1,0 +1,212 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="cache_aligned_resource Class" />
+<meta name="DC.subject" content="memory_resource, polymorphic_allocator, cache_aligned_resource" />
+<meta name="keywords" content="memory_resource, polymorphic_allocator, cache_aligned_resource" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/memory_allocation/memory_resource_interface.html" />
+<meta name="DC.Relation" scheme="URI" content="cache_aligned_allocator_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="scalable_memory_resource_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>cache_aligned_resource Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="scalable_memory_resource_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">cache_aligned_resource Class</h1>
+
+    
+    <div>
+        <div class="section"><h2 class="sectiontitle">Summary</h2>
+            
+            <p>Memory resource class that avoids false sharing.</p>
+
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Syntax</h2>
+            
+            <pre>class cache_aligned_resource;</pre>
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Header</h2>
+            
+            <pre>#include "tbb/cache_aligned_allocator.h"</pre>
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Description</h2>
+            
+            <p>
+                A <samp class="codeph">cache_aligned_resource</samp> acts as a wrapper to another memory resource to ensure that all allocations
+                are aligned on cache line boundaries to avoid false sharing. See the <samp class="codeph">cache_aligned_allocator</samp>
+                Template Class section for more information about false sharing avoidance.
+            </p>
+
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Members</h2>
+            
+<pre>
+namespace tbb {
+    class cache_aligned_resource {
+    public:
+        cache_aligned_resource();
+        explicit cache_aligned_resource( std::pmr::memory_resource* );
+
+        std::pmr::memory_resource* upstream_resource() const;
+
+    private:
+        void* do_allocate(size_t n, size_t alignment) override;
+        void do_deallocate(void* p, size_t n, size_t alignment) override;
+        bool do_is_equal(const std::pmr::memory_resource&amp; other) const noexcept override;
+    };
+}
+</pre>
+            
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all">
+                    
+                    <thead align="left">
+                        <tr>
+                            <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d90481e87">Member</th>
+
+                            <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d90481e90">Description</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90481e87 ">
+                                <p>
+                                    <samp class="codeph">cache_aligned_resource();</samp>
+                                </p>
+
+                            </td>
+
+                            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90481e90 ">
+                                <p>Constructs a <samp class="codeph">cache_aligned_resource</samp> over <samp class="codeph">std::pmr::get_default_resource()</samp>.</p>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90481e87 ">
+                                <p>
+                                    <samp class="codeph">explicit cache_aligned_resource(std::pmr::memory_resource*);</samp>
+                                </p>
+
+                            </td>
+
+                            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90481e90 ">
+                                <p>Constructs a <samp class="codeph">cache_aligned_resource</samp> over the specified memory resource.</p>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90481e87 ">
+                                <p>
+                                    <samp class="codeph">std::pmr::memory_resource* upstream_resource() const;</samp>
+                                </p>
+
+                            </td>
+
+                            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90481e90 ">
+                                <p>Returns the underlying memory resource.</p>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90481e87 ">
+                                <p>
+                                    <samp class="codeph">void* do_allocate(size_t n, size_t alignment) override;</samp>
+                                </p>
+
+                            </td>
+
+                            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90481e90 ">
+                                <p>
+                                    Allocates <samp class="codeph">n</samp> bytes of memory on a cache-line boundary, with alignment not less than requested.
+                                    The allocation may include extra memory for padding.
+                                </p>
+
+                                <p><strong>Returns</strong>: Pointer to the allocated memory.</p>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90481e87 ">
+                                <p>
+                                    <samp class="codeph">void do_deallocate(void* p, size_t n, size_t alignment) override;</samp>
+                                </p>
+
+                            </td>
+
+                            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90481e90 ">
+                                <p>Deallocates memory pointed to by p and any extra padding.</p>
+
+                                <p><strong>Note</strong>: Pointer <samp class="codeph">p</samp> must be obtained with <samp class="codeph">do_allocate(n, alignment)</samp>.
+                                    The memory must not be deallocated beforehand.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90481e87 ">
+                                <p>
+                                    <samp class="codeph">bool do_is_equal(const std::pmr::memory_resource&amp; other) const noexcept override;</samp>
+                                </p>
+
+                            </td>
+
+                            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90481e90 ">
+                                <p>Compares upstream memory resources of <samp class="codeph">*this</samp> and <samp class="codeph">other</samp>.
+                                   If <samp class="codeph">other</samp> is not a <samp class="codeph">cache_aligned_resource</samp>, returns false.</p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+</div>
+
+        </div>
+
+    </div>
+
+    
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/memory_allocation/memory_resource_interface.html">Memory Resource Interface</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="cache_aligned_allocator_cls.html">cache_aligned_allocator Template Class
+                </a></div></div></div>
+
+</body>
+</html>

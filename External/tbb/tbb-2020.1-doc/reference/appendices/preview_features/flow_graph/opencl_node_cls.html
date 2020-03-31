@@ -1,0 +1,614 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="opencl_node Template Class" />
+<meta name="DC.subject" content="opencl_node Template Class" />
+<meta name="keywords" content="opencl_node Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph_features.html" />
+<meta name="DC.Relation" scheme="URI" content="streaming_node_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="opencl_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>opencl_node Template Class</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="opencl_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">opencl_node Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        <samp class="codeph">opencl_node</samp> enables execution of OpenCL* kernels on devices that have the OpenCL support,
+        such as integrated and discrete graphics processing units or CPUs. <samp class="codeph">opencl_node</samp> simplifies
+        the integration of OpenCL kernels into programs powered by the Intel TBB Flow Graph.
+        <samp class="codeph">opencl_node</samp> also handles memory buffer management in such programs.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt; typename JP, typename Factory, typename... Ports &gt;
+class opencl_node &lt; tuple &lt; Ports... &gt;, JP, Factory &gt;
+
+// As a Factory - default_opencl_factory is used
+template &lt; typename JP, typename... Ports &gt;
+class opencl_node &lt; tuple &lt; Ports... &gt;, JP &gt;
+
+// As a Factory - default_opencl_factory is used
+// As a JP - queueing policy is used
+template &lt; typename... Ports &gt;
+class opencl_node &lt; tuple &lt; Ports... &gt; &gt;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_NODES 1
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph_opencl_node.h"
+</pre>
+      <p>
+        The <samp class="codeph">"flow_graph_opencl_node.h"</samp> header is not included in <samp class="codeph">"tbb/tbb.h"</samp>
+        and <samp class="codeph">"tbb/flow_graph.h"</samp>.
+        Due to this, you should include <samp class="codeph">"flow_graph_opencl_node.h"</samp> directly.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        <samp class="codeph">opencl_node</samp> provides a simple interface for working with devices that have an OpenCL support.
+        <samp class="codeph">opencl_node</samp> is implemented as a
+        <a href="streaming_node_cls.html">
+            streaming_node
+        </a>
+        that uses <samp class="codeph">opencl_factory</samp>. <samp class="codeph">opencl_factory</samp> hides all complexity associated with kernel execution,
+        synchronization of memory with the device, and results retrieval. <samp class="codeph">opencl_factory</samp> implements the Factory
+        concept and follows the <samp class="codeph">streaming_node</samp> execution workflow.
+      </p>
+
+      <p>
+        <samp class="codeph">opencl_factory</samp> uses two separate entities (Device Filter and Device Selector) for device initialization and execution
+        management:
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl1" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap"><samp class="codeph">opencl_factory</samp> device selection</span></caption>
+        <thead align="left">
+         <tr>
+          <th class="cellrowborder" valign="top" width="50%" id="d38185e136">
+            <p>
+              Entity
+            </p>
+
+          </th>
+
+          <th class="row-nocellborder" valign="top" width="50%" id="d38185e142">
+            <p>
+              Usage model
+            </p>
+
+          </th>
+
+         </tr>
+
+        </thead>
+
+        <tbody>
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e136 ">
+            <p>
+              Device Filter
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e142 ">
+            <p>
+              Used to initialize the <samp class="codeph">opencl_factory</samp> with a set of devices that will be available for kernel execution.
+              All filtered devices must belong to the same OpenCL Platform. Default device filter includes all available
+              devices from the first OpenCL Platform found.
+            </p>
+
+          </td>
+
+         </tr>
+
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e136 ">
+            <p>
+              Device Selector
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e142 ">
+            <p>
+              Used to select the device for a particular <samp class="codeph">opencl_node</samp> instance to execute its kernels.
+              Default device selector selects the first device from the list of available devices that was
+              constructed by device filter. The selection is done for every kernel execution.
+            </p>
+
+          </td>
+
+         </tr>
+
+        </tbody>
+
+      </table>
+</div>
+
+      <p>
+        Among other things, <samp class="codeph">opencl_node</samp> provides a set of helper classes, which
+        simplifies work with OpenCL entities (devices, memory buffers, kernels, ND-ranges):
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl2" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap"><samp class="codeph">opencl_node</samp> helper classes</span></caption>
+        <thead align="left">
+         <tr>
+          <th class="cellrowborder" valign="top" width="50%" id="d38185e213">
+            <p>
+              Entity
+            </p>
+
+          </th>
+
+          <th class="row-nocellborder" valign="top" width="50%" id="d38185e219">
+            <p>
+              Description
+            </p>
+
+          </th>
+
+         </tr>
+
+        </thead>
+
+        <tbody>
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e213 ">
+            <p>
+              <samp class="codeph">opencl_buffer</samp>/<samp class="codeph">opencl_subbuffer</samp>
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e219 ">
+            <p>
+              A template class that is an abstraction over a strongly typed linear array.
+              The OpenCL kernel works with special memory objects allocated on the host,
+              <samp class="codeph">opencl_buffer</samp> and <samp class="codeph">opencl_subbuffer</samp> encapsulate
+              the logic of the memory transactions between the host and the target.
+            </p>
+
+          </td>
+
+         </tr>
+
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e213 ">
+            <p>
+              <samp class="codeph">opencl_device</samp>
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e219 ">
+            <p>
+              A class that is an abstraction over OpenCL device. Used mainly inside Device Selector and Device Filter
+              and has a public API to query information about devices.
+            </p>
+
+          </td>
+
+         </tr>
+
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e213 ">
+            <p>
+              <samp class="codeph">opencl_device_list</samp>
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e219 ">
+            <p>
+              A container of <samp class="codeph">opencl_device</samp> instances.
+            </p>
+
+          </td>
+
+         </tr>
+
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e213 ">
+            <p>
+              <samp class="codeph">opencl_program</samp>
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e219 ">
+            <p>
+              A class that you can use to specify the type of the kernel, read the kernel from a file, or build the kernel.
+            </p>
+
+          </td>
+
+         </tr>
+
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e213 ">
+            <p>
+              <samp class="codeph">opencl_program_type</samp>
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e219 ">
+            <p>
+              The enumeration <samp class="codeph">opencl_program_type</samp> provides the set of kernel types supported by <samp class="codeph">opencl_node</samp>:
+              <ul>
+                <li>
+                  <samp class="codeph">SOURCE</samp> stands for OpenCL* C source code.
+                  An <samp class="codeph">opencl_program</samp> instance initialized with <samp class="codeph">SOURCE</samp> reads the source file and builds the
+                  kernel at run time. <samp class="codeph">SOURCE</samp> is the default value for <samp class="codeph">opencl_program</samp>.
+                </li>
+
+                <li>
+                  <samp class="codeph">PRECOMPILED</samp> stands for machine-readable format that can be executed on the target.
+                  A kernel in this format does not require run-time compilation.
+                </li>
+
+                <li>
+                  <samp class="codeph">SPIR</samp> stands for Standard Portable Intermediate Representation (SPIR)*.
+                </li>
+
+              </ul>
+
+            </p>
+
+          </td>
+
+         </tr>
+
+         <tr valign="top">
+          <td class="cellrowborder" valign="top" width="50%" headers="d38185e213 ">
+            <p>
+              <samp class="codeph">opencl_range</samp>
+            </p>
+
+          </td>
+
+          <td class="row-nocellborder" valign="top" width="50%" headers="d38185e219 ">
+            <p>
+              Enables <samp class="codeph">opencl_node</samp> to support ranges
+              (see the OpenCL <samp class="codeph">clEnqueueNDRangeKernel()</samp> method for details).
+            </p>
+
+          </td>
+
+         </tr>
+
+        </tbody>
+
+      </table>
+</div>
+
+      <p><strong>Argument binding</strong></p>
+
+      <p>
+        By default, <samp class="codeph">opencl_node</samp> binds the first input port to the first kernel argument,
+        the second input port to the second kernel argument and so on.
+        The <samp class="codeph">set_args</samp> method of <samp class="codeph">opencl_node</samp> allows to bind a specific value to each kernel argument,
+        if they do not change from run to run. To specify that the value should be taken from the input port instead,
+        use the <samp class="codeph">port_ref</samp> helper function. See its description and usage examples in the <samp class="codeph">streaming_node</samp>
+        section of the documentation.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The example below shows the
+        <a href="../../../flow_graph/message_flow_graph_example.html">
+            cubator and squarer example
+        </a>
+        changed to offload part of computation to the GPU.
+      </p>
+
+      Kernels
+      <pre>__kernel void cuber( __global int* buf ){
+    int idx = get_global_id(0);    
+    buf[idx] = buf[idx] * buf[idx] * buf[idx];
+}
+
+__kernel void squarer( __global int* buf ){
+    int idx = get_global_id(0);    
+    buf[idx] = buf[idx] * buf[idx];
+}</pre>
+      Example
+      <pre>#define TBB_PREVIEW_FLOW_GRAPH_NODES 1
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+
+#include "tbb/flow_graph_opencl_node.h"
+
+typedef tbb::flow::opencl_buffer&lt;cl_int&gt; opencl_vector;
+
+class gpu_device_selector {
+public:
+    template &lt;typename DeviceFilter&gt;
+    tbb::flow::opencl_device operator()(tbb::flow::opencl_factory&lt;DeviceFilter&gt;&amp; f) {
+        // Set your GPU device if available to execute kernel on
+        const tbb::flow::opencl_device_list &amp;devices = f.devices();
+        tbb::flow::opencl_device_list::const_iterator it = std::find_if(
+            devices.cbegin(), devices.cend(),
+            [](const tbb::flow::opencl_device &amp;d) {
+            cl_device_type type;
+            d.info(CL_DEVICE_TYPE, type);
+            return CL_DEVICE_TYPE_GPU == type;
+        });
+        if (it == devices.cend()) {
+            std::cout &lt;&lt; "Info: could not find any GPU devices. Choosing the first available device (default behaviour)." &lt;&lt; std::endl;
+            return *(f.devices().begin());
+        } else {
+            // Return GPU device from factory
+            return *it;
+        }
+    }
+};
+
+int main() {
+    const int vector_size = 10;
+    int sum = 0;
+
+    tbb::flow::graph g;
+
+    tbb::flow::broadcast_node&lt; opencl_vector &gt; broadcast(g);
+
+    // GPU computation part
+    gpu_device_selector gpu_selector;
+
+    tbb::flow::opencl_program&lt;&gt; program("vector_operations.cl");
+
+    tbb::flow::opencl_node&lt; std::tuple&lt; opencl_vector &gt; &gt;
+        vector_cuber(g, program.get_kernel("cuber"), gpu_selector);
+
+    tbb::flow::opencl_node&lt; std::tuple&lt; opencl_vector &gt; &gt;
+        vector_squarer(g, program.get_kernel("squarer"), gpu_selector);
+
+    // Define kernel argument and problem size
+    vector_cuber.set_args(tbb::flow::port_ref&lt;0&gt;);
+    vector_cuber.set_range({{ vector_size }});
+    vector_squarer.set_args(tbb::flow::port_ref&lt;0&gt;);
+    vector_squarer.set_range({{ vector_size }});
+
+    // Computation results join
+    tbb::flow::join_node&lt; std::tuple&lt; opencl_vector, opencl_vector &gt; &gt; join_data(g);
+
+    // CPU computation part
+    tbb::flow::function_node&lt; std::tuple&lt; opencl_vector, opencl_vector &gt; &gt;
+        summer( g, 1, [&amp;](const std::tuple&lt; opencl_vector, opencl_vector &gt; &amp;res ) {
+            opencl_vector vect_cubed = std::get&lt;0&gt;(res);
+            opencl_vector vect_squared = std::get&lt;1&gt;(res);
+
+            for (int i = 0; i &lt; vector_size; i++) {
+                sum += vect_cubed[i] + vect_squared[i];
+            }
+        });
+
+    // Graph topology
+    make_edge( broadcast, vector_cuber );
+    make_edge( broadcast, vector_squarer );
+    make_edge( vector_cuber, tbb::flow::input_port&lt;0&gt;(join_data) );
+    make_edge( vector_squarer, tbb::flow::input_port&lt;1&gt;(join_data) );
+    make_edge( join_data, summer );
+
+    // Data initialization
+    opencl_vector vec(vector_size);
+    std::fill( vec.begin(), vec.end(), 2 );
+
+    // Run the graph
+    broadcast.try_put(vec);
+    g.wait_for_all();
+
+    std::cout &lt;&lt; "Sum is " &lt;&lt; sum &lt;&lt; "\n";
+
+    return 0;
+}</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+namespace flow {
+
+template &lt; typename... Args &gt;
+class opencl_node;
+
+template &lt; typename JP, typename Factory, typename... Ports &gt;
+class opencl_node &lt; tuple &lt; Ports... &gt;, JP, Factory  &gt; : public streaming_node &lt; tuple &lt; Ports... &gt;, JP, Factory &gt; {
+public:
+    typedef <em>implementation-dependent</em> kernel_type;
+
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel );
+
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel, Factory &amp;f );
+
+    template &lt; typename DeviceSelector &gt;
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel, DeviceSelector d, Factory &amp;f);
+};
+
+template &lt; typename JP, typename... Ports &gt;
+class opencl_node &lt; tuple &lt; Ports... &gt;, JP  &gt; : public opencl_node &lt; tuple &lt; Ports... &gt;, JP, opencl_info::default_opencl_factory &gt; {
+public:
+    typedef <em>implementation-dependent</em> kernel_type;
+
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel );
+
+    template &lt; typename DeviceSelector &gt;
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel, DeviceSelector d );
+};
+
+template &lt; typename... Ports &gt;
+class opencl_node &lt; tuple &lt; Ports... &gt; &gt; : public opencl_node &lt; tuple &lt; Ports... &gt;, queueing, opencl_info::default_opencl_factory &gt; {
+public:
+    typedef <em>implementation-dependent</em> kernel_type;
+
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel );
+
+    template &lt; typename DeviceSelector &gt;
+    opencl_node( graph &amp;g, const kernel_type&amp; kernel, DeviceSelector d );
+};
+
+}
+}
+</pre>
+      <p>
+        The following table provides additional information on the members of this template class. All other
+        public members are described in the base <samp class="codeph">streaming_node</samp> class.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl3" width="100%" frame="hsides" border="1" rules="all">
+          <thead align="left">
+           <tr>
+            <th class="cellrowborder" valign="top" width="50%" id="d38185e474"><p>Member</p>
+</th>
+
+            <th class="row-nocellborder" valign="top" width="50%" id="d38185e478"><p>Description</p>
+</th>
+
+           </tr>
+
+          </thead>
+
+          <tbody>
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d38185e474 ">
+                <p>
+                  <samp class="codeph">typename... Ports</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d38185e478 ">
+                <p>
+                  The node's incoming/outgoing data types.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d38185e474 ">
+                <p>
+                  <samp class="codeph">typename JP</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d38185e478 ">
+                <p>
+                  Join Policy. See the description of the class <samp class="codeph">join_node</samp> for details.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d38185e474 ">
+                <p>
+                  <samp class="codeph">typename Factory</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d38185e478 ">
+                <p>
+                  The device-specific Factory type. <samp class="codeph">opencl_factory</samp> is used for this node by default.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d38185e474 ">
+                <p>
+                  <samp class="codeph">opencl_node( graph &amp;g, const kernel_type&amp; kernel )</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">opencl_node( graph &amp;g, const kernel_type&amp; kernel, Factory &amp;f )</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">template &lt; typename DeviceSelector &gt; opencl_node( graph &amp;g, const kernel_type&amp; kernel, DeviceSelector d )</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">template &lt; typename DeviceSelector &gt; opencl_node( graph &amp;g, const kernel_type&amp; kernel, DeviceSelector d, Factory &amp;f)</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d38185e478 ">
+                <p>
+                  Main constructors. See <samp class="codeph">streaming_node</samp> for details.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/flow_graph_features.html">Flow Graph</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="streaming_node_cls.html">streaming_node</a></div></div></div>
+
+</body>
+</html>

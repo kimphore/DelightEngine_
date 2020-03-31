@@ -1,0 +1,133 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Transform Iterator" />
+<meta name="DC.subject" content="Transform Iterator" />
+<meta name="keywords" content="Transform Iterator" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/iterators.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="zip_iterator" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Transform Iterator</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="zip_iterator">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1"> Transform Iterator </h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle"> Summary </h2> 
+    Iterator that applies a given function to an element of a sequence, and returns the result of the function.
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Header </h2>
+       <pre>#include "tbb/iterators.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Syntax </h2> 
+<pre>
+template &lt;typename UnaryFunc, typename Iter&gt;
+class transform_iterator {
+public:
+    typedef typename std::iterator_traits&lt;Iter&gt;::value_type value_type;
+    typedef typename std::iterator_traits&lt;Iter&gt;::difference_type difference_type;
+#if __cplusplus &gt;= 201703L
+    typedef typename std::invoke_result&lt;UnaryFunc, typename std::iterator_traits&lt;Iter&gt;::reference&gt;::type reference;
+#else
+    typedef typename std::result_of&lt;UnaryFunc(typename std::iterator_traits&lt;Iter&gt;::reference)&gt;::type reference;
+#endif
+    typedef typename std::iterator_traits&lt;Iter&gt;::pointer pointer;
+    typedef typename std::random_access_iterator_tag iterator_category;
+
+    transform_iterator(Iter it, UnaryFunc unary_func);
+    transform_iterator(const transform_iterator&amp; input);
+    transform_iterator&amp; operator=(const transform_iterator&amp; input);
+    reference operator*() const;
+    reference operator[](difference_type i) const;
+    transform_iterator&amp; operator++();
+    transform_iterator&amp; operator--();
+    transform_iterator operator++(int);
+    transform_iterator operator--(int);
+    transform_iterator operator+(difference_type forward) const;
+    transform_iterator operator-(difference_type backward) const;
+    transform_iterator&amp; operator+=(difference_type forward);
+    transform_iterator&amp; operator-=(difference_type backward);
+    friend transform_iterator operator+(difference_type forward, const transform_iterator&amp; it);
+    difference_type operator-(const transform_iterator&amp; it) const;
+    bool operator==(const transform_iterator&amp; it) const;
+    bool operator!=(const transform_iterator&amp; it) const;
+    bool operator&lt;(const transform_iterator&amp; it) const;
+    bool operator&gt;(const transform_iterator&amp; it) const;
+    bool operator&lt;=(const transform_iterator&amp; it) const;
+    bool operator&gt;=(const transform_iterator&amp; it) const;
+    Iter base() const;
+};
+
+template&lt;typename UnaryFunc, typename Iter&gt;
+transform_iterator&lt;UnaryFunc, Iter&gt; make_transform_iterator(Iter it, UnaryFunc unary_func);
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Description </h2> 
+    <p>
+	    A <samp class="codeph">transform_iterator</samp> is a random-access iterator that applies a transformation 
+	    to a sequence. The transformation, a given function, is applied upon dereferencing of the iterator itself 
+	    to the dereferenced value of an underlying iterator. Expressing a pattern this way can be efficient 
+	    since the transformed sequence can be consumed for example by an algorithm without storing temporary values in memory. 
+	    Function <samp class="codeph">make_transform_iterator</samp> returns a  <samp class="codeph">transform_iterator</samp> object 
+	    with underlying iterator and custom functor set. 
+    </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Example </h2>
+      
+      <p>
+	    The following example illustrates calculations performed by getting data from an array <samp class="codeph">a</samp>, 
+	    and performing a reduction by summing up the squares.
+      </p>
+
+<pre>#include &lt;vector&gt;
+#include &lt;numeric&gt;
+#include &lt;tbb/iterators.h&gt;
+
+int main() {
+    const int N = 10;
+    std::vector&lt;float&gt; a(N);
+    std::iota(a.begin(), a.end(), 0);
+    auto fun = [](const auto &amp;x){ return x * x; };
+    int sum = std::reduce(tbb::make_transform_iterator(a.begin(), fun),
+                          tbb::make_transform_iterator(a.end(), fun));
+    return 0;
+}</pre>
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/iterators.html">Iterators</a></div>
+</div>
+<div></div>
+</body>
+</html>

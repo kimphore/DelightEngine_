@@ -1,0 +1,200 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="static_partitioner Class" />
+<meta name="DC.subject" content="static_partitioner Class" />
+<meta name="keywords" content="static_partitioner Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/algorithms/partitioners.html" />
+<meta name="DC.Relation" scheme="URI" content="../partitioners.html#partitioners" />
+<meta name="DC.Relation" scheme="URI" content="../splittable_concept/proportional_split_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../range_concept.html#range_concept" />
+<meta name="DC.Relation" scheme="URI" content="../../appendices/deprecated_features/redundant/task_scheduler_init_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../task_scheduler/task_arena_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="static_partitioner_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>static_partitioner Class</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="static_partitioner_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">static_partitioner Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        Specify that a parallel algorithm should distribute the work uniformly across threads and
+        should not do additional load balancing.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>
+#include "tbb/partitioner.h"
+      </pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>class static_partitioner;</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        An algorithm with a <samp class="codeph">static_partitioner</samp> distributes the range across threads
+        in subranges of approximately equal size. The number of subranges is equal to the number of
+        threads that can possibly participate in task execution, as specified by
+        <samp class="codeph">task_scheduler_init</samp> and <samp class="codeph">task_arena</samp> classes. These
+        subranges are not further split.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          <samp class="codeph">static_partitioner</samp> reduces overheads for parallel algorithms
+          where the work is originally well-balanced. However, it also limits available
+          parallelism, and in case of work imbalance may result in performance loss.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          The regularity of subrange sizes is not guaranteed if the range type does not support
+          proportional splitting, or if the grain size is set larger than the
+          size of the range divided by the number of threads participating in task execution.
+        </p>
+
+      </div>
+
+      <p>
+        In addition, <samp class="codeph">static_partitioner</samp> uses a deterministic task affinity pattern
+        to hint the task scheduler how the subranges should be assigned to threads. It might
+        therefore improve cache locality similarly to <samp class="codeph">affinity_partitioner</samp>.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">Tip</h3> 
+        <p>Use of <samp class="codeph">static_partitioner</samp> is recommended for:</p>
+
+        <ul>
+          <li>
+            Parallelizing small well-balanced workloads where enabling additional load balancing
+            opportunities would bring more overhead than performance benefits.
+          </li>
+
+          <li>
+            Porting OpenMP* parallel loops with <samp class="codeph">schedule(static)</samp> if deterministic
+            work partitioning across threads is important.
+          </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+      <pre>
+namespace tbb {
+    class static_partitioner {
+    public:
+        static_partitioner();
+        ~static_partitioner();
+    };
+}
+      </pre>
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the members of this class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d7029e151">Member </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d7029e154">Description </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d7029e151 ">
+                <span class="keyword">static_partitioner()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d7029e154 ">
+                <p>
+                  Construct a <samp class="codeph">static_partitioner</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d7029e151 ">
+                <span class="keyword">~static_partitioner()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d7029e154 ">
+                <p>
+                  Destroy this <samp class="codeph">static_partitioner</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/algorithms/partitioners.html">Partitioners</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../partitioners.html#partitioners">Partitioners</a></div>
+<div><a href="../splittable_concept/proportional_split_cls.html">proportional_split Class</a></div>
+<div><a href="../range_concept.html#range_concept">Range Concept</a></div>
+<div><a href="../../appendices/deprecated_features/redundant/task_scheduler_init_cls.html">task_scheduler_init Class (deprecated)</a></div>
+<div><a href="../../task_scheduler/task_arena_cls.html">task_arena Class</a></div></div></div>
+
+</body>
+</html>

@@ -1,0 +1,420 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="concurrent_hash_map Template Class" />
+<meta name="DC.subject" content="concurrent_hash_map Template Class" />
+<meta name="keywords" content="concurrent_hash_map Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/whole_table_operations.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/concurrent_access.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/concurrent_operations_hash.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/parallel_iteration_container.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/capacity_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/iterators_hash_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview/concurrent_hash_map_cls/global_funcs.html" />
+<meta name="DC.Relation" scheme="URI" content="tbb_hash_compare_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="concurrent_unordered_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="concurrent_unordered_set_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="concurrent_hash_map_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>concurrent_hash_map Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="concurrent_hash_map_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">concurrent_hash_map Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        A template class for an associative container with concurrent access.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt; typename Key, typename T,
+              typename HashCompare = tbb_hash_compare&lt;Key&gt;,
+              typename A=tbb_allocator&lt;std::pair&lt;const Key, T&gt; &gt; &gt;
+class concurrent_hash_map;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>#include "tbb/concurrent_hash_map.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        A <samp class="codeph">concurrent_hash_map</samp> maps keys to values in a way that permits multiple
+        threads to concurrently access values. The keys are unordered. There is at most one element
+        in a <samp class="codeph">concurrent_hash_map</samp> for each key. The key may have other elements in
+        flight but not in the map, as described in Concurrent Operations. The interface resembles
+        typical STL associative containers, but with some differences critical to supporting
+        concurrent access. It meets the Container Requirements of the ISO C++ standard. Types
+        <samp class="codeph">Key</samp> and <samp class="codeph">T</samp> must model the CopyConstructible concept. Type
+        <samp class="codeph">HashCompare</samp> specifies how keys are hashed and compared for equality. It
+        must model the HashCompare concept in the table below.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl1" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">HashCompare Concept</span></caption>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="250" id="d43261e89">
+                <p>
+                  <strong>Pseudo-Signature</strong>
+                </p>
+
+              </th>
+
+              <th class="row-nocellborder" valign="top" width="100" id="d43261e98">
+                <p>
+                  <strong>Semantics</strong>
+                </p>
+
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="250" headers="d43261e89 ">
+                <p>
+                  <samp class="codeph">HashCompare::HashCompare( const HashCompare&amp; )</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="100" headers="d43261e98 ">
+                <p>
+                  Copy constructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="250" headers="d43261e89 ">
+                <p>
+                  <samp class="codeph">HashCompare::~HashCompare()</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="100" headers="d43261e98 ">
+                <p>
+                  Destructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="250" headers="d43261e89 ">
+                <p>
+                  <samp class="codeph">
+                    bool HashCompare::equal( const Key&amp; j, const Key&amp; k ) const
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="100" headers="d43261e98 ">
+                <p>
+                  True if keys are equal.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="250" headers="d43261e89 ">
+                <p>
+                  <samp class="codeph">size_t HashCompare::hash( const Key&amp; k ) const</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="100" headers="d43261e98 ">
+                <p>
+                  Hashcode for key.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          As for most hash tables, if two keys are equal, they must hash to the same hash code. That is,
+          for a given HashCompare instance <samp class="codeph">h</samp> and any two keys <samp class="codeph">j</samp>
+          and <samp class="codeph">k</samp>, the following assertion must hold:
+          <samp class="codeph">"!h.equal(j,k) || h.hash(j)==h.hash(k)"</samp>. The importance of this property
+          is the reason that <samp class="codeph">concurrent_hash_map</samp> makes key equality and hashing
+          function combined in a single object instead of being separate objects. The hash
+          code of a key must not change while the hash table is non-empty.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          Good performance depends on having good pseudo-randomness in the low-order bits of the
+          hash code.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        When keys are pointers, simply casting the pointer to a hash code may cause poor performance
+        because the low-order bits of the hash code will be always zero if the pointer points to a
+        type with alignment restrictions. A way to remove this bias is to divide the casted pointer
+        by the size of the type, as indicated below in
+        <samp class="codeph"><span class="color(blue)" style="color:blue"><strong><em>bold italic font</em></strong></span></samp>.
+      </p>
+
+<pre>
+size_t MyHashCompare::hash( Key* key ) const {
+    return reinterpret_cast&lt;size_t&gt;(key) <span class="color(blue)" style="color:blue"><strong><em>/ sizeof(Key)</em></strong></span>;
+}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+      <p>
+        In the following synopsis, methods shown in
+        <samp class="codeph">
+          <span class="color(blue)" style="color:blue">
+            <strong>bold font</strong>
+          </span>
+        </samp>
+        may be concurrently invoked.
+      </p>
+
+<pre>
+namespace tbb {
+    template&lt;typename Key, typename T, typename HashCompare,
+                typename Alloc = tbb_allocator&lt;std::pair&lt;const Key, T&gt; &gt; &gt;
+    class concurrent_hash_map {
+        public:
+            <em>// types</em>
+            typedef Key key_type;
+            typedef T mapped_type;
+            typedef std::pair&lt;const Key, T&gt; value_type;
+            typedef size_t size_type;
+            typedef ptrdiff_t difference_type;
+            typedef value_type* pointer;
+            typedef const value_type* const_pointer;
+            typedef value_type&amp; reference;
+            typedef Alloc allocator_type;
+
+            <em>// whole-table operations</em>
+            explicit concurrent_hash_map( const allocator_type&amp; a=allocator_type() );
+            explicit concurrent_hash_map( const HashCompare&amp; compare, const allocator_type&amp; a=allocator_type() );
+            concurrent_hash_map( size_type n, const allocator_type&amp;a = allocator_type() );
+            concurrent_hash_map( size_type n, const HashCompare&amp; compare, const allocator_type&amp; a=allocator_type() );
+            concurrent_hash_map( const concurrent_hash_map&amp; );
+            concurrent_hash_map( const concurrent_hash_map&amp;, const allocator_type&amp; );
+            template&lt;typename InputIterator&gt;
+            concurrent_hash_map( InputIterator first, InputIterator last,
+                                 const allocator_type&amp; a = allocator_type() );
+            template&lt;typename InputIterator&gt;
+            concurrent_hash_map( InputIterator first, InputIterator last,
+                                 const HashCompare&amp; compare, const allocator_type&amp; a=allocator_type() );
+            <em>// Supported since C++11</em>
+            concurrent_hash_map( concurrent_hash_map&amp;&amp; );
+            concurrent_hash_map( concurrent_hash_map&amp;&amp;, const allocator_type&amp; );
+            concurrent_hash_map( std::initializer_list&lt;value_type&gt; il,
+                                 const allocator_type&amp; a = allocator_type() );
+            concurrent_hash_map( std::initializer_list&lt;value_type&gt; il,
+                                 const HashCompare&amp; compare, const allocator_type&amp; a=allocator_type() );
+            ~concurrent_hash_map();
+            concurrent_hash_map operator=( const concurrent_hash_map&amp; );
+            <em>// Supported since C++11</em>
+            concurrent_hash_map&amp; operator=( concurrent_hash_map&amp;&amp; );
+            concurrent_hash_map operator=( std::initializer_list&lt;value_type&gt; il );
+            void rehash( size_type n = 0 );
+            void clear();
+            allocator_type get_allocator() const;
+
+            <em>// concurrent access</em>
+            class const_accessor;
+            class accessor;
+
+            <em>// concurrent operations on a table</em>
+            bool <span class="color(blue)" style="color:blue"><strong>find</strong></span>( const_accessor&amp; result, const Key&amp; key ) const;
+            bool <span class="color(blue)" style="color:blue"><strong>find</strong></span>( accessor&amp; result, const Key&amp; key );
+            bool <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( const_accessor&amp; result, const Key&amp; key );
+            bool <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( accessor&amp; result, const Key&amp; key );
+            bool <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( const_accessor&amp; result, const value_type&amp; value );
+            bool <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( accessor&amp; result, const value_type&amp; value );
+            bool <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( const value_type&amp; value );
+            template&lt;typename I&gt;
+            void <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( I first, I last );
+            <em>// Supported since C++11</em>
+            void <span class="color(blue)" style="color:blue"><strong>insert</strong></span>( std::initializer_list&lt;value_type&gt; il );
+            bool <span class="color(blue)" style="color:blue"><strong>erase</strong></span>( const Key&amp; key );
+            bool <span class="color(blue)" style="color:blue"><strong>erase</strong></span>( const_accessor&amp; item_accessor );
+            bool <span class="color(blue)" style="color:blue"><strong>erase</strong></span>( accessor&amp; item_accessor );
+
+            <em>// parallel iteration</em>
+            typedef <em>implementation-defined</em> range_type;
+            typedef <em>implementation-defined</em> const_range_type;
+            range_type range( size_t grainsize = 1 );
+            const_range_type range( size_t grainsize = 1 ) const;
+
+            <em>// capacity</em>
+            size_type size() const;
+            bool empty() const;
+            size_type max_size() const;
+            size_type bucket_count() const;
+
+            <em>// iterators</em>
+            typedef <em>implementation-defined</em> iterator;
+            typedef <em>implementation-defined</em> const_iterator;
+            iterator begin();
+            iterator end();
+            const_iterator begin() const;
+            const_iterator end() const;
+            std::pair&lt;iterator, iterator&gt; equal_range( const Key&amp; key );
+            std::pair&lt;const_iterator, const_iterator&gt; equal_range( const Key&amp; key ) const;
+        };
+
+        template&lt;typename Key, typename T, typename HashCompare, typename A1, typename A2&gt;
+        bool operator==( const concurrent_hash_map&lt;Key,T,HashCompare,A1&gt;&amp; a,
+                         const concurrent_hash_map&lt;Key,T,HashCompare,A2&gt;&amp; b);
+
+        template&lt;typename Key, typename T, typename HashCompare, typename A1, typename A2&gt;
+        bool operator!=( const concurrent_hash_map&lt;Key,T,HashCompare,A1&gt;&amp; a,
+                         const concurrent_hash_map&lt;Key,T,HashCompare,A2&gt;&amp; b );
+
+        template&lt;typename Key, typename T, typename HashCompare, typename A&gt;
+        void swap( concurrent_hash_map&lt;Key,T,HashCompare,A&gt;&amp; a,
+                   concurrent_hash_map&lt;Key,T,HashCompare,A&gt;&amp; b );
+    }
+</pre>
+     <p>
+        Where possible, constructors of <samp class="codeph">concurrent_hash_map</samp> support class template argument deduction for C++17. For example
+    </p>
+
+    <pre>
+std::vector&lt;std::pair&lt;int, std::string&gt;&gt; v {{1, "one"}, {2, "two"}};
+tbb::concurrent_hash_map hmap {v.begin(), v.end()};</pre>
+    <p>
+    declares <samp class="codeph">hmap</samp> as <samp class="codeph">tbb::concurrent_hash_map&lt;int, std::string, tbb::tbb_hash_compare&lt;int&gt;, tbb::tbb_allocator&lt;std::pair&lt;const int, std::string&gt;&gt;&gt;</samp>.
+    </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Exception Safety</h2>
+      
+      <p>
+        The following functions must not throw exceptions:
+      </p>
+
+      <ul>
+        <li>
+          The hash function
+        </li>
+
+        <li>
+          The destructors for types <samp class="codeph">Key</samp> and <samp class="codeph">T</samp>.
+        </li>
+
+      </ul>
+
+      <p>
+        The following holds true:
+      </p>
+
+      <ul>
+        <li>
+          If an exception happens during an insert operation, the operation has no effect.
+        </li>
+
+        <li>
+          If an exception happens during an assignment operation, the container may be in a state
+          where only some of the items were assigned, and methods <samp class="codeph">size()</samp> and
+          <samp class="codeph">empty()</samp> may return invalid answers.
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/containers_overview.html">Containers Overview</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/whole_table_operations.html">Whole Table Operations</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/concurrent_access.html">Concurrent Access</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/concurrent_operations_hash.html">Concurrent Operations</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/parallel_iteration_container.html">Parallel Iteration</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/capacity_map_cls.html">Capacity</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/iterators_hash_map_cls.html">Iterators</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/containers_overview/concurrent_hash_map_cls/global_funcs.html">Global Functions</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="tbb_hash_compare_cls.html">
+          tbb_hash_compare
+        </a></div>
+<div><a href="concurrent_unordered_map_cls.html">
+          concurrent_unordered_map
+        </a></div>
+<div><a href="concurrent_unordered_set_cls.html">
+          concurrent_unordered_set
+        </a></div></div></div>
+
+</body>
+</html>

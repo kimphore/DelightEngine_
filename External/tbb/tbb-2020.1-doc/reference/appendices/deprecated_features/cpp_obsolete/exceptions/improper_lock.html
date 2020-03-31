@@ -1,0 +1,82 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="improper_lock Specific Exception" />
+<meta name="DC.subject" content="Specific Exception" />
+<meta name="keywords" content="Specific Exception" />
+<meta name="DC.Relation" scheme="URI" content="../../../../../reference/appendices/deprecated_features/cpp_obsolete/exceptions.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="improper_lock" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../../intel_css_styles.css" />
+<title>improper_lock Specific Exception</title>
+<script src="../../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="improper_lock">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(5);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1"><samp class="codeph">improper_lock</samp> Specific Exception</h1>
+ 
+  
+  <div> 
+	 <div class="section"><h2 class="sectiontitle">Summary</h2> 
+		<div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+        This feature is deprecated and will be removed in the future.
+        </p>
+</div>
+
+		 
+		<p>Exception thrown by other library components.
+		</p>
+ 
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		 
+		<pre>class improper_lock;</pre> 
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		 
+		<pre>#include "tbb/tbb_exception.h"</pre> 
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Description</h2>
+		 
+		<p><samp class="codeph">improper_lock</samp> exception is thrown when a thread attempts to lock a 
+		<samp class="codeph">critical_section</samp> or <samp class="codeph">reader_writer_lock</samp> that it has already locked.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Members</h2>
+		
+		<pre>namespace tbb {
+        class improper_lock: public std::exception {
+        public:
+            const char* what() const throw();
+        };
+    }</pre> 
+	 </div>
+ 
+  </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../../reference/appendices/deprecated_features/cpp_obsolete/exceptions.html">Exceptions</a></div>
+</div>
+<div></div>
+</body>
+</html>

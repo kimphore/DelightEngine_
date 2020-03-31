@@ -1,0 +1,112 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Observers" />
+<meta name="DC.subject" content="Observers" />
+<meta name="keywords" content="Observers" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/concurrent_map_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="observers_map_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Observers</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="observers_map_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Observers</h1>
+
+  
+  <div>
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides information on the members of the
+          <samp class="codeph">concurrent_map</samp> and <samp class="codeph">concurrent_multimap</samp>
+          template classes.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d30732e47">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d30732e50">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d30732e47 ">
+                <samp class="codeph">allocator_type get_allocator() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d30732e50 ">
+                <p>
+                  <strong>Returns</strong>: a copy of the allocator associated with <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d30732e47 ">
+                <samp class="codeph">key_compare key_comp() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d30732e50 ">
+                <p>
+                  <strong>Returns</strong>: key comparison functor associated with <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d30732e47 ">
+                <samp class="codeph">value_compare value_comp() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d30732e50 ">
+                <p>
+                  <strong>Returns</strong>: functor using to compare <samp class="codeph">value_type</samp> objects by invoking key_comp()
+                  on the first elements of the pairs.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/concurrent_map_cls.html">concurrent_map and concurrent_multimap Template Classes</a></div>
+</div>
+<div></div>
+</body>
+</html>

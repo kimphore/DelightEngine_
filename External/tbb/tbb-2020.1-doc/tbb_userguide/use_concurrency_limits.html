@@ -1,0 +1,125 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Use Concurrency Limits" />
+<meta name="DC.subject" content="flow graph tips, use concurrency limits, concurrency limits" />
+<meta name="keywords" content="flow graph tips, use concurrency limits, concurrency limits" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_resource_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_limiter_node.html#use_limiter_node" />
+<meta name="DC.Relation" scheme="URI" content="create_token_based_system.html#create_token_based_system" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="use_concurrency_limits" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Use Concurrency Limits</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="use_concurrency_limits">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Use Concurrency Limits</h1>
+ 
+   
+  <div> 
+	 <p> To control the number of instances of a single node, you can use the
+		concurrency limit on the node. To cause it to reject messages after it reaches
+		its concurrency limit, you construct it as a "rejecting" node. 
+	 </p>
+ 
+	 <p>A function node is constructed with one or more template arguments. The
+		third argument controls the buffer policy used by the node, and is by default 
+		<span class="keyword">queueing</span>. With a queueing policy, a 
+		<span class="keyword">function_node</span> that has reached its concurrency limit
+		still accepts incoming messages, but buffers them internally. If the policy is
+		set to 
+		<span class="keyword">rejecting</span> the node will instead reject the incoming
+		messages. 
+	 </p>
+ 
+	 <pre>template &lt; typename Input,
+           typename Output = continue_msg,
+           graph_buffer_policy = queueing,
+           typename A = cache_aligned_allocator&lt;Input&gt; &gt;
+class function_node;
+</pre> 
+	 <p>For example, you can control the number of big objects in flight in a
+		graph by placing a rejecting 
+		<span class="keyword">function_node</span> downstream of a 
+		<span class="keyword">source_node</span>, as is done below: 
+	 </p>
+ 
+	 <pre>  graph g;
+
+  int src_count = 0;
+  int number_of_objects = 0;
+  int max_objects = 3;
+
+  source_node&lt; big_object * &gt; s( g, [&amp;]( big_object* &amp;v ) -&gt; bool {
+	  if ( src_count &lt; M ) {
+		v = new big_object();
+        ++src_count;
+        return true;
+      } else {
+        return false;
+      }
+  } );
+
+  function_node&lt; big_object *, continue_msg, rejecting &gt; f( g, 3, 
+      []( big_object *v ) -&gt; continue_msg {
+	  spin_for(1);
+         delete v;
+	  return continue_msg();
+  } );
+
+  make_edge( s, f );
+  g.wait_for_all();
+</pre> 
+	 <p>The 
+		<span class="keyword">function_node</span> will operate on at most three big
+		objects concurrently. The node's concurrency threshold that limits the node to
+		three concurrent invocations. When the 
+		<span class="keyword">function_node</span> is running three instances concurrently,
+		it will start rejecting incoming messages from the 
+		<span class="keyword">source_node</span>, causing the 
+		<span class="keyword">source_node</span> to buffer its last created object and
+		temporarily stop invoking its body object. Whenever the 
+		<span class="keyword">function_node</span> drops below its concurrency limit, it
+		will pull new messages from the 
+		<span class="keyword">source_node</span>. At most four big objects will exist
+		simultaneously, three in the 
+		<span class="keyword">function_node</span> and one buffered in the 
+		<span class="keyword">source_node</span>. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_resource_tips.html">Flow Graph Tips for Limiting Resource Consumption</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_limiter_node.html#use_limiter_node">Use limiter_node 
+		  </a></div>
+<div><a href="create_token_based_system.html#create_token_based_system">Create a Token-Based System 
+		  </a></div></div></div> 
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Type-specified message keys for join_node" />
+<meta name="DC.subject" content="join_node Template Class, type-specified message keys" />
+<meta name="keywords" content="join_node Template Class, type-specified message keys" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/join_node_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="node_extraction" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Type-specified message keys for join_node</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="node_extraction">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Type-specified message keys for join_node</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        The extension allows a key matching join_node to obtain keys via functions associated with
+        its input types. The extension simplifies the existing approach by removing the need to
+        provide a function object for each input port of join_node.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <p>
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+</pre>
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        The extension adds a special constructor to the join_node interface when the
+        <samp class="codeph">key_matching&lt;typename K, class KHash=tbb_hash_compare&gt;</samp> policy is
+        used. The constructor has the following signature:
+        <samp class="codeph">join_node( graph &amp;g )</samp>.
+        When constructed this way, a <samp class="codeph">join_node</samp> will then call
+        <samp class="codeph">key_from_message</samp> function for each incoming message to obtain an associated
+        key. The default implementation of <samp class="codeph">key_from_message</samp> is
+<pre>
+namespace tbb {
+    namespace flow {
+        template &lt;typename K, typename T&gt;
+        K key_from_message( const T &amp;t ) {
+              return t.key();
+        }
+    }
+}
+</pre>
+        Where <samp class="codeph">T</samp> is one of the user-provided types in <samp class="codeph">OutputTuple</samp>
+        used for the <samp class="codeph">join_node</samp> construction and <samp class="codeph">K</samp> is the key type
+        for the node.
+        By default, the <samp class="codeph">key()</samp> method defined in the message class will be called.
+        Alternatively, the user can define its own <samp class="codeph">key_from_message</samp> function in the
+        same namespace with the message type. This function will be found via C++ argument-dependent
+        lookup and used instead of the default implementation.
+<pre>
+struct MyMessageType {
+    int my_key;
+    int my_value;
+    // The following method will not be called because ADL will find
+    // the custom implementation of the key_from_message function below.
+    int key() const {
+        // This method should not be called.
+        assert(false);
+        return 0;
+    }
+};
+
+// The custom implementation of the key_from_message function.
+template &lt;typename K&gt;
+int key_from_message(const MyMessageType &amp;m) {
+    return m.my_key;
+}
+</pre>
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+#include &lt;cstdio&gt;
+#include &lt;cassert&gt;
+
+class MyMessage {
+    int my_key;
+    float my_value;
+public:
+    MyMessage( int k = 0, float v = 0 ) : my_key( k ), my_value( v ) {}
+    int key() const {
+        return my_key;
+    }
+    float value() const {
+        return my_value;
+    }
+};
+
+int main() {
+    using namespace tbb::flow;
+
+    graph g;
+    function_node&lt;int, MyMessage&gt;
+        f1( g, unlimited, []( int i ) { return MyMessage( i, (float)i ); } );
+    function_node&lt;int, MyMessage&gt;
+        f2( g, unlimited, []( int i ) { return MyMessage( i, (float)2 * i ); } );
+
+    function_node&lt; tuple&lt;MyMessage, MyMessage&gt; &gt;
+        f3( g, unlimited,
+        []( const tuple&lt;MyMessage, MyMessage&gt; &amp;t ) {
+        assert( get&lt;0&gt;( t ).key() == get&lt;1&gt;( t ).key() );
+        std::printf( "The result is %f for key %d\n", get&lt;0&gt;( t ).value() + get&lt;1&gt;( t ).value(), get&lt;0&gt;( t ).key() );
+    } );
+
+    join_node&lt; tuple&lt;MyMessage, MyMessage&gt;, key_matching&lt;int&gt; &gt; jn( g );
+
+    make_edge( f1, input_port&lt;0&gt;( jn ) );
+    make_edge( f2, input_port&lt;1&gt;( jn ) );
+    make_edge( jn, f3 );
+
+    f1.try_put( 1 );
+    f1.try_put( 2 );
+    f2.try_put( 2 );
+    f2.try_put( 1 );
+
+    g.wait_for_all();
+}
+</pre>
+        In the example, a key matching <samp class="codeph">join_node</samp> is used to pair messages with the
+        same key. The <samp class="codeph">join_node</samp> uses the type-specified message keys extension and
+        calls the <samp class="codeph">MyMessage::key</samp> method to obtain the keys.
+      </p>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/flow_graph_features.html">Flow Graph</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../../flow_graph/join_node_cls.html">
+          join_node Template Class
+        </a></div></div></div>
+
+</body>
+</html>

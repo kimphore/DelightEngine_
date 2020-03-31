@@ -1,0 +1,123 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="flow::tuple Template Class" />
+<meta name="DC.subject" content="flow::tuple" />
+<meta name="keywords" content="flow::tuple" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/join_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/multifunc_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/split_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/indexer_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/composite_node_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="flow_tuple" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>flow::tuple Template Class</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="flow_tuple">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">flow::tuple Template Class</h1>
+ 
+   
+  <div> 
+  <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+    This feature is deprecated and will be removed in the future.
+    </p>
+</div>
+
+	 <p> Some nodes create or use messages that are composites of other
+		messages. The 
+		<samp class="codeph">flow::tuple</samp> template class is included as part of flow
+		to support this. Multiport nodes use tuples to manage their ports. These include 
+		<span class="keyword">join_node</span>, <span class="keyword">multifunction_node</span>, <span class="keyword">split_node</span>,
+		<span class="keyword">indexer_node</span> and <span class="keyword">composite_node</span>. 
+		Multiport nodes that send or receive tuples are <span class="keyword">join_node</span> and <span class="keyword">split_node</span>.
+	 </p>
+ 
+	 <p> The 
+		<samp class="codeph">tuple</samp> class is part of the C++11 standard, and earlier
+		implementations of the Standard Library may have a 
+		<samp class="codeph">tuple</samp> class. If 
+		<samp class="codeph">std::tuple</samp> is part of the Standard Library, then 
+		<samp class="codeph">flow::tuple</samp> is typedefed to 
+		<samp class="codeph">std::tuple</samp>. 
+	 </p>
+ 
+	 <p> If the Standard Library does not contain 
+		<samp class="codeph">tuple</samp>, an implementation is used that supports a subset
+		of 
+		<samp class="codeph">std::tuple</samp>'s functionality: 
+	 <ul> 
+		<li>construction, copy construction and destruction,
+		</li>
+ 
+		<li>assignment
+		</li>
+ 
+		<li><samp class="codeph">get&lt;I&gt;(tuple)</samp> (the i-th element of 
+		  <samp class="codeph">tuple</samp>, starting from zero),
+		</li>
+ 
+		<li><samp class="codeph">tuple_element&lt;I,T&gt;::type</samp> (the type of the i-th
+		  element of tuple type 
+		  <samp class="codeph">T</samp>),
+		</li>
+ 
+		<li><samp class="codeph">tuple_size&lt;T&gt;::value</samp> (the number of elements
+		  of the tuple type 
+		  <samp class="codeph">T</samp>),
+		</li>
+ 
+	 </ul>
+ 
+	 </p>
+ 
+	 <div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+		<p> Prior releases of <samp class="codeph">flow</samp> injected 
+                  <samp class="codeph">flow</samp>'s implementation of <samp class="codeph">tuple</samp> into
+                  the <samp class="codeph">std::</samp> namespace. Users should change
+                  <samp class="codeph">flow</samp>-specific references to <samp class="codeph">std::tuple</samp>
+                  to <samp class="codeph">flow::tuple</samp> to ensure compatibility with compilers
+		  that do not implement 
+		  <samp class="codeph">std::tuple</samp> as part of the Standard Library. 
+		</p>
+ 
+	 </div>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/deprecated_features/cpp_obsolete.html">Obsolete C++ functionality</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../../flow_graph/join_node_cls.html">join node 
+		  </a></div>
+<div><a href="../../../flow_graph/multifunc_node_cls.html">multifunction node 
+		  </a></div>
+<div><a href="../../../flow_graph/split_node_cls.html">split node 
+		  </a></div>
+<div><a href="../../../flow_graph/indexer_node_cls.html">indexer node 
+		  </a></div>
+<div><a href="../../../flow_graph/composite_node_cls.html">composite node 
+		  </a></div></div></div> 
+
+</body>
+</html>

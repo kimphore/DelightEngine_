@@ -1,0 +1,82 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Use graph::reset() to Reset a Canceled Graph" />
+<meta name="DC.subject" content="flow graph tips, use graph::reset() to reset a cancelled graph, graph::reset to reset a canceled graph" />
+<meta name="keywords" content="flow graph tips, use graph::reset() to reset a cancelled graph, graph::reset to reset a canceled graph" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_exception_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="catching_exceptions.html#catching_exceptions" />
+<meta name="DC.Relation" scheme="URI" content="cancel_a_graph.html#cancel_a_graph" />
+<meta name="DC.Relation" scheme="URI" content="cancelling_nested_parallelism.html#cancelling_nested_parallelism" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="use_graph_reset" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Use graph::reset() to Reset a Canceled Graph</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="use_graph_reset">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Use graph::reset() to Reset a Canceled Graph</h1>
+ 
+   
+  <div> 
+	 <p> When a graph execution is canceled either because of an unhandled
+		exception or because its 
+		<span class="keyword">task_group_context</span> is canceled explicitly, the graph
+		and its nodes may be left in an indeterminate state. For example, in the code
+		samples shown in 
+		<a href="cancel_a_graph.html#cancel_a_graph">Cancel a Graph Explicitly</a> the input 
+		<span class="keyword">2</span> may be left in a buffer. But even beyond remnants in
+		the buffers, there are other optimizations performed during the execution of a
+		flow graph that can leave its nodes and edges in an indeterminate state. If you
+		want to re-execute or restart a graph, you first need to reset the graph: 
+	 </p>
+ 
+	 <pre>  try {
+      g.wait_for_all();
+  } catch ( int j ) {
+      cout &lt;&lt; "Caught " &lt;&lt; j &lt;&lt; "\n";
+      // do something to fix the problem
+      g.reset();
+      f1.try_put(1);
+      f1.try_put(2);
+      g.wait_for_all();
+  }
+</pre> 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_exception_tips.html">Flow Graph Tips for Exception Handling and Cancellation</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="catching_exceptions.html#catching_exceptions">Catching Exceptions Inside the Node that Throws the Exception
+			 
+		  </a></div>
+<div><a href="cancel_a_graph.html#cancel_a_graph">Cancel a Graph Explicitly 
+		  </a></div>
+<div><a href="cancelling_nested_parallelism.html#cancelling_nested_parallelism">Canceling Nested Parallelism 
+		  </a></div></div></div> 
+
+</body>
+</html>

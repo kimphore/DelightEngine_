@@ -1,0 +1,269 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Specifying Priorities for Functional Nodes" />
+<meta name="DC.subject" content="Specifying Priorities for Functional Nodes, Flow Graph Node priorities, Critical Path" />
+<meta name="keywords" content="Specifying Priorities for Functional Nodes, Flow Graph Node priorities, Critical Path" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../deprecated_features/redundant/priorities.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/lightweight_policy.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="node_priorities_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Specifying Priorities for Functional Nodes</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="node_priorities_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Specifying Priorities for Functional Nodes</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        The feature allows setting relative priorities at construction of flow graph functional
+        nodes, guiding threads that execute the graph to prefer nodes with higher priority.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>
+namespace tbb { namespace flow {
+
+typedef unsigned int node_priority_t;
+
+const node_priority_t no_priority = node_priority_t(0);
+
+template&lt; typename Output, typename Policy = void &gt;
+class continue_node : public graph_node, public continue_receiver, public sender&lt;Output&gt; {
+public:
+    template&lt;typename Body&gt;
+    continue_node( graph &amp;g, Body body, <span class="color(blue)" style="color:blue"><strong>node_priority_t = no_priority</strong></span> );
+    // ...
+};
+
+template &lt; typename Input, typename Output = continue_msg,
+           typename Policy = queueing,
+           typename A = cache_aligned_allocator&lt;Input&gt; &gt;
+class function_node : public graph_node, public receiver&lt;Input&gt;, public sender&lt;Output&gt; {
+public:
+    template&lt;typename Body&gt;
+    function_node( graph &amp;g, size_t concurrency, Body body, <span class="color(blue)" style="color:blue"><strong>node_priority_t = no_priority</strong></span> );
+    // ...
+};
+
+template &lt; typename Input, typename Output,
+           typename Policy = queueing, typename Allocator=cache_aligned_allocator&lt;Input&gt; &gt;
+class multifunction_node : public graph_node, public receiver&lt;Input&gt; {
+public:
+    template &lt; typename Body &gt;
+    multifunction_node( graph &amp;g, size_t concurrency, Body body, <span class="color(blue)" style="color:blue"><strong>node_priority_t = no_priority</strong></span> );
+    // ...
+};
+
+template &lt; typename Input, typename Output,
+           typename Policy = queueing_lightweight,
+           typename Allocator = cache_aligned_allocator&lt;Input&gt; &gt;
+class async_node : public graph_node, public receiver&lt;Input&gt;, public sender&lt;Output&gt; {
+public:
+    template &lt;typename Body&gt;
+    async_node( graph&amp; g, size_t concurrency, Body body, <span class="color(blue)" style="color:blue"><strong>node_priority_t = no_priority</strong></span> );
+    // ...
+};
+
+}}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+</pre>
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>The feature requires linkage with TBB preview binaries.</p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        With this extension the <samp class="codeph">function_node</samp>, the
+        <samp class="codeph">multifunction_node</samp>, the <samp class="codeph">async_node</samp> and the
+        <samp class="codeph">continue_node</samp> accept additional contstructor parameter of
+        <samp class="codeph">node_priority_t</samp> type, which sets the node priority in the graph: the larger
+        the specified value for the parameter, the higher the priority. The special constant value
+        <samp class="codeph">no_priority</samp>, also the default value of the parameter, switches priority off
+        for a particular node.
+
+        For a particular graph, tasks to execute the nodes whose priority is specified have
+        precedence over tasks for the nodes with lower or no priority value set. When looking for a
+        task to execute, a thread will choose the one with the highest priority from those in the
+        graph which are available to be executed.
+
+        If a node with priority has nested parallel construct the thread that waits this parallel
+        contruct to complete might take tasks with no priority, but may not take another priority
+        task. If such behavior is undesirable, we recommend to either use isolation or specify a
+        priority for each node.
+      </p>
+
+      <p>
+        Execution of tasks spawned on behalf of the nodes with priority value set takes precedence
+        over execution of tasks whose priority is set through pre-existing priority specification
+        mechanism in the library.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          The feature does not provide strong ordering guarantees. In particular, nodes whose policy
+          include <samp class="codeph">lightweight</samp> can be executed without scheduling a task. Therefore,
+          priority of the task spawned on behalf of the node with priority value specified may be
+          ignored.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The following basic example demostrates prioritization of one path in the graph over the
+        other, which may help to improve overall performance of the graph.
+      </p>
+
+      <div class="fignone" id="fig_graph_with_critical_path"><span class="figcap">Data flow graph with critical path.</span>
+        
+        <br /><div class="imagecenter"><img src="../../../Resources/critical_path_in_graph.png" width="463" height="336" alt="Data flow graph with critical path." align="center" /></div><br />
+      </div>
+
+      <p>
+        Consider executing the graph from the picture above using two threads. Let the nodes
+        <samp class="codeph">f<sub>1</sub></samp> and <samp class="codeph">f<sub>3</sub></samp> take equal time to
+        execute, while the node <samp class="codeph">f<sub>2</sub></samp> takes longer. That makes the nodes
+        <samp class="codeph">b<sub>s</sub></samp>, <samp class="codeph">f<sub>2</sub></samp> and
+        <samp class="codeph">f<sub>e</sub></samp> constitute the critical path in this graph. Due to the
+        non-deterministic behavior in selection of the tasks, TBB might execute nodes
+        <samp class="codeph">f<sub>1</sub></samp> and <samp class="codeph">f<sub>3</sub></samp> in parallel first, which
+        would make the whole graph execution time last longer than the case when one of the threads
+        chooses the node <samp class="codeph">f<sub>2</sub></samp> just after the broadcast node. By setting a
+        higher priority on node <samp class="codeph">f<sub>2</sub></samp>, threads are guided to take the
+        critical path task earlier, thus reducing overall execution time.
+      </p>
+
+      <pre>#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+
+#include "tbb/task_scheduler_init.h"
+#include "tbb/tick_count.h"
+
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+
+void spin_for( double delta_seconds ) {
+    tbb::tick_count start = tbb::tick_count::now();
+    while( (tbb::tick_count::now() - start).seconds() &lt; delta_seconds ) ;
+}
+
+static const double unit_of_time = 0.1;
+
+struct Body {
+    unsigned factor;
+    Body( unsigned times ) : factor( times ) {}
+    void operator()( const tbb::flow::continue_msg&amp; ) {
+        // body execution takes 'factor' units of time
+        spin_for( factor * unit_of_time );
+    }
+};
+
+int main() {
+    using namespace tbb::flow;
+
+    const int max_threads = 2;
+    tbb::task_scheduler_init s(max_threads);
+
+    graph g;
+
+    broadcast_node&lt;continue_msg&gt; bs(g);
+
+    continue_node&lt;continue_msg&gt; f1(g, Body(5));
+
+    // f2 is a heavy one and takes the most execution time as compared to the other nodes in the
+    // graph. Therefore, let the graph start this node as soon as possible by prioritizing it over
+    // the other nodes.
+    continue_node&lt;continue_msg&gt; f2(g, Body(10), node_priority_t(1));
+
+    continue_node&lt;continue_msg&gt; f3(g, Body(5));
+
+    continue_node&lt;continue_msg&gt; fe(g, Body(7));
+
+    make_edge( bs, f1 );
+    make_edge( bs, f2 );
+    make_edge( bs, f3 );
+
+    make_edge( f1, fe );
+    make_edge( f2, fe );
+    make_edge( f3, fe );
+
+    tbb::tick_count start = tbb::tick_count::now();
+
+    bs.try_put( continue_msg() );
+    g.wait_for_all();
+
+    double elapsed = std::floor((tbb::tick_count::now() - start).seconds() / unit_of_time);
+
+    std::cout &lt;&lt; "Elapsed approximately " &lt;&lt; elapsed &lt;&lt; " units of time" &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+      <p>
+        Output:
+      </p>
+
+      <pre>Elapsed approximately 17 units of time</pre>
+      <p>
+        If no value or the special constant <samp class="codeph">no_priority</samp> is passed as an argument
+        then the output would be:
+      </p>
+
+      <pre>Elapsed approximately 22 units of time</pre>
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/flow_graph_features.html">Flow Graph</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../deprecated_features/redundant/priorities.html">Existing Priority Specification Mechanism (deprecated)</a></div>
+<div><a href="../../../flow_graph/lightweight_policy.html">Lightweight policy</a></div></div></div>
+
+</body>
+</html>

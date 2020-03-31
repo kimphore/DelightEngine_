@@ -1,0 +1,254 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Nodes" />
+<meta name="DC.subject" content="Flow Graph Concepts, Nodes" />
+<meta name="keywords" content="Flow Graph Concepts, Nodes" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/task_scheduler.html#task_scheduler" />
+<meta name="DC.Relation" scheme="URI" content="Edges.html#Edges" />
+<meta name="DC.Relation" scheme="URI" content="Graph_Object.html#Graph_Object" />
+<meta name="DC.Relation" scheme="URI" content="Mapping_Nodes2Tasks.html#Mapping_Nodes2Tasks" />
+<meta name="DC.Relation" scheme="URI" content="Predefined_Node_Types.html#predefined_node_types" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="Nodes" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Nodes</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="Nodes">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Nodes</h1>
+ 
+   
+  <div> 
+	 <p>A node is a class that inherits from 
+		<span class="keyword">tbb::flow::graph_node</span> and also typically inherits from
+		
+		<span class="keyword">tbb::flow::sender&lt;T&gt;</span> , 
+		<span class="keyword">tbb::flow::receiver&lt;T&gt;</span> or both. A node performs
+		some operation, usually on an incoming message and may generate zero or more
+		output messages. Some nodes require more than one input message or generate
+		more than one output message. 
+	 </p>
+ 
+	 <p>While it is possible to define your own node types by inheriting from 
+		<span class="keyword">graph_node</span>, 
+		<span class="keyword">sender</span> and 
+		<span class="keyword">receiver</span>, it is more typical that predefined node
+		types are used to construct a graph. The list of predefined nodes is available
+		from the 
+		<strong>See Also</strong> section below. 
+	 </p>
+ 
+	 <p> A 
+		<span class="keyword">function_node</span> is a predefined type available in 
+		<span class="keyword">flow_graph.h</span> and represents a simple function with one
+		input and one output. The constructor for a 
+		<span class="keyword">function_node</span> takes three arguments: 
+	 </p>
+ 
+	 <pre>template&lt; typename <em>Body</em>&gt; function_node(graph &amp;<em>g</em>, size_t <em>concurrency</em>, Body <em>body</em>)</pre> 
+	 
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"> 
+		   
+		   
+		  <thead align="left"> 
+			 <tr> 
+				<th class="cellrowborder" valign="top" width="22.727272727272727%" id="d121874e99">Parameter 
+				</th>
+ 
+				<th class="cellrowborder" valign="top" width="77.27272727272727%" id="d121874e102">Description 
+				</th>
+ 
+			 </tr>
+</thead>
+ 
+		  <tbody> 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d121874e99 "><span class="keyword">Body 
+				  </span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d121874e102 "> 
+				  <p>Type of the body object. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d121874e99 "><span class="keyword">g</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d121874e102 "> 
+				  <p>The graph the node belongs to. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d121874e99 "> 
+				  <span class="keyword">concurrency</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d121874e102 "> 
+				  <p>The concurrency limit for the node. You can use the
+					 concurrency limit to control how many invocations of the node are allowed to
+					 proceed concurrently, from 1 (serial) to an unlimited number. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d121874e99 "><span class="keyword">body</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d121874e102 "> 
+				  <p>User defined function object, or lambda expression, that is
+					 applied to the incoming message to generate the outgoing message. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+		  </tbody>
+ 
+		</table>
+</div>
+ 
+	 <p>Below is code for creating a simple graph that contains a single 
+		<span class="keyword">function_node</span>. In this example, a node 
+		<span class="keyword">n</span> is constructed that belongs to graph 
+		<span class="keyword">g</span>, and has a second argument of 1, which allows at
+		most 1 invocation of the node to occur concurrently. The body is a lambda
+		expression that prints each value 
+		<span class="keyword">v</span> that it receives, spins for 
+		<span class="keyword">v</span> seconds, prints the value again, and then returns 
+		<span class="keyword">v</span> unmodified. The code for the function 
+		<span class="keyword">spin_for</span> is not provided. 
+	 </p>
+ 
+	 <pre>    graph g;
+    function_node&lt; int, int &gt; n( g, 1, []( int v ) -&gt; int { 
+        cout &lt;&lt; v;
+        spin_for( v );
+        cout &lt;&lt; v;
+        return v;
+    } );
+</pre> 
+	 <p>After the node is constructed in the example above, you can pass
+		messages to it, either by connecting it to other nodes using edges or by
+		invoking its function 
+		<span class="keyword">try_put</span>. Using edges is described in the next section.
+		
+	 </p>
+ 
+	 <pre>    n.try_put( 1 );
+    n.try_put( 2 );
+    n.try_put( 3 );
+</pre> 
+	 <p>You can then wait for the messages to be processed by calling 
+		<span class="keyword">wait_for_all</span> on the graph object: 
+	 </p>
+ 
+	 <pre>    g.wait_for_all(); </pre> 
+	 <p>In the above example code, the 
+		<span class="keyword">function_node n</span> was created with a concurrency limit
+		of 1. When it receives the message sequence 1, 2 and 3, the node 
+		<span class="keyword">n</span> will spawn a task to apply the body to the first
+		input, 1. When that task is complete, it will then spawn another task to apply
+		the body to 2. And likewise, the node will wait for that task to complete
+		before spawning a third task to apply the body to 3. The calls to 
+		<span class="keyword">try_put</span> do not block until a task is spawned; if a
+		node cannot immediately spawn a task to process the message, the message will
+		be buffered in the node. When it is legal, based on concurrency limits, a task
+		will be spawned to process the next buffered message. 
+	 </p>
+ 
+	 <p>In the above graph, each message is processed sequentially. If however,
+		you construct the node with a different concurrency limit, parallelism can be
+		achieved: 
+	 </p>
+ 
+	 <pre>    function_node&lt; int, int &gt; n( g, tbb::flow::unlimited, []( int v ) -&gt; int { 
+        cout &lt;&lt; v;
+        spin_for( v );
+        cout &lt;&lt; v;
+        return v;
+    } );
+</pre> 
+	 <p>You can use 
+		<span class="keyword">unlimited</span> as the concurrency limit to instruct the
+		library to spawn a task as soon as a message arrives, regardless of how many
+		other tasks have been spawned. You can also use any specific value, such as 4
+		or 8, to limit concurrency to at most 4 or 8, respectively. It is important to
+		remember that spawning a task does not mean creating a thread. So while a graph
+		may spawn many tasks, only the number of threads available in the library's
+		thread pool will be used to execute these tasks. 
+	 </p>
+ 
+	 <p>Suppose you use 
+		<span class="keyword">unlimited</span> in the 
+		<span class="keyword">function_node</span> constructor instead and call 
+		<span class="keyword">try_put</span> on the node: 
+	 </p>
+ 
+	 <pre>    n.try_put( 1 );
+    n.try_put( 2 );
+    n.try_put( 3 );
+    g.wait_for_all(); 
+</pre> 
+	 <p>The library spawns three tasks, each one applying 
+		<span class="keyword">n</span>'s lambda expression to one of the messages. If you
+		have a sufficient number of threads available on your system, then all three
+		invocations of the body will occur in parallel. If however, you have only one
+		thread in the system, they execute sequentially. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../reference/task_scheduler.html#task_scheduler">Task Scheduler 
+		  </a></div>
+<div><a href="Edges.html#Edges">Edges 
+		  </a></div>
+<div><a href="Graph_Object.html#Graph_Object">Graph Object 
+		  </a></div>
+<div><a href="Mapping_Nodes2Tasks.html#Mapping_Nodes2Tasks">Mapping Nodes to Tasks 
+		  </a></div>
+<div><a href="Predefined_Node_Types.html#predefined_node_types">Predefined Node Types 
+		  </a></div></div></div> 
+
+</body>
+</html>

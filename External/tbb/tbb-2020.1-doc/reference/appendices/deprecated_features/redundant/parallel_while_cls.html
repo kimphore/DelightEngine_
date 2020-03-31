@@ -1,0 +1,347 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="parallel_while Template Class" />
+<meta name="DC.subject" content="parallel_while Template Class" />
+<meta name="keywords" content="parallel_while Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/outdated_and_redundant.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="parallel_while_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>parallel_while Template Class</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="parallel_while_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">parallel_while Template Class</h1>
+
+  
+  <div>
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>Template class that processes work items.
+		</p>
+
+		<div class="Note"><h3 class="NoteTipHead">Tip</h3> 
+		  <p>This class is deprecated. Use parallel_do instead.
+		  </p>
+
+		</div>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		
+		<pre>template&lt;typename Body&gt;
+ class parallel_while;</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		
+		<pre>#include "tbb/parallel_while.h"</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Description</h2>
+		
+		<p>A 
+		  <samp class="codeph">parallel_while&lt;Body&gt;</samp> performs
+		  parallel iteration over items. The processing to be performed on each item is
+		  defined by a function object of type Body. The items are specified in two ways:
+		</p>
+
+		<ul>
+		  <li>
+			 <p>A stream of items.
+			 </p>
+
+		  </li>
+
+		  <li>
+			 <p>Additional items that are added while the
+				stream is being processed.
+			 </p>
+
+		  </li>
+
+		</ul>
+
+		<p>The <a href="#tbl44">following table</a> shows the
+		  requirements on the stream and body.
+		</p>
+
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl44" frame="border" border="1" cellspacing="0" rules="rows"><caption><span class="tablecap">parallel_while Requirements for
+		  Stream S and Body B</span></caption>
+		  <thead align="left">
+			 <tr>
+				<th class="cellrowborder" align="left" valign="top" width="60%" id="d18891e109">
+				  <p>Pseudo-Signature
+				  </p>
+
+				</th>
+
+				<th class="cellrowborder" align="left" valign="top" width="40%" id="d18891e115">
+				  <p>Semantics
+				  </p>
+
+				</th>
+
+			 </tr>
+</thead>
+
+		  <tbody>
+			 <tr>
+				<td class="cellrowborder" align="left" valign="top" width="60%" headers="d18891e109 ">
+				  <p><samp class="codeph">bool S::pop_if_present( B::argument_type&amp;
+						item )</samp>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" align="left" valign="top" width="40%" headers="d18891e115 ">
+				  <p>Get next stream item. 
+					 <samp class="codeph">parallel_while</samp>
+					 does not concurrently invoke the method on the same stream object.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" align="left" valign="top" width="60%" headers="d18891e109 ">
+				  <p><samp class="codeph">B::operator()( B::argument_type&amp; item )
+						const</samp>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" align="left" valign="top" width="40%" headers="d18891e115 ">
+				  <p>Process an item.
+					 <samp class="codeph">parallel_while</samp>
+						may concurrently invoke the operator for the same 
+					    body object but different 
+					 <span class="keyword">item</span>.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" align="left" valign="top" width="60%" headers="d18891e109 ">
+				  <p><samp class="codeph">B::argument_type()</samp>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" align="left" valign="top" width="40%" headers="d18891e115 ">
+				  <p>Default constructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" align="left" valign="top" width="60%" headers="d18891e109 ">
+				  <p><samp class="codeph">B::argument_type( const B::argument_type&amp;
+						)</samp>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" align="left" valign="top" width="40%" headers="d18891e115 ">
+				  <p>Copy constructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" align="left" valign="top" width="60%" headers="d18891e109 ">
+				  <p><samp class="codeph">~B::argument_type()</samp>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" align="left" valign="top" width="40%" headers="d18891e115 ">
+				  <p>Destructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+		  </tbody>
+
+		</table>
+</div>
+
+		<div class="Note"><h3 class="NoteTipHead">Tip</h3> 
+		  <p>To achieve speedup, 
+			 <samp class="codeph">B::operator()</samp> 
+			 should consist of at least ~10,000 instructions. 
+			 Otherwise, the internal overheads of parallel_while swamp the
+			 useful work. The parallelism in 
+			 <samp class="codeph">parallel_while</samp> is
+			 not scalable if all the items come from the input stream. To achieve scaling,
+			 design your algorithm such that method add often adds more than one piece of
+			 work.
+		  </p>
+
+		</div>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Members</h2>
+		
+		<pre>namespace tbb {
+ template&lt;typename Body&gt;
+ class parallel_while {
+ public:
+ parallel_while();
+ ~parallel_while();
+ typedef typename Body::argument_type value_type;
+ template&lt;typename Stream&gt;
+ void run( Stream&amp; stream, const Body&amp; body );
+ void add( const value_type&amp; item );
+ };
+ }</pre>
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of this template class. 
+		  </span><thead align="left"> 
+				<tr> 
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d18891e277">Member 
+				  </th>
+ 
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d18891e280">Description 
+				  </th>
+ 
+				</tr>
+</thead>
+ 
+			 <tbody> 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d18891e277 "><span class="keyword">parallel_while&lt;Body&gt;()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d18891e280 ">
+					 <p>Constructs a 
+						<samp class="codeph">parallel_while</samp> that is not yet
+						running.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d18891e277 "><span class="keyword">~parallel_while&lt;Body&gt;()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d18891e280 ">
+					 <p>Destroys a 
+						<samp class="codeph">parallel_while</samp>.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d18891e277 "><span class="keyword">Template &lt;typename Stream&gt;
+						void run( Stream&amp; stream, const Body&amp; body )</span> 
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d18891e280 ">
+					 <p>Applies 
+						<var>body</var>
+						to each item in 
+						<var>stream</var> and any other items that
+						are added by method add. Terminates when both of the following conditions
+						become true:
+					 </p>
+
+					 <ul>
+						<li>
+						  <p><samp class="codeph">stream.pop_if_present</samp> returned false.
+						  </p>
+
+						</li>
+
+						<li>
+						  <p><samp class="codeph">body(x)</samp> returned for all items 
+							 <var>x</var> generated from the stream or
+							 method add.
+						  </p>
+
+						</li>
+
+					 </ul>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d18891e277 "><span class="keyword">void add( const value_type&amp;
+						item )</span> 
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d18891e280 ">
+					 <p><strong>Requirements</strong>: Must be called from
+						a call to 
+						<samp class="codeph"><var>body</var>.operator()</samp>
+						created by 
+						<samp class="codeph">parallel_while</samp>. Otherwise, the
+						termination semantics of method 
+						<span class="keyword">run</span>
+						are undefined.
+					 </p>
+ 
+					 <p><strong>Effects</strong>: Adds item to collection
+						of items to be processed.
+					 </p>
+
+				  </td>
+
+				</tr>
+ 
+			 </tbody>
+ 
+		  </table>
+</div>
+
+	 </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/deprecated_features/outdated_and_redundant.html">Outdated and redundant API</a></div>
+</div>
+<div></div>
+</body>
+</html>

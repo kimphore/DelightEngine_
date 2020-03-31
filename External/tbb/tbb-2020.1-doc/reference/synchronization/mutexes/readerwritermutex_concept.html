@@ -1,0 +1,336 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="ReaderWriterMutex Concept" />
+<meta name="DC.subject" content="ReaderWriterMutex Concept" />
+<meta name="keywords" content="ReaderWriterMutex Concept" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/synchronization/mutexes.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="readerwritermutex_concept" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>ReaderWriterMutex Concept</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="readerwritermutex_concept">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">ReaderWriterMutex Concept</h1>
+
+  
+  <div>
+	 <div class="section">
+		<p>The ReaderWriterMutex concept extends the Mutex
+		  Concept to include the notion of reader-writer locks. It introduces a boolean
+		  parameter
+		  <samp class="codeph">write</samp> that specifies whether a writer lock
+		  (<samp class="codeph">write</samp> =true) or reader lock (<samp class="codeph">write</samp> =false)
+		  is being requested. Multiple reader locks can be held simultaneously on a
+		  ReaderWriterMutex if it does not have a writer lock on it. A writer lock on a
+		  ReaderWriterMutex excludes all other threads from holding a lock on the mutex
+		  at the same time.
+		</p>
+
+		<p> The following table shows the requirements for a
+		  ReaderWriterMutex
+		  <samp class="codeph">RW</samp>. They form a superset of the Mutex Concept.
+		</p>
+
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl28" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">ReaderWriterMutex Concept</span></caption>
+		  
+		  
+		  <thead align="left">
+			 <tr>
+				<th class="cellrowborder" valign="top" width="NaN%" id="d94680e54">
+				  <p>Pseudo-Signature
+				  </p>
+
+				</th>
+
+				<th class="row-nocellborder" valign="top" width="NaN%" id="d94680e60">
+				  <p>Semantics
+				  </p>
+
+				</th>
+
+			 </tr>
+</thead>
+
+		  <tbody>
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p><samp class="codeph">RW()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Construct unlocked mutex.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p><samp class="codeph">~RW()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Destroy unlocked mutex. The effect of destroying
+					  a locked mutex is undefined.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p><samp class="codeph">typename RW::scoped_lock</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Corresponding scoped-lock type.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p><samp class="codeph">RW::scoped_lock()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Construct lock without acquiring any mutex.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">RW::scoped_lock(RW&amp;, bool write=true)</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Construct lock and acquire lock on a given mutex.
+					  The lock is a writer lock if <samp class="codeph"><em>write</em></samp> is true; a reader lock otherwise.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p><samp class="codeph">RW::~scoped_lock()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Release lock (if acquired).
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">RW::scoped_lock::acquire(RW&amp;,bool write=true)</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Acquire lock on a given mutex.
+					  The lock is a writer lock if <samp class="codeph"><em>write</em></samp> is true; a reader lock otherwise.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">bool RW::scoped_lock::try_acquire(RW&amp;, bool write=true)</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Try to acquire lock on a given mutex. The lock is a writer lock
+					  if <samp class="codeph"><em>write</em></samp> is true; a reader lock otherwise. Return
+					  <samp class="codeph">true</samp> if lock acquired, <samp class="codeph">false</samp> otherwise.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p><samp class="codeph">RW::scoped_lock::release()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Release lock. The effect is undefined if no lock is held.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">bool RW::scoped_lock::upgrade_to_writer()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Change reader lock to writer lock. Return <samp class="codeph">false</samp>
+					if lock was released and reacquired. <samp class="codeph">true</samp> otherwise, including if the lock
+					was already a writer lock.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">bool RW::scoped_lock::downgrade_to_reader()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>Change writer lock to reader lock. Return <samp class="codeph">false</samp>
+					if lock was released and reacquired. <samp class="codeph">true</samp> otherwise, including if the lock
+					was already a reader lock.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">static const bool RW::is_rw_mutex = true</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>True.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">static const bool RW::is_recursive_mutex</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>True if mutex is recursive; false otherwise.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d94680e54 ">
+				  <p>
+					  <samp class="codeph">static const bool RW::is_fair_mutex</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d94680e60 ">
+				  <p>True if mutex is fair; false otherwise.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+		  </tbody>
+
+		</table>
+</div>
+
+		<p>Classes <samp class="codeph">spin_rw_mutex</samp>, <samp class="codeph">speculative_spin_rw_mutex</samp>
+		  and <samp class="codeph"><samp class="codeph">queuing_rw_mutex</samp></samp> model the ReaderWriterMutex concept.
+		</p>
+
+	  <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+		  <p>
+			 For all currently provided reader-writer mutexes,
+			 <ul>
+			    <li><samp class="codeph">is_recursive_mutex</samp> is <samp class="codeph">false</samp>;</li>
+
+			    <li><samp class="codeph">scoped_lock::downgrade_to_reader</samp> always returns <samp class="codeph">true</samp>.</li>
+
+			 </ul>
+
+		  </p>
+
+		  <p>However, other implementations of the ReaderWriterMutex concept are not required to do the same.
+		  </p>
+
+	  </div>
+
+	</div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/synchronization/mutexes.html">Mutexes</a></div>
+</div>
+<div></div>
+</body>
+</html>

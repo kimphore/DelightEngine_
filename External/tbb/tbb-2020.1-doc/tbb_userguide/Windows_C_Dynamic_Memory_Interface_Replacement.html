@@ -1,0 +1,117 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Windows* OS C/C++ Dynamic Memory Interface Replacement" />
+<meta name="DC.subject" content="Windows* OS C/C++ Dynamic Memory Interface Replacement" />
+<meta name="keywords" content="Windows* OS C/C++ Dynamic Memory Interface Replacement" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Automically_Replacing_malloc.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Windows_C_Dynamic_Memory_Interface_Replacement" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Windows* OS C/C++ Dynamic Memory Interface Replacement</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Windows_C_Dynamic_Memory_Interface_Replacement">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">Windows* OS C/C++ Dynamic Memory Interface Replacement</h1>
+
+
+<div>
+<p>Release version of the proxy library is <samp class="codeph">tbbmalloc_proxy.dll</samp>,
+   debug version is <samp class="codeph">tbbmalloc_proxy_debug.dll</samp>.</p>
+
+<p>The following dynamic memory functions are replaced:</p>
+
+<ul>
+    <li><p>Standard C library functions: <samp class="codeph">malloc</samp>,
+           <samp class="codeph">calloc</samp>, <samp class="codeph">realloc</samp>, <samp class="codeph">free</samp></p>
+</li>
+
+    <li><p>Replaceable global C++ operators <samp class="codeph">new</samp> and <samp class="codeph">delete</samp></p>
+</li>
+
+    <li><p>Microsoft* C run-time library functions: <samp class="codeph">_msize</samp>,
+           <samp class="codeph">_aligned_malloc</samp>, <samp class="codeph">_aligned_realloc</samp>,
+           <samp class="codeph">_aligned_free</samp>, <samp class="codeph">_aligned_msize</samp></p>
+</li>
+
+</ul>
+
+<div class="Note"><h3 class="NoteTipHead">Note</h3> 
+  <p>
+    Replacement of memory allocation functions is not
+    supported for Universal Windows Platform applications.
+  </p>
+
+</div>
+
+<div class="Note"><h3 class="NoteTipHead">Note</h3> 
+  <p>
+    Prior to Intel&reg; Threading Building Blocks (Intel&reg; TBB) 2019,
+    replaced global operator new might not call the <samp class="codeph">std::new_handler</samp>.
+  </p>
+
+</div>
+
+<p>To do the replacement use one of the following methods:</p>
+
+<ul>
+    <li><p>
+           Add the following header to a source code of any binary which is loaded during application startup.</p>
+
+        <pre>#include "tbb/tbbmalloc_proxy.h"</pre></li>
+
+    <li><p>Alternatively, add the following parameters to the linker options for the .exe or .dll file
+           that is loaded during application startup. </p>
+
+        <p>For 32-bit code (note the triple underscore):</p>
+
+        <pre>tbbmalloc_proxy.lib /INCLUDE:"___TBB_malloc_proxy"</pre>
+        <p>For 64-bit code (note the double underscore):</p>
+
+        <pre>tbbmalloc_proxy.lib /INCLUDE:"__TBB_malloc_proxy"</pre></li>
+
+</ul>
+
+<p>The OS program loader must be able to find the proxy library and the scalable memory allocator library
+   at program load time. For that you may include the directory containing the libraries
+   in the <samp class="codeph">PATH</samp> environment variable.</p>
+
+<p>The replacement uses in-memory binary instrumentation of Visual C++* runtime libraries.
+   To ensure correctness, it must first recognize a subset of dynamic memory functions in these libraries.
+   If a problem occurs, the replacement is skipped, and the program continues to use the standard memory
+   allocation functions. You can use the <a href="../reference/memory_allocation/TBB_malloc_replacement_log_func.html"><samp class="codeph">TBB_malloc_replacement_log</samp> function</a>
+   to check if the replacement has succeeded and to get additional information.</p>
+
+<p>Set the <samp class="codeph">TBB_MALLOC_DISABLE_REPLACEMENT</samp> environment variable to 1 to disable replacement
+   for a specific program invocation. In this case, the program will use standard dynamic memory allocation
+   functions. Note that the TBB memory allocation libraries are still required for the program to start
+   even if their usage is disabled.</p>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Automically_Replacing_malloc.html">Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation</a></div>
+</div>
+<div></div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 #include "EngineKernel.h"
 #include "RHI_DX12Device.h"
 
-_result CDelightEngineKernel::Initialize(HWND _hWnd)
+Result CDelightEngineKernel::Initialize(HWND _hWnd)
 {
 	GraphicDevice = new CRHIDirectX12;
 

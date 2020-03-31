@@ -1,0 +1,588 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Modifiers" />
+<meta name="DC.subject" content="Modifiers" />
+<meta name="keywords" content="Modifiers" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/concurrent_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../containers_overview/node_handles_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="modifiers_map_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Modifiers</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="modifiers_map_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Modifiers</h1>
+
+  
+  <div>
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides information on the members of the
+          <samp class="codeph">concurrent_map</samp> and <samp class="codeph">concurrent_multimap</samp> template classes.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d29366e47">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d29366e50">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">std::pair&lt;iterator, bool&gt; insert(const value_type&amp; x)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Constructs a copy of <samp class="codeph">x</samp> and attempts to insert it into the table.
+                  If the attempt fails because an item with the same key already exists, this copy is destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(iterator, success)</samp>. The value of <samp class="codeph">iterator</samp>
+                  points to an item in the map with the matching key. The value of <samp class="codeph">success</samp> is <samp class="codeph">true</samp> if
+                  the item was inserted, <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename P&gt;</samp></p>
+
+                <samp class="codeph">std::pair&lt;iterator, bool&gt; insert(P&amp;&amp; x)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Constructs an instance of <samp class="codeph">value_type</samp> from <samp class="codeph">x</samp> and attempts to insert it into the table.
+                  If the attempt fails because an item with the same key already exists, this item is destroyed.
+                </p>
+
+                <p>
+                  Only participate in overload resolution if <samp class="codeph">std::is_constructible&lt;value_type, P&amp;&amp;&gt;::value == true</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(iterator, success)</samp>. The value of <samp class="codeph">iterator</samp>
+                  points to an item in the map with the matching key. The value of <samp class="codeph">success</samp> is <samp class="codeph">true</samp> if
+                  the item was inserted, <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">std::pair&lt;iterator, bool&gt; insert(value_type&amp;&amp; x)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Moves <samp class="codeph">x</samp> into the new instance of <samp class="codeph">value_type</samp> and attempts to insert it into the table.
+                  If the attempt fails because an item with the same key already exists, this item is destroyed.
+                </p>
+
+                <p>
+                  <samp class="codeph">x</samp> is left in a valid, but unspecified state.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(iterator, success)</samp>. The value of <samp class="codeph">iterator</samp>
+                  points to an item in the map with the matching key. The value of <samp class="codeph">success</samp> is <samp class="codeph">true</samp> if
+                  the item was inserted, <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">iterator insert(const_iterator hint, const value_type&amp; x)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  The same as <samp class="codeph">insert(const value_type&amp; x)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">insert(x).first</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename P&gt;</samp></p>
+
+                iterator insert(const_iterator hint, P&amp;&amp; x)
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  The same as <samp class="codeph">insert(P&amp;&amp; x)</samp>.
+                </p>
+
+                <p>
+                  Only participate in overload resolution if <samp class="codeph">std::is_constructible&lt;value_type, P&amp;&amp;&gt;::value == true</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">insert(x).first</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">iterator insert(const_iterator hint, value_type&amp;&amp; x)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  The same as <samp class="codeph">insert(value_type&amp;&amp; x)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">insert(x).first</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename InputIterator&gt;</samp></p>
+
+                <samp class="codeph">void insert(InputIterator first, InputIterator last)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Inserts elements from half-open interval <samp class="codeph">[first, last)</samp> into the table.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">void insert(std::initializer_list&lt;value_type&gt; il)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  The same as <samp class="codeph">insert(il.begin(), il.end())</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">std::pair&lt;iterator, bool&gt; insert(node_type&amp;&amp; nh)</samp>.
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Attempts to insert the node owned by <samp class="codeph">nh</samp> into the table.
+                  If the attempt fails because an item with the same key already exists,
+                  ownership of the node remains at <samp class="codeph">nh</samp>.
+                  Otherwise <samp class="codeph">nh</samp> is left in an empty state.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(iterator, success)</samp>. The value of <samp class="codeph">iterator</samp>
+                  points to an item in the map with the matching key. The value of <samp class="codeph">success</samp> is <samp class="codeph">true</samp> if
+                  the item was inserted, <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">iterator insert(const_iterator hint, node_type&amp;&amp; nh)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  The same as <samp class="codeph">insert(node_type&amp;&amp; nh)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">insert(nh).first</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename... Args&gt;</samp></p>
+
+                <samp class="codeph">std::pair&lt;iterator, bool&gt; emplace(Args&amp;&amp;... args)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Constructs an instance of <samp class="codeph">value_type</samp> from <samp class="codeph">args</samp> and attempts to insert it
+                  into the table. If the attempt fails because an item with the same key already exists, this instance is destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(iterator, success)</samp>. The value of <samp class="codeph">iterator</samp>
+                  points to an item in the map with the matching key. The value of <samp class="codeph">success</samp> is <samp class="codeph">true</samp> if
+                  the item was inserted, <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename... Args&gt;</samp></p>
+
+                <samp class="codeph">iterator emplace_hint(const_iterator hint, Args&amp;&amp; args)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  The same as <samp class="codeph">emplace(args...)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">emplace(args...).first</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename SrcCompare&gt;</samp></p>
+
+                <samp class="codeph">void merge(concurrent_map&lt;key_type, mapped_type, SrcCompare, allocator_type&gt;&amp; source)</samp>
+
+                <p><samp class="codeph">template&lt;typename SrcCompare&gt;</samp></p>
+
+                <samp class="codeph">void merge(concurrent_map&lt;key_type, mapped_type, SrcCompare, allocator_type&gt;&amp;&amp; source)</samp>
+
+                <p><samp class="codeph">template&lt;typename SrcCompare&gt;</samp></p>
+
+                <samp class="codeph">void merge(concurrent_multimap&lt;key_type, mapped_type, SrcCompare, allocator_type&gt;&amp; source)</samp>
+
+                <p><samp class="codeph">template&lt;typename SrcCompare&gt;</samp></p>
+
+                <samp class="codeph">void merge(concurrent_multimap&lt;key_typem mapped_type, SrcCompare, allocator_type&gt;&amp;&amp; source)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Transfers those items from <samp class="codeph">source</samp> which keys do not exists in <samp class="codeph">*this</samp>.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  The <samp class="codeph">merge</samp> operation is concurrency-safe for the target table
+                  (i.e. the instance for which the method is called), but not for the source table.
+                  The behaviour is underfined if <samp class="codeph">source</samp> is concurrently
+                  modified or merged into more than one target table.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">iterator unsafe_erase(const_iterator position)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Removes the item pointed by <samp class="codeph">position</samp> from the table.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: iterator pointing on the item that was immediately after the erased item,
+                  or <samp class="codeph">end()</samp> if erased item was the last item in the table.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">iterator unsafe_erase(iterator position)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Removes the item pointed by <samp class="codeph">position</samp> from the table.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: iterator pointing on the item that was immediately after the erased item,
+                  or <samp class="codeph">end()</samp> if erased item was the last item in the table.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">iterator unsafe_erase(const_iterator first, const_iterator last)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Removes all the elements in half-open interval <samp class="codeph">[first, last)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: iterator, following the last removed element.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">size_type unsafe_erase(const key_type&amp; k)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Removes all items with the key, equivalent to <samp class="codeph">k</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the number of the removed items.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <p><samp class="codeph">template&lt;typename K&gt;</samp></p>
+
+                <samp class="codeph">size_type unsafe_erase(const K&amp; k)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Removes all items with the key, that compares <samp class="codeph">equivalent</samp>
+                  to the value <samp class="codeph">k</samp>.
+                </p>
+
+                <p>
+                  Only participates in overload resolution if <samp class="codeph">key_compare::is_transparent</samp>
+                  is valid and denotes a type and the type <samp class="codeph">K</samp> is not convertible to
+                  neither <samp class="codeph">iterator</samp> and <samp class="codeph">const_iterator</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the number of the removed items.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">node_type unsafe_extract(const_iterator position)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Transfers ownership of the node with the item pointed by <samp class="codeph">position</samp> from the table
+                  to a node handle.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the node handle that owns the extracted node.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">node_type unsafe_extract(const key_type&amp; k)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  If an item with the key equal to <samp class="codeph">k</samp> exists in the table,
+                  transfers ownership of the corresponding node to the node handle.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the node handle that owns the extracted node, or an empty node handle
+                  if a matching item was not found.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e47 ">
+                <samp class="codeph">void clear()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e50 ">
+                <p>
+                  Removes all items from the table.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the
+          <samp class="codeph">concurrent_map</samp> template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d29366e772">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d29366e775">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e772 ">
+                <samp class="codeph">void swap(concurrent_map&amp; other)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e775 ">
+                <p>
+                  Swaps contents of <samp class="codeph">*this</samp> and <samp class="codeph">other</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the
+          <samp class="codeph">concurrent_multimap</samp> template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d29366e827">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d29366e830">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d29366e827 ">
+                <samp class="codeph">void swap(concurrent_multimap&amp; other)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d29366e830 ">
+                <p>
+                  Swaps contents of <samp class="codeph">*this</samp> and <samp class="codeph">other</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/concurrent_map_cls.html">concurrent_map and concurrent_multimap Template Classes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../../containers_overview/node_handles_cls.html">Node handles</a></div></div></div>
+
+</body>
+</html>

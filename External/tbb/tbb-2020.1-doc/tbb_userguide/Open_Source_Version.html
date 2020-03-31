@@ -1,0 +1,356 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Open Source Version" />
+<meta name="DC.subject" content="Open Source Version" />
+<meta name="keywords" content="Open Source Version" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Package_Contents.html" />
+<meta name="DC.Relation" scheme="URI" content="Windows_OS_ug.html#tutorial_Windows_OS" />
+<meta name="DC.Relation" scheme="URI" content="Linux_OS.html#tutorial_Linux_OS" />
+<meta name="DC.Relation" scheme="URI" content="OS_X_Systems.html#tutorial_OS_X_Systems" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Open_Source_Version" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Open Source Version</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Open_Source_Version">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Open Source Version</h1>
+
+  
+  <div>
+    <p>The following table describes typical subdirectories of an open source
+        version of the library.
+    </p>
+
+    
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl7" width="100%" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">Typical Intel&reg; Threading Building Blocks Subdirectories in Open Source Release</span></caption>
+    
+    
+    <tbody>
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Include files</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%"><p><samp class="codeph">include/tbb/*.h</samp></p>
+</td>
+
+        </tr>
+
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Source files</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%"><p><samp class="codeph">src/</samp></p>
+</td>
+
+        </tr>
+
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Internal build infrastructure</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%"><p><samp class="codeph">build/, jni/</samp></p>
+</td>
+
+        </tr>
+
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Documentation</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%"><p><samp class="codeph">doc/</samp></p>
+</td>
+
+        </tr>
+
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Environment scripts</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%"><p><samp class="codeph">bin/*.{sh,csh,bat}</samp></p>
+</td>
+
+        </tr>
+
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Binaries</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%">
+                <p>Windows* OS:</p>
+
+                <p><samp class="codeph">bin/&lt;<var>arch</var>&gt;/<var>vc</var>&lt;<var>vcversion</var>&gt;/&lt;<var>lib</var>&gt;&lt;<var>variant</var>&gt;.{dll,pdb}</samp></p>
+
+                <p><samp class="codeph">lib/&lt;<var>arch</var>&gt;/<var>vc</var>&lt;<var>vcversion</var>&gt;/&lt;<var>lib</var>&gt;&lt;<var>variant</var>&gt;.{def,lib,pdb}</samp></p>
+
+                <p>where:</p>
+
+                <p>
+<div class="tablenoborder"><table cellpadding="4" summary="" width="100%" frame="border" border="1" cellspacing="0" rules="all">
+                
+                
+                
+                
+                <thead align="left">
+                    <tr>
+                        <th class="cellrowborder" valign="top" width="16.666666666666664%" id="d122932e172"><p>&lt;<var>arch</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="16.666666666666664%" id="d122932e179"><p>&lt;<var>vcversion</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="33.33333333333333%" id="d122932e186"><p>&lt;<var>lib</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="33.33333333333333%" id="d122932e193"><p>&lt;<var>variant</var>&gt;</p>
+</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="16.666666666666664%" headers="d122932e172 "><p>ia32</p>
+<p>intel64</p>
+</td>
+
+                        <td class="cellrowborder" valign="top" width="16.666666666666664%" headers="d122932e179 "><p>14, 14_uwp</p>
+</td>
+
+                        <td class="cellrowborder" valign="top" width="33.33333333333333%" headers="d122932e186 "><p>tbb</p>
+<p>tbbmalloc</p>
+<p>tbbmalloc_proxy</p>
+<p>tbb_preview</p>
+</td>
+
+                        <td class="cellrowborder" valign="top" width="33.33333333333333%" headers="d122932e193 "><p>(none)</p>
+<p>_debug</p>
+</td>
+
+                    </tr>
+
+                </tbody>
+
+                </table>
+</div>
+</p>
+
+                <p>Linux* OS:</p>
+
+                <p><samp class="codeph">lib/&lt;<var>arch</var>&gt;/&lt;<var>gccversion</var>&gt;/<var>lib</var>&lt;<var>lib</var>&gt;&lt;<em>variant</em>&gt;.{so,so2}</samp></p>
+
+                <p>where:</p>
+
+                <p>
+<div class="tablenoborder"><table cellpadding="4" summary="" width="100%" frame="border" border="1" cellspacing="0" rules="all">
+                
+                
+                
+                
+                <thead align="left">
+                    <tr>
+                        <th class="cellrowborder" valign="top" width="16.666666666666664%" id="d122932e280"><p>&lt;<var>arch</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="16.666666666666664%" id="d122932e287"><p>&lt;<var>gccversion</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="33.33333333333333%" id="d122932e294"><p>&lt;<var>lib</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="33.33333333333333%" id="d122932e301"><p>&lt;<var>variant</var>&gt;</p>
+</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="16.666666666666664%" headers="d122932e280 "><p>ia32</p>
+</td>
+
+                        <td class="cellrowborder" rowspan="2" valign="middle" width="16.666666666666664%" headers="d122932e287 "><p>gcc4.8</p>
+</td>
+
+                        <td class="cellrowborder" rowspan="3" valign="middle" width="33.33333333333333%" headers="d122932e294 "><p>tbb</p>
+<p>tbbmalloc</p>
+<p>tbbmalloc_proxy</p>
+<p>tbb_preview</p>
+</td>
+
+                        <td class="cellrowborder" rowspan="3" valign="middle" width="33.33333333333333%" headers="d122932e301 "><p>(none)</p>
+<p>_debug</p>
+</td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="16.666666666666664%" headers="d122932e280 "><p>intel64</p>
+</td>
+
+                    </tr>
+
+                </tbody>
+
+                </table>
+</div>
+</p>
+
+
+                <p>macOS*:</p>
+
+                <p><samp class="codeph">lib/<var>lib</var>&lt;<var>lib</var>&gt;&lt;<var>variant</var>&gt;.dylib</samp></p>
+
+                <p>where:</p>
+
+                <p>
+<div class="tablenoborder"><table cellpadding="4" summary="" width="100%" frame="border" border="1" cellspacing="0" rules="all">
+                
+                
+                <thead align="left">
+                    <tr>
+                        <th class="cellrowborder" valign="top" width="50%" id="d122932e383"><p>&lt;<var>lib</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="50%" id="d122932e390"><p>&lt;<var>variant</var>&gt;</p>
+</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="50%" headers="d122932e383 "><p>tbb</p>
+<p>tbbmalloc</p>
+<p>tbbmalloc_proxy</p>
+<p>tbb_preview</p>
+</td>
+
+                        <td class="cellrowborder" valign="top" width="50%" headers="d122932e390 "><p>(none)</p>
+<p>_debug</p>
+</td>
+
+                    </tr>
+
+                </tbody>
+
+                </table>
+</div>
+</p>
+
+                <p>Android* OS:</p>
+
+                <p><samp class="codeph">lib/android/&lt;<var>arch</var>&gt;/<var>lib</var>&lt;<var>lib</var>&gt;&lt;<var>variant</var>&gt;.so</samp></p>
+
+                <p>where:</p>
+
+                <p>
+<div class="tablenoborder"><table cellpadding="4" summary="" width="100%" frame="border" border="1" cellspacing="0" rules="all">
+                
+                
+                
+                <thead align="left">
+                    <tr>
+                        <th class="cellrowborder" valign="top" width="16.666666666666664%" id="d122932e461"><p>&lt;<var>arch</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="33.33333333333333%" id="d122932e468"><p>&lt;<var>lib</var>&gt;</p>
+</th>
+
+                        <th class="cellrowborder" valign="top" width="33.33333333333333%" id="d122932e475"><p>&lt;<var>variant</var>&gt;</p>
+</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="16.666666666666664%" headers="d122932e461 "><p>(none)</p>
+<p>x86_64</p>
+</td>
+
+                        <td class="cellrowborder" valign="top" width="33.33333333333333%" headers="d122932e468 "><p>tbb</p>
+<p>tbbmalloc</p>
+<p>tbb_preview</p>
+</td>
+
+                        <td class="cellrowborder" valign="top" width="33.33333333333333%" headers="d122932e475 "><p>(none)</p>
+<p>_debug</p>
+</td>
+
+                    </tr>
+
+                </tbody>
+
+                </table>
+</div>
+</p>
+
+                <p></p>
+
+                <p>See the Package Contents pages for
+                    <a href="Windows_OS_ug.html#tutorial_Windows_OS">Windows* OS</a>,
+                    <a href="Linux_OS.html#tutorial_Linux_OS">Linux* OS</a> and
+                    <a href="OS_X_Systems.html#tutorial_OS_X_Systems">macOS*</a>
+                    for more information on each version.
+                </p>
+
+            </td>
+
+        </tr>
+
+        <tr>
+            <td class="cellrowborder" valign="top" width="16.666666666666664%"><p>Examples</p>
+</td>
+
+            <td class="cellrowborder" valign="top" width="66.66666666666666%"><p><samp class="codeph">examples/<var>&lt;class&gt;</var>/*/.</samp></p>
+</td>
+
+        </tr>
+
+    </tbody>
+
+    </table>
+</div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Package_Contents.html">Package Contents</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Windows_OS_ug.html#tutorial_Windows_OS">Windows* OS
+          </a></div>
+<div><a href="Linux_OS.html#tutorial_Linux_OS">Linux* OS
+          </a></div>
+<div><a href="OS_X_Systems.html#tutorial_OS_X_Systems">macOS* Systems
+          </a></div></div></div>
+
+</body>
+</html>

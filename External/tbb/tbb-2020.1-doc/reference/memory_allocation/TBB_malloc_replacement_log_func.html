@@ -1,0 +1,129 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="TBB_malloc_replacement_log Function" />
+<meta name="DC.subject" content="malloc replacement status, TBB_malloc_replacement_log" />
+<meta name="keywords" content="malloc replacement status, TBB_malloc_replacement_log" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/memory_allocation.html" />
+<meta name="DC.Relation" scheme="URI" content="../../tbb_userguide/Windows_C_Dynamic_Memory_Interface_Replacement.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="function_replacement_logging_api" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>TBB_malloc_replacement_log Function</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="function_replacement_logging_api">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">TBB_malloc_replacement_log Function</h1>
+
+  
+  <div>
+     <div class="section"><h2 class="sectiontitle">Summary</h2>
+        
+        <p>Function that provides information about the status
+          of dynamic memory allocation replacement (Windows* OS only).
+        </p>
+
+     </div>
+
+     <div class="section"><h2 class="sectiontitle">Syntax</h2>
+        
+<pre>
+extern "C" int TBB_malloc_replacement_log(char *** log_ptr);
+</pre>
+     </div>
+
+     <div class="section"><h2 class="sectiontitle">Header</h2>
+        
+        <pre>#include "tbb/tbbmalloc_proxy.h"</pre>
+     </div>
+
+     <div class="section"><h2 class="sectiontitle">Description</h2>
+        
+        <p>Dynamic replacement of memory allocation functions on Windows* OS
+            uses in-memory binary instrumentation techniques. To ensure that such instrumentation is safe,
+            TBB first searches for a subset of replaced functions in the Visual C++* runtime DLLs,
+            and checks if each one has a known bytecode pattern. If any required function is not found
+            or its bytecode pattern is unknown, the replacement is skipped, and the program continues
+            to use the standard memory allocation functions.
+        </p>
+
+        <p>The <samp class="codeph">TBB_malloc_replacement_log</samp> function allows the program
+            to check if the dynamic memory replacement has happened, and to get a log of the performed checks.
+        </p>
+
+        <p><strong>Returns:</strong>
+            0 if all necessary functions were successfully found and the replacement took place, otherwise -1.
+        </p>
+
+        <p>The <samp class="codeph">log_ptr</samp> parameter must be an address of
+            a <samp class="codeph">char**</samp> variable, or be NULL. If it is not NULL, the function
+            writes there the address of an array of NULL-terminated strings containing detailed
+            information about the searched functions in the following format:
+        </p>
+
+<pre>
+<em>search_status</em>: <em>function_name</em> (<em>dll_name</em>), byte pattern: &lt;<em>bytecodes</em>&gt;
+</pre>
+        <p>
+            For more information about the replacement of dynamic memory allocation functions,
+            see "Windows* OS C/C++ Dynamic Memory Interface Replacement" section in the TBB Developer Guide.
+        </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Usage example</h2>
+        
+<pre>
+#include "tbb/tbbmalloc_proxy.h"
+#include &lt;stdio.h&gt;
+
+int main(){
+    char **func_replacement_log;
+    int func_replacement_status = TBB_malloc_replacement_log(&amp;func_replacement_log);
+
+    if (func_replacement_status != 0) {
+        printf("tbbmalloc_proxy cannot replace memory allocation routines\n");
+        for (char** log_string = func_replacement_log; *log_string != 0; log_string++) {
+            printf("%s\n",*log_string);
+        }
+    }
+
+    return 0;
+}
+</pre>
+        <p>Example output:</p>
+
+<pre>
+tbbmalloc_proxy cannot replace memory allocation routines
+Success: free (ucrtbase.dll), byte pattern: &lt;C7442410000000008B4424&gt;
+Fail: _msize (ucrtbase.dll), byte pattern: &lt;E90B000000CCCCCCCCCCCC&gt;
+</pre>
+     </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/memory_allocation.html">Memory Allocation</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../tbb_userguide/Windows_C_Dynamic_Memory_Interface_Replacement.html">Windows* OS C/C++ Dynamic Memory Interface Replacement</a></div></div></div>
+
+</body>
+</html>

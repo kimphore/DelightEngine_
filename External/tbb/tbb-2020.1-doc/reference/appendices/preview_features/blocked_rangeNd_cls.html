@@ -1,0 +1,412 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="blocked_rangeNd Template Class" />
+<meta name="DC.subject" content="blocked_rangeNd Template Class" />
+<meta name="keywords" content="blocked_rangeNd Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="blocked_rangeNd_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>blocked_rangeNd Template Class</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="blocked_rangeNd_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">blocked_rangeNd Template Class</h1>
+
+  
+  <div>
+      <div class="section"><h2 class="sectiontitle">Summary</h2>
+        
+        <p>
+          Template class that represents recursively divisible N-dimensional half-open interval.
+          The use of <samp class="codeph">blocked_rangeNd</samp> requires C++11 support.
+        </p>
+
+      </div>
+
+      <div class="section"><h2 class="sectiontitle">Header</h2>
+        
+        <p>
+<pre>#define TBB_PREVIEW_BLOCKED_RANGE_ND 1
+#include "tbb/blocked_rangeNd.h"
+</pre>
+        </p>
+
+      </div>
+
+      <div class="section"><h2 class="sectiontitle">Syntax</h2>
+        
+        <pre>template&lt;typename Value, unsigned int N&gt; class blocked_rangeNd;</pre>
+      </div>
+
+      <div class="section"><h2 class="sectiontitle">Description</h2>
+        
+        <p>
+          A <samp class="codeph">blocked_rangeNd&lt;Value, N&gt;</samp> is the N-dimensional extension of the
+          <samp class="codeph">blocked_range</samp>. Each dimension of the range is represented by a
+          <samp class="codeph">blocked_range&lt;Value&gt;</samp>. The <samp class="codeph">Value</samp> must meet
+          the requirements of the <em>Value Concept</em> described in the corresponding
+          table of the <em>blocked_range Template Class</em> section.
+        </p>
+
+        <p>
+          A <samp class="codeph">blocked_rangeNd</samp> models the Range Concept.
+          A <samp class="codeph">blocked_rangeNd</samp> is divisible if either its axis is divisible, and
+          is empty if either its axis is empty. It supports proportional splitting.
+        </p>
+
+      </div>
+
+      <div class="section"><h2 class="sectiontitle">Members</h2>
+        
+<pre>
+namespace tbb {
+
+    template&lt;typename Value, unsigned int N&gt;
+    class blocked_rangeNd {
+    public:
+        // Types
+        using value_type = Value;
+
+        // Constructor
+        blocked_rangeNd(const blocked_range&lt;Value&gt;&amp; dim<sub>0</sub>, ..., const blocked_range&lt;Value&gt;&amp; dim<sub>N-1</sub>);
+
+        // Splitting constructors
+        blocked_rangeNd(blocked_rangeNd&amp; r, split proportion);
+        blocked_rangeNd(blocked_rangeNd&amp; r, proportional_split proportion);
+
+        // Proportional split is enabled
+        static const bool is_splittable_in_proportion = true;
+
+        // Capacity
+        static constexpr unsigned int ndims();
+        bool empty() const;
+
+        // Access
+        const tbb::blocked_range&lt;Value&gt;&amp; dim(unsigned int k) const;
+        bool is_divisible() const;
+    };
+
+}
+</pre>
+        
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+           members of this template class.
+          </span><thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d24661e127">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d24661e130">Description</th>
+
+            </tr>
+</thead>
+
+           <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 "><span class="keyword">value_type
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+                <p>
+                  The type of a <samp class="codeph">Value</samp> in any of N dimensions constituting a range.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">blocked_rangeNd&lt;Value, N&gt;(const blocked_range&lt;Value&gt;&amp;
+                dim</span><sub>0</sub><span class="keyword">, ..., const blocked_range&lt;Value&gt;&amp;
+                dim</span><sub>N-1</sub><span class="keyword">)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+                <p>
+                  Constructor accepts exactly N <samp class="codeph">blocked_range&lt;value_type&gt;</samp>
+                  objects representing each dimension.
+                </p>
+
+                <p>
+                  <strong>Effects:</strong> Constructs a <samp class="codeph">blocked_rangeNd</samp> as a Cartesian
+                  product of N half-open one-dimensional intervals:
+                </p>
+
+                <p>
+                  <samp class="codeph">[ dim<sub>0</sub>.begin(), dim<sub>0</sub>.end() ) x ... x [ dim<sub>N-1</sub>.begin(), dim<sub>N-1</sub>.end() )</samp>
+                </p>
+
+                <p>with the given grain sizes.</p>
+
+                <p><strong>Example:</strong> Statements</p>
+
+                <p><samp class="codeph">blocked_rangeNd&lt;std::size_t, 2&gt; r({1, 17}, {3, 284, 5});</samp></p>
+
+                <p>and</p>
+
+                <p>
+                  <samp class="codeph">blocked_rangeNd&lt;std::size_t, 2&gt; r(blocked_range&lt;std::size_t&gt;{1, 17},
+                  blocked_range&lt;std::size_t&gt;{3, 284, 5});</samp>
+                </p>
+
+                <p>
+                  construct two equal two-dimensional spaces. Each of them contains all value pairs of
+                  the form <samp class="codeph">(i, j)</samp>, where <samp class="codeph">i</samp> ranges from 1 to 16
+                  with a grain size of 1, and <samp class="codeph">j</samp> ranges from 3 to 283
+                  with a grain size of 5.
+               </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">blocked_rangeNd&lt;Value, N&gt;(blocked_rangeNd&amp; r, split proportion)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+               <p>Basic splitting constructor.</p>
+
+               <p>
+                <strong>Requirements</strong>:
+                <samp class="codeph">is_divisible()</samp> is true.
+               </p>
+
+               <p>
+                <strong>Effects</strong>: Partitions <samp class="codeph">r</samp> into two subranges across one
+                of the dimensions. The axis to split is chosen for maximal ratio of its range size
+                to the respective grain size. In that dimension, the newly constructed blocked_range
+                is approximately the second half of the original range, and the range is updated to
+                be the remainder. Other dimensions and the grain sizes for each subrange remain the
+                same as in the original range.
+               </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">blocked_rangeNd&lt;Value, N&gt;(blocked_rangeNd&amp; r, proportional_split proportion)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+               <p>Proportional splitting constructor.</p>
+
+               <p>
+                <strong>Requirements</strong>:
+                <samp class="codeph">is_divisible()</samp> is <samp class="codeph">true</samp>.
+               </p>
+
+               <p>
+                <strong>Effects</strong>: Partitions <samp class="codeph">r</samp> into two subranges in the given
+                proportion across one of the dimensions. Except for proportional splitting of the
+                chosen axis, the behavior and effects are the same as those of the
+                basic splitting constructor.
+               </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+               <span class="keyword"> static const bool is_splittable_in_proportion</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+                <p>
+                  Denotes the ability of <samp class="codeph">blocked_rangeNd</samp> instances to be
+                  split proportionally. Set to <samp class="codeph">true</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">static constexpr unsigned int ndims()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+               <p>
+                <strong>Returns</strong>: the dimensionality of the range, which is <samp class="codeph">N</samp>.
+                The method can be used in constant expressions.
+               </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">bool empty() const</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+               <p><strong>Effects</strong>: Determines if range is empty.
+               </p>
+
+               <p>
+                <strong>Returns</strong>: <samp class="codeph">true</samp> if at least one dimension is empty,
+                otherwise <samp class="codeph">false</samp>.
+               </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">const blocked_range&lt;Value&gt;&amp; dim(unsigned int k) const</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+                <p>
+                  <strong>Requirements</strong>:
+                  <samp class="codeph">0 &lt;= k &lt; N</samp>
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">blocked_range</samp> for the <samp class="codeph">k</samp>-th
+                  dimension. The dimensions are numbered in the order of constructor arguments,
+                  starting from 0.
+                </p>
+
+                <p>
+                  <strong>Example:</strong> For the range <samp class="codeph">r</samp>, defined as:
+                </p>
+
+                <p>
+                  <samp class="codeph">blocked_rangeNd&lt;std::size_t, 2&gt; r({1, 17}, {3, 284, 5});</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">r.dim(0)</samp> returns
+                  <samp class="codeph">blocked_range&lt;std::size_t&gt;(1, 17)</samp> and
+                  <samp class="codeph">r.dim(1)</samp> returns
+                  <samp class="codeph">blocked_range&lt;std::size_t&gt;(3, 284, 5)</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24661e127 ">
+                <span class="keyword">bool is_divisible() const</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24661e130 ">
+               <p><strong>Effects</strong>: Determines if range can be split into subranges.</p>
+
+               <p><strong>Returns</strong>: <samp class="codeph">true</samp> if at least one dimension is divisible,
+               otherwise false.
+               </p>
+
+              </td>
+
+            </tr>
+
+           </tbody>
+
+          </table>
+</div>
+
+      </div>
+
+      <div class="section"><h2 class="sectiontitle"> Example</h2>
+        
+          <p>
+            The example demonstrates calculation of a 3-dimensional filter over the pack of
+            feature maps applying 3-dimensional kernel to subrange of features.
+          </p>
+
+          <p>
+            The <samp class="codeph">convolution3d</samp> function iterates over the output cells and sets
+            cell values to the result of the <samp class="codeph">kernel3d</samp> function. For the iteration
+            to be performed in parallel, <samp class="codeph">tbb::parallel_for</samp> is called with a
+            <samp class="codeph">tbb::blocked_rangeNd&lt;int, 3&gt;</samp> as an argument.
+          </p>
+
+          <p>
+            The <samp class="codeph">kernel3d</samp> function summarizes the values from feature maps
+            in the scope of a 3-dimensional kernel.
+          </p>
+
+          <pre>#define TBB_PREVIEW_BLOCKED_RANGE_ND 1
+#include "tbb/blocked_rangeNd.h"
+
+#include "tbb/parallel_for.h"
+#include "tbb/parallel_reduce.h"
+
+template&lt;typename Features&gt;
+float kernel3d(const Features&amp; feature_maps, int i, int j, int k,
+               int kernel_length, int kernel_width, int kernel_height) {
+    float result = 0.f;
+
+    for (int feature_i = i; feature_i &lt; i + kernel_length; ++feature_i)
+        for (int feature_j = j; feature_j &lt; j + kernel_width; ++feature_j)
+            for (int feature_k = k; feature_k &lt; k + kernel_width; ++feature_k)
+                result += feature_maps[feature_i][feature_j][feature_k];
+
+    return result;
+}
+
+template&lt;typename Features, typename Output&gt;
+void convolution3d(const Features&amp; feature_maps, Output&amp; out,
+                   int out_length, int out_width, int out_heigth,
+                   int kernel_length, int kernel_width, int kernel_height) {
+    using range_t = tbb::blocked_rangeNd&lt;int, 3&gt;;
+
+    tbb::parallel_for(
+        range_t({0, out_length}, {0, out_width}, {0, out_heigth}),
+        [&amp;](const range_t&amp; out_range) {
+            auto out_x = out_range.dim(0);
+            auto out_y = out_range.dim(1);
+            auto out_z = out_range.dim(2);
+
+            for (int i = out_x.begin(); i &lt; out_x.end(); ++i)
+                for (int j = out_y.begin(); j &lt; out_y.end(); ++j)
+                    for (int k = out_z.begin(); k &lt; out_z.end(); ++k)
+                        out[i][j][k] = kernel3d(feature_maps, i, j, k,
+                                                kernel_length, kernel_width, kernel_height);
+        }
+    );
+}</pre>
+   </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/preview_features.html">Preview Features</a></div>
+</div>
+<div></div>
+</body>
+</html>

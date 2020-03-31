@@ -1,19 +1,22 @@
 #pragma once
 
 // Default 
-typedef short				_short;
-typedef int					_int;
-typedef unsigned int		_uint;
-typedef long				_long;
+typedef short				Short;
+typedef int					Int32;
+typedef unsigned int		UInt32;
+typedef long				Long;
+typedef unsigned long		Dword;
+typedef __int64				Int64;
+typedef unsigned __int64	UInt64;
+typedef float				Float32;
+typedef double				Float64;
 
-typedef float				_float;
-typedef double				_double;
 
-typedef unsigned char		_ubyte;
-typedef char				_byte;
-typedef char				_char;
-typedef TCHAR				_tchar;
-typedef bool				_bool;
+typedef unsigned char		Byte;
+typedef char				Char;
+typedef TCHAR				Tchar;
+typedef bool				Bool8;
+typedef INT					Bool32;
 
-typedef unsigned int		_result;
-typedef HRESULT				_hres;
+typedef unsigned int		Result;
+typedef HRESULT				Hres;

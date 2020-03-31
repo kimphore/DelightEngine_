@@ -1,0 +1,115 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Memory Allocation" />
+<meta name="DC.subject" content="Memory Allocation, dynamic memory allocation" />
+<meta name="keywords" content="Memory Allocation, dynamic memory allocation" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/title.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Which_Dynamic_Libraries_to_Use.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Allocator_Configuration.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Automically_Replacing_malloc.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Memory_Allocation" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Memory Allocation</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Memory_Allocation">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">Memory Allocation</h1>
+
+
+<div>
+
+<p>Intel&reg; Threading Building Blocks (Intel&reg; TBB) provides several memory allocator templates
+   that are similar to the STL template class <span class="option">std::allocator</span>. Two templates,
+   <samp class="codeph">scalable_allocator&lt;T&gt;</samp> and <samp class="codeph">cache_aligned_allocator&lt;T&gt;</samp>,
+   address critical issues in parallel programming as follows:</p>
+
+
+<ul>
+   <li>
+      <p><strong>Scalability</strong>. Problems of scalability arise when using memory allocators originally designed
+      for serial programs, on threads that might have to compete for a single shared pool in a way
+      that allows only one thread to allocate at a time.</p>
+
+      <p> Use the <samp class="codeph">scalable_allocator&lt;T&gt;</samp> template to avoid scalability bottlenecks.
+      This template can improve the performance of programs that rapidly allocate and free memory.</p>
+
+   </li>
+
+   <li>
+      <p><strong>False sharing</strong>. Problems of sharing arise when two threads access different words that share
+      the same cache line. The problem is that a cache line is the unit of information interchange
+      between processor caches. If one processor modifies a cache line and another processor reads
+      the same cache line, the line must be moved from one processor to the other, even if the two processors
+      are dealing with different words within the line. False sharing can hurt performance because cache lines
+      can take hundreds of clocks to move.</p>
+
+      <p>Use the <samp class="codeph">cache_aligned_allocator&lt;T&gt;</samp> template to always allocate
+      on a separate cache line. Two objects allocated by <samp class="codeph">cache_aligned_allocator</samp>
+      are guaranteed to not have false sharing. However, if an object is allocated by
+      <samp class="codeph">cache_aligned_allocator</samp> and another object is allocated some other way, there is no guarantee.</p>
+
+   </li>
+
+</ul>
+
+
+<p>You can use these allocator templates as the <em>allocator</em> argument to STL template classes.
+The following code shows how to declare an STL vector that uses <samp class="codeph">cache_aligned_allocator</samp>
+for allocation:</p>
+
+
+<pre>std::vector&lt;int,cache_aligned_allocator&lt;int&gt; &gt;;</pre>
+
+<p><div class="Note"><h3 class="NoteTipHead">Tip</h3> The functionality of <samp class="codeph">cache_aligned_allocator&lt;T&gt;</samp> comes at some cost in space,
+   because it must allocate at least one cache line’s worth of memory, even for a small object.
+   So use <samp class="codeph">cache_aligned_allocator&lt;T&gt;</samp> only if false sharing is likely to be a real problem.
+</div>
+</p>
+
+
+<p>
+   The scalable memory allocator also provides a set of functions equivalent to the C standard library
+   memory management routines but has the <samp class="codeph">scalable_</samp> prefix in their names,
+   as well as the way to easily redirect the standard routines to these functions.
+</p>
+
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/title.html">Intel&reg; Threading Building Blocks Developer Guide</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../tbb_userguide/Which_Dynamic_Libraries_to_Use.html">Which Dynamic Libraries to Use</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/Allocator_Configuration.html">Configuring the Memory Allocator</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/Automically_Replacing_malloc.html">Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

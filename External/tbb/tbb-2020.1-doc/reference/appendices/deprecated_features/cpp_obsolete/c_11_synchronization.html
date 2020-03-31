@@ -1,0 +1,158 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="C++11 Synchronization" />
+<meta name="DC.subject" content="C++11 Synchronization" />
+<meta name="keywords" content="C++11 Synchronization" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="c_11_synchronization" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>C++11 Synchronization</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="c_11_synchronization">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">C++11  Synchronization</h1>
+
+    
+<div><div class="section">
+<div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+This feature is deprecated and will be removed in the future.
+</p>
+</div>
+
+<p>The Intel&reg; Threading Building Blocks (Intel&reg; TBB) library 
+approximates a portion of C++11 interfaces for condition variables and scoped locking.
+The major differences are:</p>
+
+        <ul>
+            <li><p>The implementation uses the <samp class="codeph">tbb::tick_count</samp> interface instead of the C++11 &lt;chrono&gt; interface. </p>
+</li>
+
+            <li><p>The implementation throws <samp class="codeph">std::runtime_error </samp>instead of a C++11 std::system_error.</p>
+</li>
+
+            <li><p>The implementation omits or approximates features requiring C++11 language support such as <samp class="codeph">constexpr</samp> or <samp class="codeph">explicit</samp> operators.</p>
+</li>
+
+            <li><p>The implementation works in conjunction with tbb::mutex wherever the C++11 specification calls for a <samp class="codeph">std::mutex</samp>. </p>
+</li>
+
+            <li><p> <samp class="codeph">notify_all_at_thread_exit()</samp>
+            is not supported. </p>
+</li>
+
+        </ul>
+
+        <p>See the C++11 standard for a detailed descriptions of the members.</p>
+
+        <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>When support for <samp class="codeph">std::system_error</samp> becomes available, implementations may throw <samp class="codeph">std::system_error</samp> instead of <samp class="codeph">std::runtime_error</samp>.</p>
+</div>
+
+        <p>The library defines the C++11 interfaces in namespace std, not namespace tbb, as explained in Section std Namespace.</p>
+
+        </div>
+<div class="section"><h2 class="sectiontitle">Header</h2>
+        <pre>#include "tbb/compat/condition_variable"</pre>
+        </div>
+<div class="section"><h2 class="sectiontitle">Members</h2>
+<pre>namespace std {
+        struct defer_lock_t { }; 
+        struct try_to_lock_t { }; 
+        struct adopt_lock_t { }; 
+        const defer_lock_t defer_lock = {};
+        const try_to_lock_t try_to_lock = {};
+        const adopt_lock_t adopt_lock = {};
+     
+        template&lt;typename M&gt;
+        class lock_guard {
+        public:
+            typedef M mutex_type;
+            explicit lock_guard(mutex_type&amp; m);
+            lock_guard(mutex_type&amp; m, adopt_lock_t);
+            ~lock_guard();
+        };
+     
+        template&lt;typename M&gt;
+        class unique_lock: no_copy {
+        public:
+            typedef M mutex_type;
+     
+            unique_lock();
+            explicit unique_lock(mutex_type&amp; m);
+            unique_lock(mutex_type&amp; m, defer_lock_t);
+            unique_lock(mutex_type&amp; m, try_to_lock_t));
+            unique_lock(mutex_type&amp; m, adopt_lock_t);
+            unique_lock(mutex_type&amp; m, const tick_count::interval_t &amp;i);
+            ~unique_lock();
+     
+            void lock();
+     
+            bool try_lock();
+            bool try_lock_for( const tick_count::interval_t &amp;i );
+     
+            void unlock();
+     
+            void swap(unique_lock&amp; u);
+     
+            mutex_type* release();
+     
+            bool owns_lock() const;
+            operator bool() const;
+            mutex_type* mutex() const;
+        };
+     
+        template&lt;typename M&gt;
+        void swap(unique_lock&lt;M&gt;&amp; x, unique_lock&lt;M&gt;&amp; y);
+     
+        enum cv_status {no_timeout, timeout};
+     
+        class condition_variable : no_copy {
+        public:
+            condition_variable();
+            ~condition_variable();
+     
+            void notify_one();
+            void notify_all();
+     
+            void wait(unique_lock&lt;mutex&gt;&amp; lock);
+     
+            template &lt;class Predicate&gt;
+            void wait(unique_lock&lt;mutex&gt;&amp; lock, Predicate pred);
+     
+            cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock, 
+                               const tick_count::interval_t&amp; i);
+     
+            template&lt;typename Predicate&gt;
+            bool wait_for(unique_lock&lt;mutex&gt;&amp; lock, 
+                          const tick_count::interval_t &amp;i, 
+                          Predicate pred);
+     
+            typedef <em>implementation-defined</em> native_handle_type;
+            native_handle_type native_handle();
+        };
+    } // namespace std
+     </pre></div>
+</div>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/deprecated_features/cpp_obsolete.html">Obsolete C++ functionality</a></div>
+</div>
+<div></div>
+</body>
+</html>

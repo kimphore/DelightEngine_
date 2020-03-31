@@ -1,0 +1,289 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="concurrent_lru_cache::handle class" />
+<meta name="DC.subject" content="concurrent_lru_cache::handle class" />
+<meta name="keywords" content="concurrent_lru_cache::handle class" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/concurrent_lru_cache_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="handle_object_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>concurrent_lru_cache::handle class</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="handle_object_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">concurrent_lru_cache::handle class</h1>
+
+  
+  <div>
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>Class that provides read and write access to values
+		  stored in <samp class="codeph">concurrent_lru_cache</samp>.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		
+		<pre>template &lt;typename key_type, typename value_type, typename value_functor_type&gt;
+class concurrent_lru_cache&lt;key_type, value_type, value_functor_type&gt;::handle;</pre>
+		<p>The implementation might declare <samp class="codeph">concurrent_lru_cache::handle</samp>
+		   as a <samp class="codeph">typedef</samp> alias to an implementation-defined class.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		
+		<pre>#include "tbb/concurrent_lru_cache.h"</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Description</h2>
+		
+		<p><samp class="codeph">handle</samp> is a proxy object
+		  that refers to a value stored in a <samp class="codeph">concurrent_lru_cache</samp> container.
+		</p>
+
+		<p>An alive <samp class="codeph">handle</samp> object prevents the container
+		  from erasing the value which it holds reference to. The reference is released when
+		  <samp class="codeph">handle</samp> is reassigned or destroyed. Once the last reference
+		  to a value is released the container is allowed to erase the value.
+		</p>
+
+		<p>A <samp class="codeph">handle</samp> object cannot be copied.
+		  Instead it allows transferring the reference to another <samp class="codeph">handle</samp> instance,
+		  via implicit conversion to and from <samp class="codeph">handle_move_t</samp> prior to C++11,
+		  and via move semantics starting from C++11.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Members and free-standing functions</h2>
+		
+
+		<pre>namespace tbb {
+    template &lt;typename key_type,
+              typename value_type,
+              typename value_functor_type&gt;
+    class concurrent_lru_cache&lt;key_type, value_type, value_functor_type&gt;::handle {
+    public:
+        handle();
+        ~handle();
+
+        // Supported since C++11
+        handle(handle&amp;&amp; src);
+        handle&amp; operator=(handle&amp;&amp; src);
+
+        // Supported until C++11
+        handle(handle_move_t m);
+        handle&amp; operator=(handle_move_t m);
+        operator handle_move_t();
+        friend handle_move_t move(handle&amp; h);
+
+        operator bool() const;
+        value_type&amp; value();
+
+    private:
+        void operator=(handle&amp;);
+        handle(handle&amp;);
+    };
+
+}</pre>
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of this class.
+		  </span><thead align="left">
+				<tr>
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d25700e122">Member
+				  </th>
+
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d25700e125">Description
+				  </th>
+
+				</tr>
+</thead>
+
+			 <tbody>
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 "><span class="keyword">handle()</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p>Constructs a <samp class="codeph">handle</samp> object that
+						does not refer to any value.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 "><span class="keyword">~handle()</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p>Releases the reference (if exists) to a value stored in
+						<samp class="codeph">concurrent_lru_cache</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 ">
+					 <p><span class="keyword">handle(handle&amp;&amp; src)</span></p>
+
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p><strong>Supported since C++11.</strong>
+						Move constructor transfers the reference to a value stored in
+						<samp class="codeph">concurrent_lru_cache</samp> from <samp class="codeph">src</samp>
+						to the newly constructed object. Upon completion <samp class="codeph">src</samp>
+						no longer refers to any value.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 ">
+					 <p><span class="keyword">handle&amp; operator=(handle&amp;&amp; src)</span></p>
+
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p><strong>Supported since C++11.</strong>
+						Move assignment operator transfers the reference to a value stored in
+						<samp class="codeph">concurrent_lru_cache</samp> from <samp class="codeph">src</samp> to
+						<samp class="codeph">*this</samp>. If existed, the previous reference held by
+						<samp class="codeph">*this</samp> is released. Upon completion <samp class="codeph">src</samp>
+						no longer refers to any value.
+					 </p>
+
+                     <p><strong>Returns</strong>: <samp class="codeph">*this</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 ">
+					 <p><span class="keyword">handle(handle_move_t m)</span></p>
+
+					 <p><span class="keyword">handle&amp; operator=(handle_move_t m)</span></p>
+
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p><strong>Supported until C++11.</strong>
+						Enable a <samp class="codeph">handle</samp> object to be constructed and assigned from 
+						a <samp class="codeph">handle_move_t</samp> object. Together with convertors to
+						<samp class="codeph">handle_move_t</samp> described below, these methods allow
+						transferring references to <samp class="codeph">concurrent_lru_cache</samp> items
+						between <samp class="codeph">handle</samp> instances in absence of C++11 move semantics.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 ">
+					 <p><span class="keyword">operator handle_move_t()</span></p>
+
+					 <p><span class="keyword">friend handle_move_t move(handle&amp; h)</span></p>
+
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p><strong>Supported until C++11.</strong> A conversion operator and
+						a free-standing friend function to transfer the reference held by
+						a <samp class="codeph">handle</samp> object to a temporary <samp class="codeph">handle_move_t</samp> object.
+						The conversion operator should not be called directly, instead use
+						the <samp class="codeph">move</samp> function. Upon completion the <samp class="codeph">handle</samp>
+						object no longer refers to any value.
+					 </p>
+
+					 <p><strong>Return</strong>: <samp class="codeph">handle_move_t</samp> object
+						referring to the value previously referred by the given <samp class="codeph">handle</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+                <tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 "><span class="keyword">operator bool() const</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p>Checks if the <samp class="codeph">handle</samp> object holds reference to any value.
+					 </p>
+
+                     <p><strong>Returns</strong>: <samp class="codeph">true</samp> if <samp class="codeph">*this</samp>
+						holds reference to a value stored in <samp class="codeph">concurrent_lru_cache</samp>;
+						<samp class="codeph">false</samp> otherwise.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d25700e122 "><span class="keyword">value_type&amp; value()</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d25700e125 ">
+					 <p><strong>Returns</strong>: a reference to a <samp class="codeph">value_type</samp>
+						object stored in <samp class="codeph">concurrent_lru_cache</samp>.
+					 </p>
+
+					 <p>Calling the method for a <samp class="codeph">handle</samp> object
+						that does not refer to any value results in undefined behavior.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+			 </tbody>
+
+		  </table>
+</div>
+
+	 </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/concurrent_lru_cache_cls.html">concurrent_lru_cache Template Class</a></div>
+</div>
+<div></div>
+</body>
+</html>

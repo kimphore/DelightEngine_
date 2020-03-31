@@ -106,11 +106,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;./../External/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;./../External/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\test\packages\EABase\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\External\eastl\lib\x64;$(SolutionDir)\External\tbb\lib\vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)BuildCopy.bat"</Command>
@@ -149,25 +150,46 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Code\comptr.h" />
+    <ClInclude Include="Code\allocator.h" />
     <ClInclude Include="Code\EngineKernel.h" />
     <ClInclude Include="Code\Logger.h" />
+    <ClInclude Include="Code\MemoryPoolInterface.h" />
+    <ClInclude Include="Code\PixelShader.h" />
     <ClInclude Include="Code\RHI.h" />
     <ClInclude Include="Code\RHI_DX12Device.h" />
+    <ClInclude Include="Code\SceneRenderer.h" />
+    <ClInclude Include="Code\SceneView.h" />
+    <ClInclude Include="Code\ShaderBase.h" />
+    <ClInclude Include="Code\ShaderManager.h" />
+    <ClInclude Include="Code\StackMemoryPool.h" />
     <ClInclude Include="Code\SystemSettings.h" />
     <ClInclude Include="Code\tinyxml2.h" />
+    <ClInclude Include="Code\VertexShader.h" />
+    <ClInclude Include="Header\comptr.h" />
+    <ClInclude Include="Header\crcchecksum.h" />
     <ClInclude Include="Header\Define.h" />
+    <ClInclude Include="Header\DefineFlag.h" />
     <ClInclude Include="Header\Enum.h" />
     <ClInclude Include="Header\Exception.h" />
+    <ClInclude Include="Header\Function.h" />
     <ClInclude Include="Header\Include.h" />
+    <ClInclude Include="Header\md5hashing.h" />
+    <ClInclude Include="Header\Struct.h" />
+    <ClInclude Include="Header\syncObject.h" />
     <ClInclude Include="Header\Typedef.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\allocator.cpp" />
     <ClCompile Include="Code\EngineKernel.cpp" />
     <ClCompile Include="Code\Logger.cpp" />
+    <ClCompile Include="Code\PixelShader.cpp" />
     <ClCompile Include="Code\RHI_DX12Device.cpp" />
+    <ClCompile Include="Code\SceneRenderer.cpp" />
+    <ClCompile Include="Code\SceneView.cpp" />
+    <ClCompile Include="Code\StackMemoryPool.cpp" />
     <ClCompile Include="Code\SystemSettings.cpp" />
     <ClCompile Include="Code\tinyxml2.cpp" />
+    <ClCompile Include="Code\VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />

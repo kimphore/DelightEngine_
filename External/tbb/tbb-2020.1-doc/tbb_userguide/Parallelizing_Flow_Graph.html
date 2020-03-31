@@ -1,0 +1,142 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Parallelizing Data Flow and Dependency Graphs" />
+<meta name="DC.subject" content="Parallelizing Data Flow, Parallelizing Dependency Graphs" />
+<meta name="keywords" content="Parallelizing Data Flow, Parallelizing Dependency Graphs" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph.html" />
+<meta name="DC.Relation" scheme="URI" content="Task-Based_Programming.html#tutorial_Task-Based_Programming" />
+<meta name="DC.Relation" scheme="URI" content="Basic_Flow_Graph_concepts.html#Basic_Flow_Graph_Concepts" />
+<meta name="DC.Relation" scheme="URI" content="Graph_Main_Categories.html#graph_categories" />
+<meta name="DC.Relation" scheme="URI" content="Flow_Graph_Tips.html#flow_graph_tips" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="Parallelizing_Flow_Graph" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Parallelizing Data Flow and Dependency Graphs</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="Parallelizing_Flow_Graph">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Parallelizing Data Flow and Dependency Graphs</h1>
+ 
+   
+  <div> 
+	 <p>In addition to loop parallelism, the Intel&reg; Threading Building Blocks (Intel&reg; TBB)
+		library also supports graph parallelism. It's possible to create graphs that
+		are highly scalable, but it is also possible to create graphs that are
+		completely sequential. 
+	 </p>
+ 
+	 <p>Using graph parallelism, computations are represented by nodes and the
+		communication channels between these computations are represented by edges.
+		When a node in the graph receives a message, a task is spawned to execute its
+		body object on the incoming message. Messages flow through the graph across the
+		edges that connect the nodes. The following sections present two examples of
+		applications that can be expressed as graphs. For more information on tasks,
+		see the <strong>See Also</strong> section below.
+	 </p>
+ 
+	 <p>The following figure shows a 
+		<em>streaming</em> or 
+		<em>data flow</em> application where a sequence of values is processed as
+		each value passes through the nodes in the graph. In this example, the sequence
+		is created by a function 
+		<span class="keyword">F</span>. For each value in the sequence, 
+		<span class="keyword">G</span> squares the value and 
+		<span class="keyword">H</span> cubes the value. 
+		<span class="keyword">J</span> then takes each of the squared and cubed values and
+		adds them to a global 
+		<span class="keyword">sum</span>. After all values in the sequence are completely
+		processed, 
+		<span class="keyword">sum</span> is equal to the sum of the sequence of squares and
+		cubes from 1 to 10. In a streaming or data flow graph, the values actually flow
+		across the edges; the output of one node becomes the input of its successor(s).
+		
+	 </p>
+ 
+	 <div class="fignone" id="simple_data_flow_title"><span class="figcap">Simple Data Flow Graph</span> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph.jpg" alt="Simple data flow graph" align="center" /></div><br /> 
+	 </div>
+ 
+	 <p>The following graphic shows a different form of graph application. In
+		this example, a dependence graph is used to establish a partial ordering among
+		the steps for making a peanut butter and jelly sandwich. In this partial
+		ordering, you must first get the bread before spreading the peanut butter or
+		jelly on the bread. You must spread on the peanut butter before you put away
+		the peanut butter jar, and likewise spread on the jelly before you put away the
+		jelly jar. And, you need to spread on both the peanut butter and jelly before
+		putting the two slices of bread together. This is a partial ordering because,
+		for example, it doesn't matter if you spread on the peanut butter first or the
+		jelly first. It also doesn't matter if you finish making the sandwich before
+		putting away the jars. 
+		<div class="fignone" id="dependence_graph_make_sandwitch"><span class="figcap">Dependence Graph for Making a Sandwich</span> 
+		  <br /><div class="imagecenter"><img src="Images/flow_graph_complex.jpg" width="440" height="337" align="center" /></div><br /> 
+		</div>
+ 
+	 </p>
+ 
+	 <p>While it can be inferred that resources, such as the bread, or the jelly
+		jar, are shared between ordered steps, it is not explicit in the graph.
+		Instead, only the required ordering of steps is explicit in a dependence graph.
+		For example, you must "Put jelly on 1 slice" 
+		<strong> 
+		  <em>before</em> 
+		</strong> you "Put away jelly jar". 
+	 </p>
+ 
+	 <p>The flow graph interface in the Intel TBB library allows you to express
+		data flow and dependence graphs such as these, as well as more complicated
+		graphs that include cycles, conditionals, buffering and more. If you express
+		your application using the flow graph interface, the runtime library spawns
+		tasks to exploit the parallelism that is present in the graph. For example, in
+		the first example above, perhaps two different values might be squared in
+		parallel, or the same value might be squared and cubed in parallel. Likewise in
+		the second example, the peanut butter might be spread on one slice of bread in
+		parallel with the jelly being spread on the other slice. The interface
+		expresses what is legal to execute in parallel, but allows the runtime library
+		to choose at runtime what will be executed in parallel. 
+	 </p>
+ 
+	 <p>The support for graph parallelism is contained within the namespace 
+		<span class="keyword">tbb::flow</span> and is defined in the 
+		<span class="filepath">flow_graph.h 
+		</span>header file. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph.html">Parallelizing Data Flow and Dependence Graphs</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Task-Based_Programming.html#tutorial_Task-Based_Programming">Task-Based Programming
+		  </a></div>
+<div><a href="Basic_Flow_Graph_concepts.html#Basic_Flow_Graph_Concepts">Basic Flow Graph Concepts 
+		  </a></div>
+<div><a href="Graph_Main_Categories.html#graph_categories">Graph Application Categories 
+		  </a></div>
+<div><a href="Flow_Graph_Tips.html#flow_graph_tips">Flow Graph Tips and Tricks 
+		  </a></div></div></div> 
+
+</body>
+</html>

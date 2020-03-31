@@ -1,0 +1,171 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Using source_node" />
+<meta name="DC.subject" content="flow graph tips, using source_node, using source_node" />
+<meta name="keywords" content="flow graph tips, using source_node, using source_node" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_making_edges_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_make_edge.html#use_make_edge" />
+<meta name="DC.Relation" scheme="URI" content="broadcast_or_send.html#broadcast_or_send" />
+<meta name="DC.Relation" scheme="URI" content="communicate_with_nodes.html#communicate_with_nodes" />
+<meta name="DC.Relation" scheme="URI" content="avoiding_data_races.html#avoiding_data_races" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="use_source_node" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Using source_node</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="use_source_node">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Using source_node</h1>
+ 
+   
+  <div> 
+	 <p>An active 
+		<span class="keyword">source_node</span> starts sending messages as soon as an edge
+		is connected to it. If not properly managed, this can lead to dropped messages.
+		By default, a 
+		<span class="keyword">source_node</span> is active unless constructed in the
+		inactive state: 
+	 </p>
+ 
+	 <pre>template&lt; typename Body &gt; source_node( graph &amp;g, Body body, bool is_active=true )</pre> 
+	 <p>To activate an inactive 
+		<span class="keyword">source_node</span>, you call the node's function activate: 
+	 </p>
+ 
+	 <pre>    source_node&lt; int &gt; src( g, src_body(10), false );
+    // use it in calls to make_edge…
+    src.activate();
+</pre> 
+	 <p>To manage this, either all 
+		<span class="keyword">source_node</span>s should be constructed in the inactive
+		state and then only activated after the entire flow graph is constructed, or
+		else care must be taken to build the graph so that no messages are dropped. 
+	 </p>
+ 
+	 <p>For example, you can use the code in 
+		<a href="Data_Flow_Graph.html#Data_Flow_Graph">Data Flow Graph</a>. In that
+		implementation, the 
+		<span class="keyword">source_node</span> is constructed in the inactive state and
+		activated after all other edges are made: 
+	 </p>
+ 
+	 <pre>      make_edge( squarer, summer );
+      make_edge( cuber, summer );
+      source_node&lt; int &gt; src( g, src_body(10), false );
+      make_edge( src, squarer );
+      make_edge( src, cuber );
+      src.activate();
+      g.wait_for_all();
+</pre> 
+	 <p>In this example, if the 
+		<span class="keyword">source_node</span> were constructed in the active state, it
+		might send a message to squarer immediately after the edge to squarer is
+		connected. Later, when the edge to cuber is connected, cuber will receive all
+		future messages, but may have already missed some. 
+	 </p>
+ 
+	 <p>In general it is safest to create your 
+		<span class="keyword">source_node</span>s in the inactive state and then activate
+		them after the whole graph is constructed. However, this approach serializes
+		graph construction and graph execution. 
+	 </p>
+ 
+	 <p>Some graphs can be constructed safely with 
+		<span class="keyword">source_node</span>s active, allowing the overlap of
+		construction and execution. If your graph is a directed acyclic graph (DAG),
+		and each 
+		<span class="keyword">source_node</span> has only one successor, you can construct
+		your 
+		<span class="keyword">source_node</span>s in the active state if you construct the
+		edges in reverse topological order; that is, make the edges at the largest
+		depth in the tree first, and work back to the shallowest edges. For example, if
+		
+		<span class="keyword">src</span> is a 
+		<span class="keyword">source_node</span> and 
+		<span class="keyword">func1</span> and 
+		<span class="keyword">func2</span> are both function nodes, the following graph
+		would not drop messages, even though 
+		<span class="keyword">src</span> is constructed in the active state: 
+	 </p>
+ 
+	 <pre>    const int limit = 10;
+    int count = 0;
+    graph g;
+    source_node&lt;int&gt; src( g, [&amp;]( int &amp;v ) -&gt; bool {
+      if ( count &lt; limit ) {
+        ++count;
+        v = count;
+        return true;
+      } else {
+        return false;
+      }
+    } );
+    function_node&lt;int,int&gt; func1( g, 1, []( int i ) -&gt; int {
+      cout &lt;&lt; i &lt;&lt; "\n";
+      return i;
+    } );
+    function_node&lt;int,int&gt; func2( g, 1, []( int i ) -&gt; int {
+      cout &lt;&lt; i &lt;&lt; "\n";
+      return i;
+    } );
+
+    make_edge( func1, func2 );
+    make_edge( src, func1 );
+
+    g.wait_for_all();
+</pre> 
+	 <p>The above code is safe because the edge from 
+		<span class="keyword">func1</span> to func2 is made before the edge from 
+		<span class="keyword">src</span> to 
+		<span class="keyword">func1</span>. If the edge from 
+		<span class="keyword">src</span> to 
+		<span class="keyword">func1</span> were made first, 
+		<span class="keyword">func1</span> might generate a message before 
+		<span class="keyword">func2</span> is attached to it; that message would be
+		dropped. Also, 
+		<span class="keyword">src</span> has only a single successor. If 
+		<span class="keyword">src</span> had more than one successor, the successor that is
+		attached first might receive messages that do not reach the successors that are
+		attached after it. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_making_edges_tips.html">Flow Graph Tips on Making Edges</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_make_edge.html#use_make_edge">Use make_edge and remove_edge 
+		  </a></div>
+<div><a href="broadcast_or_send.html#broadcast_or_send">Sending to One or Multiple Successors 
+		  </a></div>
+<div><a href="communicate_with_nodes.html#communicate_with_nodes">Communication Between Graphs 
+		  </a></div>
+<div><a href="avoiding_data_races.html#avoiding_data_races">Avoiding Data Races 
+		  </a></div></div></div> 
+
+</body>
+</html>

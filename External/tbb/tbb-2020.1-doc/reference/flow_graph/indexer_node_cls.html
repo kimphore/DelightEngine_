@@ -1,0 +1,394 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="indexer_node Template Class" />
+<meta name="DC.subject" content="indexer_node Template Class" />
+<meta name="keywords" content="indexer_node Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/service_nodes.html" />
+<meta name="DC.Relation" scheme="URI" content="message_passing_protocol.html" />
+<meta name="DC.Relation" scheme="URI" content="sender_and_buffer_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="input_port_func.html" />
+<meta name="DC.Relation" scheme="URI" content="tagged_msg_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="indexer_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>indexer_node Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="indexer_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">indexer_node Template Class</h1>
+
+  
+  <div>
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>A node that broadcasts messages received at its
+		  input ports to all of its successors. The messages are broadcast
+		  individually as they are received at each port. The output is a tagged message that contains a tag and a value; the tag identifies the input port on which the message was received.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		
+		<pre>template&lt;typename T0, typename T1...typename TN&gt;
+ class indexer_node;</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		
+		<pre> #include "tbb/flow_graph.h"</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Description</h2>
+		
+		<p>An indexer_node is a
+		  <samp class="codeph">graph_node</samp> and
+		  <samp class="codeph">sender&lt;
+			 indexer_node&lt;T0..TN&gt;::output_type &gt;</samp>. It contains a tuple of
+		  input ports, each of which is a
+		  <samp class="codeph">receiver&lt;Ti&gt;</samp> for
+		  each of the
+		  <samp class="codeph">T0 .. TN
+			 </samp>in the input. It supports multiple input receivers with distinct types
+		  and broadcasts each received message to all of its successors. Unlike a
+		  <samp class="codeph">join_node</samp>, each
+		  message is broadcast individually to all successors of the
+		  <samp class="codeph">indexer_node</samp> as it arrives
+		  at an input port. Before broadcasting, a message is tagged with the index of the port on which the message arrived.
+		</p>
+
+		<p>The function template
+		  <samp class="codeph">input_port</samp>
+		  simplifies the syntax for getting a reference to a specific input port.
+		</p>
+
+		<p>Rejection of messages by successors of the
+		  <samp class="codeph">indexer_node</samp> is handled
+		  using the protocol described in the Message Passing Protocol. The input
+		  ports never reject incoming messages.
+		</p>
+
+		<p>Each type in the input list <samp class="codeph">T0, T1 ... TN</samp>
+		   should be copy-constructible and assignable.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Example</h2>
+		
+		<pre>#include&lt;cstdio&gt;
+#include "tbb/flow_graph.h"
+
+using namespace tbb::flow;
+
+int main() {
+  graph g;
+  function_node&lt;int,int&gt; f1( g, unlimited,
+                               [](const int &amp;i) { return 2*i; } );
+  function_node&lt;float,float&gt; f2( g, unlimited,
+                               [](const float &amp;f) { return f/2; } );
+
+  typedef indexer_node&lt;int,float&gt; my_indexer_type;
+  my_indexer_type o(g);
+
+  function_node&lt; my_indexer_type::output_type &gt;
+    f3( g, unlimited,
+        []( const my_indexer_type::output_type &amp;v ) {
+            if (v.tag() == 0) {
+              printf("Received an int %d\n",
+                     cast_to&lt;int&gt;(v));
+            } else {
+              printf("Received a float %f\n",
+                     cast_to&lt;float&gt;(v));
+           }
+        }
+    );
+  make_edge( f1, input_port&lt;0&gt;(o) );
+  make_edge( f2, input_port&lt;1&gt;(o) );
+  make_edge( o, f3 );
+
+  f1.try_put( 3 );
+  f2.try_put( 3 );
+  g.wait_for_all();
+  return 0;
+ }</pre>
+		<p>In the example above, three
+		  <samp class="codeph">function_node</samp> objects
+		  are created:
+		  <samp class="codeph">f1</samp> multiplies an int i
+		  by 2,
+		  <samp class="codeph">f2</samp> divides a
+		  <samp class="codeph">float f</samp> by 2, and
+		  <samp class="codeph">f3</samp> prints the values
+		  from
+		  <samp class="codeph">f1</samp> and
+		  <samp class="codeph">f2</samp> as they arrive. The
+
+		  <samp class="codeph">indexer_node o</samp> wraps the
+		  output of
+		  <samp class="codeph">f1</samp> and
+		  <samp class="codeph">f2</samp> and forwards each
+		  result to
+		  <samp class="codeph">f3</samp>. This example is
+		  purely a syntactic demonstration since there is very little work in the nodes.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Members</h2>
+		
+		<pre>namespace tbb {
+namespace flow {
+  template&lt;typename T0, typename T1...typename TN&gt;
+  class indexer_node : public graph_node,
+  public sender&lt;<var>implementation-dependent-output-type</var> &gt; {
+  public:
+    typedef tagged_msg&lt; size_t tag, T result&gt; output_type;
+    typedef receiver&lt;output_type&gt; successor_type;
+    implementation-dependent-tuple input_ports_type;
+
+    indexer_node(graph &amp;g);
+    indexer_node(const indexer_node &amp;src);
+    input_ports_type &amp;input_ports();
+    bool register_successor( successor_type &amp;r );
+    bool remove_successor( successor_type &amp;r );
+    bool try_get( output_type &amp;v );
+    bool try_reserve( output_type &amp; );
+    bool try_release( );
+    bool try_consume( );
+  };
+}
+}</pre>
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of this template class.
+		  </span><thead align="left">
+				<tr>
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d74339e169">Member
+				  </th>
+
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d74339e172">Description
+				  </th>
+
+				</tr>
+</thead>
+
+			 <tbody>
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">indexer_node(graph &amp;g)</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>Constructs an
+						<samp class="codeph">indexer_node</samp> that
+						belongs to the
+						<samp class="codeph">graph g</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">indexer_node( const indexer_node &amp;src
+						)</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>Constructs an
+						<samp class="codeph">indexer_node</samp>. The
+						list of predecessors, messages in the input ports, and successors are NOT
+						copied.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">input_ports_type&amp;
+						input_ports()</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p><strong>Returns</strong>: A
+						<samp class="codeph">flow::tuple</samp>
+						of receivers. Each element inherits from
+						<samp class="codeph">tbb::receiver&lt;T&gt;</samp> where T is the
+						type of message expected at that input. Each tuple element can be used like any
+						other
+						<samp class="codeph">flow::receiver&lt;T&gt;</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">bool register_successor(
+						successor_type &amp; r )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>Adds
+						<samp class="codeph">r</samp> to the set
+						of successors.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<samp class="codeph">true</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">bool remove_successor(
+						successor_type &amp; r )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>Removes
+						<samp class="codeph">r</samp> from the
+						set of successors.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<samp class="codeph">true</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">bool try_get( output_type &amp;v
+						)</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>An
+						<samp class="codeph">indexer_node</samp>
+						contains no buffering and therefore does not support gets.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<samp class="codeph">false</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">bool try_reserve( output_type &amp;
+						)</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>An
+						<samp class="codeph">indexer_node</samp>
+						contains no buffering and therefore cannot be reserved.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<samp class="codeph">false</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">bool try_release( )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>An
+						<samp class="codeph">indexer_node</samp>
+						contains no buffering and therefore cannot be reserved.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<samp class="codeph">false</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d74339e169 "><span class="keyword">bool try_consume( )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d74339e172 ">
+					 <p>An
+						<samp class="codeph">indexer_node</samp>
+						contains no buffering and therefore cannot be reserved.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<samp class="codeph">false</samp>.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+			 </tbody>
+
+		  </table>
+</div>
+
+		<div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+		    <p>On Microsoft Windows* operating systems, there is a known issue with
+		             passing array types to indexer_node.
+		    </p>
+
+		</div>
+
+	 </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/service_nodes.html">Service Nodes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="message_passing_protocol.html">Message Passing Protocol
+		  </a></div>
+<div><a href="sender_and_buffer_policy.html">Sender and Buffer Policy
+		  </a></div>
+<div><a href="input_port_func.html">input_port Template Class
+		  </a></div>
+<div><a href="tagged_msg_cls.html">tagged_msg Template Class
+		  </a></div>
+<div><a href="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html">Helper Functions for Expressing Graphs</a></div></div></div>
+
+</body>
+</html>

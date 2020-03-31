@@ -1,0 +1,92 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Always Use wait_for_all()" />
+<meta name="DC.subject" content="flow graph tips, always use wait_for_all, use wait_for_all, wait_for_all" />
+<meta name="keywords" content="flow graph tips, always use wait_for_all, use wait_for_all, wait_for_all" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_waiting_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="destroy_graphs_outside_main_thread.html#avoid_dynamic_node_removal" />
+<meta name="DC.Relation" scheme="URI" content="avoid_dynamic_node_removal.html#avoid_dynamic_node_removal" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="always_use_wait4all" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Always Use wait_for_all()</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="always_use_wait4all">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Always Use wait_for_all()</h1>
+ 
+   
+  <div> 
+	 <p>One of the most common mistakes made in flow graph programming is to
+		forget to call 
+		<span class="keyword">wait_for_all</span>. The function 
+		<span class="keyword">graph::wait_for_all</span> blocks until all tasks spawned by
+		the graph are complete. This is not only useful when you want to wait until the
+		computation is done, but it is necessary to call 
+		<span class="keyword">wait_for_all</span> before destroying the graph, or any of
+		its nodes. For example, the following function will lead to a program failure: 
+	 </p>
+ 
+	 <pre>void no_wait_for_all() {
+	graph g;
+	function_node&lt; int, int &gt; f( g, 1, []( int i ) -&gt; int {
+		return spin_for(i);
+	} );
+	f.try_put(1);
+
+	// program will fail when f and g are destroyed at the
+	// end of the scope, since the body of f is not complete
+}
+</pre> 
+	 <p>In the function above, the graph 
+		<span class="keyword">g</span> and its node 
+		<span class="keyword">f</span> are destroyed at the end of the function's scope.
+		However, the task spawned to execute 
+		<span class="keyword">f</span>'s body is still in flight. When the task completes,
+		it will look for any successors connected to its node, but by then both the
+		graph and the node have been deleted out from underneath it. Placing a 
+		<span class="keyword">g.wait_for_all()</span> at the end of the function prevents
+		the premature destruction of the graph and node. 
+	 </p>
+ 
+	 <p>If you use a flow graph and see mysterious behavior, check first to see
+		that you have called 
+		<span class="keyword">wait_for_all</span>. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_waiting_tips.html">Flow Graph Tips for Waiting for and Destroying a Flow Graph</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="destroy_graphs_outside_main_thread.html#avoid_dynamic_node_removal">Destroy Graphs That Run Outside the Main Thread
+		  </a></div>
+<div><a href="avoid_dynamic_node_removal.html#avoid_dynamic_node_removal">Avoid Dynamic Node Removal
+		  </a></div></div></div> 
+
+</body>
+</html>

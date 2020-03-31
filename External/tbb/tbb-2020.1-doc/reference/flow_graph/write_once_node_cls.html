@@ -1,0 +1,415 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="write_once_node Template Class" />
+<meta name="DC.subject" content="write_once_node Template Class" />
+<meta name="keywords" content="write_once_node Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/buffering_nodes.html" />
+<meta name="DC.Relation" scheme="URI" content="message_passing_protocol.html" />
+<meta name="DC.Relation" scheme="URI" content="sender_and_buffer_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="write_once_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>write_once_node Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="write_once_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">write_once_node Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        A template class that is a <span class="keyword">graph_node</span>,
+        <span class="keyword">receiver&lt;Input&gt;</span> and <span class="keyword">sender&lt;Output&gt;</span>. A
+        <span class="keyword">write_once_node</span> is a buffer of a single item that cannot be over-written.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt; typename T &gt;
+class write_once_node;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>#include "tbb/flow_graph.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        This type of node buffers a single item of type T. The value is initially invalid. The first
+        <span class="keyword">try_put</span> to the node will set the value of the internal buffer, and
+        broadcast the new value to all successors. Subsequent puts are ignored, with received values
+        being lost. The internal buffer may be cleared explicitly, after which a new value may be
+        set. Gets from the node are non-destructive. If the internal value is valid, a
+        <span class="keyword">try_get</span> will return <span class="keyword">true</span> and copy the buffer value to
+        the output. If the internal value is invalid, <span class="keyword">try_get</span> will return
+        <span class="keyword">false</span>.
+      </p>
+
+      <p>
+        Rejection of messages by successors is handled using the protocol described in the Message
+        Passing Protocol.
+      </p>
+
+      <p><span class="keyword">T</span> must be copy-constructible and assignable.</p>
+
+    </div>
+
+    <div class="section" id="write_once_node_example"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        Usage scenario is similar to
+        <a href="overwrite_node_cls.html">
+          overwrite_node
+        </a>
+        but an internal buffer can be updated only after <samp class="codeph">clear()</samp> call. The
+        following example shows the possibility to connect the node to a reserving
+        <samp class="codeph">join_node</samp>, avoiding direct calls to the <samp class="codeph">try_get()</samp> method
+        from the body of the successor node.
+      </p>
+
+      <pre>#include "tbb/flow_graph.h"
+
+typedef int data_type;
+
+int main() {
+    using namespace tbb::flow;
+
+    graph g;
+
+    function_node&lt;data_type, data_type&gt; static_result_computer_n(
+        g, serial,
+        [&amp;](const data_type&amp; msg) {
+            // compute the result using incoming message and pass it further, e.g.:
+            data_type result = data_type((msg &lt;&lt; 2 + 3) / 4);
+            return result;
+        });
+    write_once_node&lt;data_type&gt; write_once_n(g); // for buffering once computed value
+
+    buffer_node&lt;data_type&gt; buffer_n(g);
+    join_node&lt;tuple&lt;data_type, data_type&gt;, reserving&gt; join_n(g);
+
+    function_node&lt;tuple&lt;data_type, data_type&gt;&gt; consumer_n(
+        g, unlimited,
+        [&amp;](const tuple&lt;data_type, data_type&gt;&amp; arg) {
+            // use the precomputed static result along with dynamic data
+            data_type precomputed_result = get&lt;0&gt;(arg);
+            data_type dynamic_data = get&lt;1&gt;(arg);
+        });
+
+    make_edge(static_result_computer_n, write_once_n);
+    make_edge(write_once_n, input_port&lt;0&gt;(join_n));
+    make_edge(buffer_n, input_port&lt;1&gt;(join_n));
+    make_edge(join_n, consumer_n);
+
+    // do one-time calculation that will be reused many times further in the graph
+    static_result_computer_n.try_put(1);
+
+    for (int i = 0; i &lt; 100; i++) {
+        buffer_n.try_put(1);
+    }
+
+    g.wait_for_all();
+
+    return 0;
+}</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+namespace flow {
+
+template&lt; typename T &gt;
+class write_once_node :
+  public graph_node, public receiver&lt;T&gt;, public sender&lt;T&gt; {
+public:
+    explicit write_once_node( graph &amp;g );
+    write_once_node( const write_once_node &amp;src );
+    ~write_once_node();
+
+    // receiver&lt;T&gt;
+    typedef T input_type;
+    typedef sender&lt;input_type&gt; predecessor_type;
+    bool try_put( const input_type &amp;v );
+    bool register_predecessor( predecessor_type &amp;p );
+    bool remove_predecessor( predecessor_type &amp;p );
+
+    // sender&lt;T&gt;
+    typedef T output_type;
+    typedef receiver&lt;output_type&gt; successor_type;
+    bool register_successor( successor_type &amp;r );
+    bool remove_successor( successor_type &amp;r );
+    bool try_get( output_type &amp;v );
+    bool try_reserve( output_type &amp;v );
+    bool try_release( );
+    bool try_consume( );
+
+    bool is_valid( );
+    void clear( );
+};
+
+}
+}</pre>
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the members of this template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d86420e140">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d86420e143">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 ">
+                <span class="keyword">explicit write_once_node( graph &amp;g )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  Constructs an object of type <span class="keyword">write_once_node</span> that belongs to
+                  the <span class="keyword">graph g</span>, with an invalid internal buffer item.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 ">
+                <span class="keyword">write_once_node( const write_once_node &amp;src )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  Constructs an object of type <span class="keyword">write_once_node</span> with an invalid
+                  internal buffer item. The buffered value and list of successors is NOT copied from
+                  <span class="keyword">src</span>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">~write_once_node( )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>Destroys the <span class="keyword">write_once_node</span>.</p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">bool try_put( const input_type &amp;v )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  Stores<span class="keyword"> v</span> in the internal single item buffer if it does not
+                  already contain a valid value. If a new value is set, it calls
+                  <span class="keyword">try_put(v)</span> on all successors.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <span class="keyword">true</span> for the first time after construction or a
+                  call to <span class="keyword">clear()</span>, <span class="keyword">false</span> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 ">
+                <span class="keyword">bool register_predecessor( predecessor_type &amp;p )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  Never rejects puts and therefore does not need to maintain a list of predecessors.
+                </p>
+
+                <p><strong>Returns</strong>: <span class="keyword">false</span></p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 ">
+                <span class="keyword">bool remove_predecessor( predecessor_type &amp;p )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  Never rejects puts and therefore does not need to maintain a list of predecessors.
+                </p>
+
+                <p><strong>Returns</strong>: <span class="keyword">false</span></p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 ">
+                <span class="keyword">bool register_successor( successor_type &amp;r )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  Adds <span class="keyword">r</span> to the set of successors. If a valid item
+                  <span class="keyword">v</span> is held in the buffer, a task is spawned to call
+                  <span class="keyword">r.try_put(v)</span>.
+                </p>
+
+                <p><strong>Returns</strong>: <span class="keyword">true</span></p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 ">
+                <span class="keyword">bool remove_successor( successor_type &amp;r )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>Removes <span class="keyword">r</span> from the set of successors.</p>
+
+                <p><strong>Returns</strong>: <span class="keyword">true</span></p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">bool try_get( output_type &amp;v )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  If the internal buffer is valid, assigns the value to <span class="keyword">v</span>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <span class="keyword">true</span> if <span class="keyword">v</span> is assigned to.
+                  <span class="keyword">false</span> if <span class="keyword">v</span> is not assigned to.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">bool try_reserve( output_type &amp;v )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  If the internal buffer is valid, assigns the value to <span class="keyword">v</span>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <span class="keyword">true</span> if <span class="keyword">v</span> is assigned to.
+                  <span class="keyword">false</span> if <span class="keyword">v</span> is not assigned to.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">bool try_release( )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p><strong>Returns</strong>: <span class="keyword">true</span></p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">bool try_consume( )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p><strong>Returns</strong>: <span class="keyword">true</span></p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">bool is_valid( )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 ">
+                <p>
+                  <strong>Returns</strong>: <span class="keyword">true</span> if the buffer holds a valid value,
+                  otherwise returns <span class="keyword">false</span>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d86420e140 "><span class="keyword">void clear( )</span></td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d86420e143 "><p>Invalidates the value held in the buffer.</p>
+</td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/buffering_nodes.html">Buffering Nodes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="message_passing_protocol.html">Message Passing Protocol</a></div>
+<div><a href="sender_and_buffer_policy.html">Sender and Buffer Policy</a></div>
+<div><a href="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html">Helper Functions for Expressing Graphs</a></div></div></div>
+
+</body>
+</html>

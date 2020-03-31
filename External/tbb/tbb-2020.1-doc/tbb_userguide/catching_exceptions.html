@@ -1,0 +1,125 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Catching Exceptions Inside the Node that Throws the Exception" />
+<meta name="DC.subject" content="flow graph tips, catching excpetions, catch exceptions inside the node that throws the exception" />
+<meta name="keywords" content="flow graph tips, catching excpetions, catch exceptions inside the node that throws the exception" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_exception_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="cancel_a_graph.html#cancel_a_graph" />
+<meta name="DC.Relation" scheme="URI" content="use_graph_reset.html#use_graph_reset" />
+<meta name="DC.Relation" scheme="URI" content="cancelling_nested_parallelism.html#cancelling_nested_parallelism" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="catching_exceptions" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Catching Exceptions Inside the Node that Throws the Exception</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="catching_exceptions">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Catching Exceptions Inside the Node that Throws the Exception</h1>
+ 
+   
+  <div> 
+	 <p>If you catch an exception within the node's body, execution continues
+		normally, as you might expect. If an exception is thrown but is not caught
+		before it propagates beyond the node's body, the execution of all of the
+		graph's nodes are canceled and the exception is rethrown at the call site of 
+		<span class="keyword">graph::wait_for_all()</span>. Take the graph below as an
+		example: 
+	 </p>
+ 
+	 <pre>  graph g;
+
+  function_node&lt; int, int &gt; f1( g, 1, []( int i ) {  return i; } );
+
+  function_node&lt; int, int &gt; f2( g, 1, 
+      []( const int i ) -&gt; int {
+      throw i;
+      return i;
+  } );
+
+  function_node&lt; int, int &gt; f3( g, 1, []( int i ) {  return i; } );
+
+  make_edge( f1, f2 );
+  make_edge( f2, f3 );
+  f1.try_put(1);
+  f1.try_put(2);
+  g.wait_for_all();
+</pre> 
+	 <p>In the code above, the second 
+		<span class="keyword">function_node</span>, 
+		<span class="keyword">f2</span>, throws an exception that is not caught within the
+		body. This will cause the execution of the graph to be canceled and the
+		exception to be rethrown at the call to 
+		<span class="keyword">g.wait_for_all()</span>. Since it is not handled there
+		either, the program will terminate. If desirable, the exception could be caught
+		and handled within the body: 
+	 </p>
+ 
+	 <pre>  function_node&lt; int, int &gt; f2( g, 1, 
+      []( const int i ) -&gt; int {
+          try {
+              throw i;
+          } catch (int j) {
+              cout &lt;&lt; "Caught " &lt;&lt; j &lt;&lt; "\n";
+          }
+          return i;
+  } );
+</pre> 
+	 <p>If the exception is caught and handled in the body, then there is no
+		effect on the overall execution of the graph. However, you could choose instead
+		to catch the exception at the call to 
+		<span class="keyword">wait_for_all</span>: 
+	 </p>
+ 
+	 <pre>  try {
+      g.wait_for_all();
+  } catch ( int j ) {
+      cout &lt;&lt; "Caught " &lt;&lt; j &lt;&lt; "\n";
+  }
+</pre> 
+	 <p>In this case, the execution of the graph is canceled. For our example,
+		this means that the input 
+		<span class="keyword">1</span> never reaches 
+		<span class="keyword">f3</span> and that input 
+		<span class="keyword">2</span> never reaches either 
+		<span class="keyword">f2</span> or 
+		<span class="keyword">f3</span>. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_exception_tips.html">Flow Graph Tips for Exception Handling and Cancellation</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="cancel_a_graph.html#cancel_a_graph">Cancel a Graph Explicitly 
+		  </a></div>
+<div><a href="use_graph_reset.html#use_graph_reset">Use graph::reset() to Reset a Canceled Graph 
+		  </a></div>
+<div><a href="cancelling_nested_parallelism.html#cancelling_nested_parallelism">Canceling Nested Parallelism 
+		  </a></div></div></div> 
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Predefined Node Types" />
+<meta name="DC.subject" content="Node, predefined types, predefined node types" />
+<meta name="keywords" content="Node, predefined types, predefined node types" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph.html" />
+<meta name="DC.Relation" scheme="URI" content="broadcast_or_send.html#broadcast_or_send" />
+<meta name="DC.Relation" scheme="URI" content="Nodes.html#Nodes" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="predefined_node_types" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Predefined Node Types</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="predefined_node_types">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Predefined Node Types</h1>
+ 
+   
+  <div> 
+    <p>You can define your own node types by inheriting from class 
+      <span class="keyword">graph_node</span>, 
+      <span class="keyword">class sender</span> and 
+      <span class="keyword">class receiver</span> but it is likely that you can create
+      your graph with the predefined node types already available in 
+      <span class="keyword">flow_graph.h</span>. Below is a table that lists all of the
+      predefined types with a basic description. See the Developer Reference for a
+      more detailed description of each node. 
+    </p>
+ 
+    
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"> 
+         
+         
+        <thead align="left"> 
+          <tr> 
+            <th class="cellrowborder" valign="top" width="20.40816326530612%" id="d124739e60">Predefined Node Type 
+            </th>
+ 
+            <th class="cellrowborder" valign="top" width="79.59183673469387%" id="d124739e63">Description 
+            </th>
+ 
+          </tr>
+</thead>
+ 
+        <tbody> 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "><span class="keyword">source_node 
+              </span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 ">A single-output node, with a generic output
+              type. It executes a user body to generate its output. Its body is invoked if
+              downstream nodes have accepted the previous generated output. Otherwise, the
+              previous output is temporarily buffered until it is accepted downstream and
+              then the body is again invoked. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "><span class="keyword">function_node 
+              </span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 ">A single-input single-output node that
+              broadcasts its output to all successors. Has generic input and output types.
+              Executes a user body, and has controllable concurrency level and buffering
+              policy. For each input exactly one output is returned. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">continue_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A single-input, single-output node that broadcasts its
+              output to all successors. It has a single input that requires 1 or more inputs
+              of type 
+              <span class="keyword">continue_msg</span> and has a generic output type. It
+              executes a user body when it receives 
+              <span class="keyword">N continue_msg</span> objects at its input. 
+              <span class="keyword">N</span> is equal to the number of predecessors plus
+              any additional offset assigned at construction time. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">multifunction_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A single-input multi-output node. It has a generic input
+              type and several generic output types. It executes a user body, and has
+              controllable concurrency level and buffering policy. The body can output zero
+              or more messages on each output port. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">broadcast_node 
+              </span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A single-input, single-output node that broadcasts each
+              message received to all successors. Its input and output are of the same
+              generic type. It does not buffer messages. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">buffer_node</span>, 
+              <span class="keyword">queue_node</span>, 
+              <span class="keyword">priority_queue_node</span>, and 
+              <span class="keyword">sequencer_node</span>. 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> Single-input, single-output nodes that buffer messages and
+              send their output to one successor. The order in which the messages are sent
+              are node specific (see the Developer Reference). These nodes are unique in that
+              they send to only a single successor and not all successors. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">join_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A multi-input, single-output node. There are several
+              generic input types and the output type is a tuple of these generic types. The
+              node combines one message from each input port to create a tuple that is
+              broadcast to all successors. The policy used to combine messages is selectable
+              as queueing, reserving or tag-matching. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">split_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A single-input, multi-output node. The input type is a
+              tuple of generic types and there is one output port for each of the types in
+              the tuple. The node receives a tuple of values and outputs each element of the
+              tuple on a corresponding output port. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">write_once_node</span>, 
+              <span class="keyword">overwrite_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> Single-input, single-output nodes that buffer a single
+              message and broadcast their outputs to all successors. After broadcast, the
+              nodes retain the last message received, so it is available to any future
+              successor. A 
+              <span class="keyword">write_once_node</span> will only accept the first
+              message it receives, while the 
+              <span class="keyword">overwrite_node</span> will accept all messages,
+              broadcasting them to all successors, and replacing the old value with the new. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">limiter_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A multi-input, single output node that broadcasts its
+              output to all successors. The main input type and output type are of the same
+              generic type. The node increments an internal counter when it broadcasts a
+              message. If the increment causes it to reach its user-assigned threshold, it
+              will broadcast no more messages. A special input port can be used to adjust
+              the internal count, allowing further messages to be broadcast. The node does
+              not buffer messages.
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">indexer_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 "> A multi-input, single-output node that broadcasts its
+              output message to all of its successors. The input type is a list of generic
+              types and the output type is a 
+              <span class="keyword">tagged_msg</span>. The message is of one of the types
+              listed in the input and the tag identifies the port on which the message was
+              received. Messages are broadcast individually as they arrive at the input
+              ports. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">composite_node</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 ">A node that might have 0, 1 or multiple ports for both input
+              and output. The 
+              <span class="keyword">composite_node</span> packages a group of other nodes
+              together and maintains a tuple of references to ports that border it. This
+              allows for the corresponding ports of the 
+              <span class="keyword">composite_node</span> to be used to make edges which
+              hitherto would have been made from the actual nodes in the 
+              <span class="keyword">composite_node</span>. 
+            </td>
+ 
+          </tr>
+ 
+          <tr> 
+            <td class="cellrowborder" valign="top" width="20.40816326530612%" headers="d124739e60 "> 
+              <span class="keyword">async_node (preview feature)</span> 
+            </td>
+ 
+            <td class="cellrowborder" valign="top" width="79.59183673469387%" headers="d124739e63 ">A node that allows a flow graph to communicate with an
+              external activity managed by the user or another runtime. This node receives
+              messages of generic type, invokes the user-provided body to submit a message to
+              an external activity. The external activity can use a special interface to
+              return a generic type and put it to all successors of 
+              <span class="keyword">async_node</span>. 
+            </td>
+ 
+          </tr>
+ 
+        </tbody>
+ 
+      </table>
+</div>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph.html">Parallelizing Data Flow and Dependence Graphs</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="broadcast_or_send.html#broadcast_or_send">Sending to One or Multiple
+          Successors 
+        </a></div>
+<div><a href="Nodes.html#Nodes">Nodes 
+        </a></div></div></div> 
+
+</body>
+</html>

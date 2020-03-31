@@ -1,0 +1,570 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="async_msg Template Class" />
+<meta name="DC.subject" content="async_msg Template Class" />
+<meta name="keywords" content="async_msg Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/flow_graph_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../flow_graph/async_node_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="async_msg_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>async_msg Template Class</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="async_msg_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">async_msg Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        <samp class="codeph">async_msg</samp> is a special message class used to implement intercommunication
+        between an Intel&reg; Threading Building Blocks (Intel&reg; TBB) flow graph and an external parallel
+        activity, such as a thread or a device.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt; typename T &gt;
+class async_msg;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        An <samp class="codeph">async_msg</samp>, or a user type derived from <samp class="codeph">async_msg</samp>,
+        acts like a "future" that is specially handled by flow graph nodes.
+        An <samp class="codeph">async_msg&lt;T&gt;</samp> is a representation of an asynchronous job result
+        of type <samp class="codeph">T</samp> that can be processed by the graph while the result is not
+        ready yet. The result can be provided by the asynchronous activity with the
+        <samp class="codeph">async_msg&lt;T&gt;::set( T result )</samp> method at any moment.
+        Other classes can inherit from <samp class="codeph">async_msg&lt;T&gt;</samp> to
+        create advanced async messages with additional data. Ports and nodes  that accept
+        messages of type <samp class="codeph">T</samp> and async messages can both receive async messages
+        and can be connected with the <samp class="codeph">make_edge</samp> interface, but handle them
+        differently.
+        If the node accepts an async message, it will react to an incoming async message immediately,
+        for example by passing the message directly to its body. However, if the node accepts the
+        result type <samp class="codeph">T</samp>, the virtual method
+        <samp class="codeph">async_msg&lt;T&gt;::finalize()</samp> will be called and the node will wait
+        for the result availability. The <samp class="codeph">async_msg&lt;T&gt;::finalize()</samp> method
+        can be overridden in a derived async message type, e.g. to notify the asynchronous
+        activity that a result is required and/or to set a callback.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          The method <samp class="codeph">async_msg&lt;T&gt;::set( T result )</samp> must be called
+          at most once. If the async message is never passed to a node that accepts the
+          results of asynchronous activity than the result can be never set.
+          However, if the async message is passed to a node that accepts the result of
+          async message (the <samp class="codeph">finalize()</samp> method will be called in this case),
+          the result must be set.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          If a node accepts an async message, but a message of result type
+          <samp class="codeph">T</samp> is provided to the node, an async message will be automatically
+          created and the incoming message of type <samp class="codeph">T</samp> will be immediately
+          set as its result.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          Nodes or ports that accepts async messages can accept only an async message of the
+          same type or a message of the result type. Therefore, it is impossible to pass
+          <samp class="codeph">async_msg&lt;T&gt;</samp> to a node that accepts async messages of
+          derived type from <samp class="codeph">async_msg&lt;T&gt;</samp>.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          The current implementation can call the <samp class="codeph">async_msg&lt;T&gt;::finalize()</samp>
+          method many times and does not call the method if the result has been previously set.
+          However, this behavior can be changed in future releases.
+        </p>
+
+      </div>
+
+      <p>
+        The <samp class="codeph">graph::wait_for_all()</samp> method waits until the results are ready for all
+        async messages created and consumed by nodes of the graph. However if async messages
+        are created and send to the graph by an external activity, it must use
+        <samp class="codeph">increment_ref_count()</samp> and <samp class="codeph">decrement_ref_count()</samp> methods
+        to prevent completion of the graph before it sends all the async messages. Once an async message
+        is sent to the graph, <samp class="codeph">wait_for_all()</samp> will wait for its result to be ready.
+      </p>
+
+      <p>
+        The simplest usage scenario of the <samp class="codeph">async_msg</samp> is shown in the figure
+        below: the left flow graph node (n1) starts an asynchronous activity in its body and
+        returns an <samp class="codeph">async_msg</samp> object without waiting for the result to be set.
+        The next node (n2) automatically receives the ready result when it’s set by the
+        asynchronous activity through its copy of the <samp class="codeph">async_msg</samp>.
+      </p>
+
+      <p>
+        The simplest scenario steps are described below:
+        <ul>
+          <li>
+            A <samp class="codeph">function_node</samp> n1 creates an instance of <samp class="codeph">async_msg&lt;T&gt;</samp>.
+          </li>
+
+          <li>
+            n1 sends work to an external asynchronous activity along with a copy of the <samp class="codeph">async_msg</samp>.
+          </li>
+
+          <li>
+            n1 puts <samp class="codeph">async_msg&lt;T&gt;</samp> to its successor.
+          </li>
+
+          <li>
+            The external asynchronous activity returns the result back to the flow graph by calling the
+            method <samp class="codeph">set(result)</samp> in the <samp class="codeph">async_msg</samp> instance obtained in the step 2.
+          </li>
+
+          <li>
+            The successor node gets the data of type <samp class="codeph">T</samp> as usual.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <div class="fignone" id="fig1_async_msg"><span class="figcap">
+          The simplest scenario with the <samp class="codeph">async_msg</samp>.
+        </span>
+        
+        <br /><div class="imagecenter"><img src="../../../Resources/async_msg_simplest.png" height="372" width="415" alt="The simplest scenario with the async_msg." align="center" /></div><br />
+      </div>
+
+      <p>
+        In this scenario, <samp class="codeph">async_msg</samp> and <samp class="codeph">function_node</samp> together
+        provide behavior very similar to the <samp class="codeph">async_node</samp> class.
+      </p>
+
+      <p>
+        The main advantage of <samp class="codeph">async_msg</samp> over the <samp class="codeph">async_node</samp> is
+        the ability to pass such a message through the flow graph unmodified or even updated,
+        as in the following usage scenario:
+        <ul>
+          <li>
+            A <samp class="codeph">function_node</samp> n1 creates an instance of <samp class="codeph">async_msg&lt;T&gt;</samp>.
+          </li>
+
+          <li>
+            n1 sends work to an external asynchronous activity, along with a copy of the <samp class="codeph">async_msg</samp>.
+          </li>
+
+          <li>
+            n1 puts <samp class="codeph">async_msg&lt;T&gt;</samp> to the next node n2.
+          </li>
+
+          <li>
+            n2 sends the second part of work to an external asynchronous activity.
+            It can update the <samp class="codeph">async_msg</samp> message instance if it’s needed.
+          </li>
+
+          <li>
+            When the <samp class="codeph">async_msg&lt;T&gt;</samp> comes to the final node (receiving
+            type <samp class="codeph">T</samp>) in the graph, its virtual method <samp class="codeph">finalize()</samp>
+            is automatically called by the library. This method might be overridden in custom
+            asynchronous messages. Its intended use is to set a callback for the asynchronous
+            activity to return its result to the flow graph.
+            <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+              <p>
+                <samp class="codeph">async_msg&lt;T&gt;::finalize()</samp> may be called a few times by the library,
+                but the method will never be called after the <samp class="codeph">set()</samp> method has been
+                invoked on the <samp class="codeph">async_msg</samp>.
+              </p>
+
+            </div>
+
+          </li>
+
+          <li>
+            The next node n3 gets the <samp class="codeph">UserDataType</samp> data as usual.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <div class="fignone" id="fig2_async_msg"><span class="figcap">
+          The scenario with a processing chain.
+        </span>
+        
+        <br /><div class="imagecenter"><img src="../../../Resources/async_msg_chaining.png" height="372" width="654" alt="The scenario with a processing chain." align="center" /></div><br />
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          Usually the first node in the processing chain uploads data to the external asynchronous
+          activity (thread or device). The next nodes in the chain can continue the data processing
+          without any additional data uploading and downloading. And only the last node in the chain
+          will get the activity result.
+        </p>
+
+      </div>
+
+      <p>
+        Any user class derived from <samp class="codeph">async_msg</samp> can be used in the use-cases above.
+        For example, a derived asynchronous message class may be implemented that stores or updates
+        additional states or flags while the data processing chain is working. 
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The example below shows a <samp class="codeph">source_node</samp> that submits some work to
+        <samp class="codeph">AsyncActivity</samp> for processing by a user thread. An <samp class="codeph">async_msg</samp>
+        is used to communicate the result to a downstream <samp class="codeph">function_node</samp>.
+      </p>
+
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+
+#include &lt;thread&gt;
+#include &lt;atomic&gt;
+#include "tbb/flow_graph.h"
+#include "tbb/concurrent_queue.h"
+
+using namespace tbb::flow;
+typedef int input_type;
+typedef int output_type;
+typedef tbb::flow::async_msg&lt;output_type&gt; async_msg_type;
+
+
+class AsyncActivity {
+public:
+    struct work_type {
+        input_type input;
+        async_msg_type msg;
+    };
+
+    AsyncActivity() : my_the_end(false), service_thread( [this]() {
+        work_type w;
+        while( ! my_the_end ) {
+            while( my_work_queue.try_pop(w) ) {
+                output_type result = do_work( w.input );
+                //send the result back to the graph
+                w.msg.set(result);
+            }
+        }
+    } ) {}
+
+    ~AsyncActivity() {
+        my_the_end = true; // indicates that the thread should exit
+        service_thread.join();
+    }
+
+    void submit( input_type i, const async_msg_type&amp; msg ) {
+        work_type w = {i, msg};
+        my_work_queue.push(w);
+    }
+
+private:
+    output_type do_work(input_type&amp; v) {
+        // performs the work on input converting it to output
+    }
+
+    tbb::concurrent_queue&lt;work_type&gt; my_work_queue;
+    std::atomic&lt;bool&gt; my_the_end;
+
+    std::thread service_thread;
+};
+
+int main() {
+    tbb::flow::graph g;
+    AsyncActivity async_activity;
+
+   tbb::flow::source_node&lt;async_msg_type&gt; s(g, [&amp;](async_msg_type&amp; v)-&gt;bool {
+       /* produce data for async work */
+       if ( /* source is not over */ ) {
+           async_msg_type msg;
+           /* generate "input" here */
+           async_activity.submit(input, msg);
+           v = msg;
+           return true;
+       }
+   
+       return false;
+   });
+
+    tbb::flow::function_node&lt;output_type&gt; f( g, unlimited, [](const output_type&amp; v) 
+    { /* consume data from async work */ });
+
+    tbb::flow::make_edge( s, f );
+    g.wait_for_all();
+    return 0;
+}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+  
+namespace tbb {
+    namespace flow {
+
+        template &lt;typename T&gt;
+        class async_msg {
+        public:
+            typedef T async_msg_data_type;
+
+            async_msg();
+            virtual ~async_msg() {}
+
+            void set(const T&amp; t);
+            void set(T&amp;&amp; t);
+
+        protected:
+            // Can be overridden in derived class to inform that 
+            // async calculation chain is over
+            virtual void finalize() const {}
+        };
+
+    }
+}
+</pre>
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members of this template class.</span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d35917e397">Member </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d35917e400">Description </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">typedef T async_msg_data_type</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  User data type definition.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">async_msg()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  Default constructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">async_msg(const async_msg&amp;)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  Auto-generated copy constructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">~async_msg()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  Destructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">void set(const T&amp; t)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  Call the method to return a result from the asynchronous activity back to the flow graph.
+                  <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                    <p>
+                      <samp class="codeph">set()</samp> must be called once only per <samp class="codeph">async_msg</samp>.
+                    </p>
+
+                  </div>
+
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">void set(T&amp;&amp; t)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  The same as the previous <samp class="codeph">set(const T&amp;)</samp> method but using C++ 'move' semantics.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e397 ">
+                <samp class="codeph">async_msg&amp; operator = (const async_msg&amp;)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e400 ">
+                <p>
+                  Auto-generated assignment operator.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc"></span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d35917e545">PROTECTED</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d35917e548"> </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d35917e545 ">
+                <samp class="codeph">virtual void finalize() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d35917e548 ">
+                <p>
+                  Override the method in the derived class to inform the asynchronous activity
+                  that the data handling chain is over and the activity should return the result
+                  (via the <samp class="codeph">set()</samp> call).
+                  <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                    <p>
+                      An asynchronous activity can call the <samp class="codeph">set()</samp> method at any time,
+                      but the <samp class="codeph">finalize()</samp> synchronization call allows it to wait until
+                      there is at least one node waiting for the result in the flow graph.
+                    </p>
+
+                  </div>
+
+                </p>
+
+                <p>
+                  Default implementation is empty.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          The <samp class="codeph">async_msg</samp> class is copyable, so the user must provide correct
+          copy routines in any derived class. 
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/flow_graph_features.html">Flow Graph</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../../flow_graph/async_node_cls.html">async_node
+		  </a></div></div></div>
+
+</body>
+</html>

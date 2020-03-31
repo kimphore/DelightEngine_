@@ -1,0 +1,438 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="limiter_node Template Class" />
+<meta name="DC.subject" content="limiter_node Template Class" />
+<meta name="keywords" content="limiter_node Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/service_nodes.html" />
+<meta name="DC.Relation" scheme="URI" content="message_passing_protocol.html" />
+<meta name="DC.Relation" scheme="URI" content="sender_and_buffer_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="limiter_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>limiter_node Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="limiter_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">limiter_node Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>An node that counts and limits the number of messages that pass through it.</p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>
+template &lt; typename T, typename DecrementType=continue_msg &gt;
+class limiter_node;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>#include "tbb/flow_graph.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        A <samp class="codeph">limiter_node</samp> is a <samp class="codeph">graph_node</samp>,
+        <samp class="codeph">receiver&lt;T&gt;</samp> and <samp class="codeph">sender&lt;T&gt;</samp> that broadcasts
+        messages to all of its successors. It keeps a counter <samp class="codeph">C</samp> of the number of
+        broadcasts it makes and does not accept new messages once its user-specified
+        <samp class="codeph">threshold</samp> is reached. The internal count of broadcasts <samp class="codeph">C</samp>
+        can be adjusted through use of its embedded <samp class="codeph">decrement</samp> object, but its
+        values are truncated to be inside [0, <samp class="codeph">threshold</samp>] interval.
+      </p>
+
+      <p>
+        The behavior of a call to a <samp class="codeph">limiter_node</samp>'s <samp class="codeph">try_put</samp> is
+        shown below.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl27" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">Behavior of a call to a limiter_node's try_put</span></caption>
+          
+          
+        <thead align="left">
+          <tr>
+            <th class="cellrowborder" align="center" valign="top" width="30%" id="d76232e107"><p>Value of counter C</p>
+</th>
+
+            <th class="cellrowborder" align="center" valign="top" width="70%" id="d76232e111"><p>bool try_put( const input_type &amp;v )</p>
+</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+          <tr>
+            <td class="cellrowborder" valign="top" width="30%" headers="d76232e107 "><samp class="codeph">C &lt; threshold </samp></td>
+
+            <td class="cellrowborder" valign="top" width="70%" headers="d76232e111 ">
+              <p>
+                <samp class="codeph">C</samp> is incremented and <samp class="codeph">v</samp> is broadcast to all
+                successors. If no successor accepts the message, <samp class="codeph">C</samp> is
+                decremented. Returns <samp class="codeph">true</samp> if the message was successfully broadcast
+                to at least one successor and <samp class="codeph">false</samp> otherwise.
+              </p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="30%" headers="d76232e107 "><samp class="codeph">C == threshold</samp></td>
+
+            <td class="cellrowborder" valign="top" width="70%" headers="d76232e111 "><p>Returns <samp class="codeph">false</samp>.</p>
+</td>
+
+          </tr>
+
+        </tbody>
+
+        </table>
+</div>
+
+      <p>
+        The template parameter <samp class="codeph">DecrementType</samp> specifies the type of the message that
+        can be sent to the member object <samp class="codeph">decrement</samp>. This template parameter can be
+        either integral type or <samp class="codeph">continue_msg</samp>. The latter is the default. If an
+        integral type is specified, positive values sent to <samp class="codeph">decrement</samp> port
+        determine the value on which the internal counter <samp class="codeph">C</samp> will be decreased,
+        while negative values determine the value on which the internal counter <samp class="codeph">C</samp>
+        will be increased.
+      </p>
+
+      <p>
+        The <samp class="codeph">continue_msg</samp> sent to the member object <samp class="codeph">decrement</samp>
+        decreases the internal counter <samp class="codeph">C</samp> by one.
+      </p>
+
+      <p>
+        When <samp class="codeph">try_put</samp> call on the member object <samp class="codeph">decrement</samp> results
+        in the new value of internal counter <samp class="codeph">C</samp> to be less than the
+        <samp class="codeph">threshold</samp>, the <samp class="codeph">limiter_node</samp> will try to get a message from
+        one of its known predecessors and forward that message to all of its successors. If it
+        cannot obtain a message from a predecessor, it will decrement <samp class="codeph">C</samp>. Rejection
+        of messages by successors and failed gets from predecessors are handled using the protocol
+        described in the Message Passing Protocol.
+      </p>
+
+      <p><samp class="codeph">T</samp> must be copy-constructible and assignable.</p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The example from section
+        <a href="../../tbb_userguide/use_limiter_node.html">
+          "Using limiter_node"
+        </a>
+        of developer guide shows usage specifics for this node type.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+      <pre>
+namespace tbb {
+namespace flow {
+
+template&lt; typename T, typename DecrementType=continue_msg &gt;
+class limiter_node : public graph_node, public receiver&lt;T&gt;,
+                     public sender&lt;T&gt; {
+public:
+    limiter_node( graph &amp;g, size_t threshold );
+    // deprecated constructor
+    limiter_node( graph &amp;g, size_t threshold,
+                  int number_of_decrement_predecessors = 0 );
+    limiter_node( const limiter_node &amp;src );
+
+    // receiver&lt;DecrementType&gt;
+    implementation-dependent-type decrement;
+
+    // receiver&lt;T&gt;
+    typedef T input_type;
+    typedef sender&lt;input_type&gt; predecessor_type;
+    bool try_put( const input_type &amp;v );
+    bool register_predecessor( predecessor_type &amp;p );
+    bool remove_predecessor( predecessor_type &amp;p );
+
+    // sender&lt;T&gt;
+    typedef T output_type;
+    typedef receiver&lt;output_type&gt; successor_type;
+    bool register_successor( successor_type &amp;r );
+    bool remove_successor( successor_type &amp;r );
+    bool try_get( output_type &amp;v );
+    bool try_reserve( output_type &amp;v );
+    bool try_release( );
+    bool try_consume( );
+};
+
+}
+}</pre>
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the members of this template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d76232e264">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d76232e267">Description</th>
+
+            </tr>
+
+          </thead>
+
+        <tbody>
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">
+                limiter_node( graph &amp;g, size_t threshold )
+              </span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>
+                Constructs a <samp class="codeph">limiter_node</samp> that allows up to
+                <samp class="codeph">threshold</samp> items to pass through before rejecting
+                <samp class="codeph">try_put</samp>'s.
+              </p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">
+                limiter_node( graph &amp;g, size_t threshold, int number_of_decrement_predecessors =
+                0 )
+              </span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>
+                Constructs a <samp class="codeph">limiter_node</samp> that allows up to
+                <samp class="codeph">threshold</samp> items to pass through before rejecting
+                <samp class="codeph">try_put</samp>'s. Optionally a
+                <samp class="codeph">number_of_decrement_predecessors</samp> value can be supplied. This value
+                is passed on to the <samp class="codeph">continue_receiver decrement</samp>'s constructor.
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  <p>
+                    This constructor has been deprecated. Its use is discouraged. One can specify
+                    <samp class="codeph">TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR</samp> to be able to use this
+                    constructor again for a while.
+                  </p>
+
+                </div>
+
+              </p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">limiter_node( const limiter_node &amp;src )</span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>
+                Constructs a <samp class="codeph">limiter_node</samp> that has the same initial state that
+                <samp class="codeph">src</samp> had at its construction. The new <samp class="codeph">limiter_node</samp>
+                will belong to the same <samp class="codeph">graph g</samp> as <samp class="codeph">src</samp>, have the
+                same <samp class="codeph">threshold</samp>, and have the same initial
+                <samp class="codeph">number_of_decrement_predecessors</samp>. The list of predecessors, the
+                list of successors, and the current count of broadcasts, C, are NOT copied from
+                <samp class="codeph">src</samp>.
+              </p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">bool try_put( const input_type &amp;v )</span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>
+                If the broadcast count is below the threshold, <samp class="codeph">v</samp> is broadcast to
+                all successors. For each successor <samp class="codeph">s</samp>, if <samp class="codeph">s.try_put( v ) ==
+                false &amp;&amp; s.register_predecessor( *this ) == true</samp>, then
+                <samp class="codeph">s</samp> is removed from the set of successors.  Otherwise,
+                <samp class="codeph">s</samp> will remain in the set of successors.
+              </p>
+
+              <p>
+                <strong>Returns</strong>: <samp class="codeph">true</samp> if <samp class="codeph">v</samp> is broadcast.
+                <samp class="codeph">false</samp> if <samp class="codeph">v</samp> is not broadcast because the threshold
+                has been reached.
+              </p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">bool register_predecessor( predecessor_type &amp;p )</span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>
+                Adds a predecessor that can be pulled from once the broadcast count falls below the
+                threshold.
+              </p>
+
+              <p>Adds <samp class="codeph">p</samp> to the set of predecessors.</p>
+
+              <p><strong>Returns</strong>:<samp class="codeph">true</samp>.</p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">bool remove_predecessor( predecessor_type &amp;p )</span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Removes <samp class="codeph">p</samp> from the set of predecessors.</p>
+
+              <p><strong>Returns</strong>:
+              <samp class="codeph">true</samp>
+              </p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">bool register_successor( successor_type &amp;r )</span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Adds <samp class="codeph">r</samp> to the set of successors.</p>
+
+              <p><strong>Returns</strong>: <samp class="codeph">true</samp></p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 ">
+              <span class="keyword">bool remove_successor( successor_type &amp;r )</span>
+            </td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Removes <samp class="codeph">r</samp> from the set of successors.</p>
+
+              <p><strong>Returns</strong>: <samp class="codeph">true</samp></p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 "><span class="keyword">bool try_get( output_type &amp;v )</span></td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Does not contain buffering and therefore cannot be pulled from.</p>
+
+              <p><strong>Returns</strong>: <samp class="codeph">false</samp>.</p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 "><span class="keyword">bool try_reserve( output_type &amp;v )</span></td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Does not support reservations.</p>
+
+              <p><strong>Returns</strong>: <samp class="codeph">false</samp>.</p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 "><span class="keyword">bool try_release( )</span></td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Does not support reservations.</p>
+
+              <p><strong>Returns</strong>: <samp class="codeph">false</samp>.</p>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d76232e264 "><span class="keyword">bool try_consume( )</span></td>
+
+            <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d76232e267 ">
+              <p>Does not support reservations.</p>
+
+              <p><strong>Returns</strong>: <samp class="codeph">false</samp>.</p>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+</div>
+
+  </div>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/service_nodes.html">Service Nodes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="message_passing_protocol.html">Message Passing Protocol</a></div>
+<div><a href="sender_and_buffer_policy.html">Sender and Buffer Policy</a></div>
+<div><a href="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html">Helper Functions for Expressing Graphs</a></div></div></div>
+
+</body>
+</html>

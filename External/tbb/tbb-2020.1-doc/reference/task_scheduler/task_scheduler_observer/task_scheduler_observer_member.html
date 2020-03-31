@@ -1,0 +1,206 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="task_scheduler_observer Members" />
+<meta name="DC.subject" content="task_scheduler_observer" />
+<meta name="keywords" content="task_scheduler_observer" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/task_scheduler/task_scheduler_observer.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="task_scheduler_observer_member" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>task_scheduler_observer Members</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="task_scheduler_observer_member">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">task_scheduler_observer Members</h1>
+
+  
+  <div>
+   
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members
+      of this template class.
+    </span><thead align="left">
+       <tr>
+        <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d103757e31">Member
+        </th>
+
+        <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d103757e34">Description
+        </th>
+
+       </tr>
+</thead>
+
+      <tbody>
+        <tr>
+          <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 ">
+            <samp class="codeph">explicit task_scheduler_observer( bool local = false )</samp>
+          </td>
+
+          <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+            <p>Constructs a <samp class="codeph">task_scheduler_observer</samp>
+              object in the inactive state (observation is disabled).
+              If <samp class="codeph">local</samp> is <samp class="codeph">false</samp>,
+              the entry or exit notifications are invoked for threads which start or stop
+              participate in task scheduling (globally).
+              If <samp class="codeph">local</samp> is <samp class="codeph">true</samp>,
+              the entry notifications are invoked for threads that join or have already joined
+              the current arena, and the exit notifications are invoked for threads leaving the arena.
+            </p>
+
+          </td>
+
+       </tr>
+
+       <tr>
+         <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 ">
+           <span class="keyword">explicit task_scheduler_observer( task_arena &amp; )</span>
+         </td>
+
+         <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+          <p>Constructs a <samp class="codeph">task_scheduler_observer</samp>
+           object in the inactive state (observation is disabled), which receives notifications
+           from threads entering and exiting the specified <samp class="codeph">task_arena</samp>.
+          </p>
+
+          <div class="Note"><h3 class="NoteTipHead">Note</h3> Enabling the observation for such an observer forces
+           initialization of the internal arena representation of the specified
+           <samp class="codeph">task_arena</samp> object.
+          </div>
+
+         </td>
+
+       </tr>
+
+       <tr>
+        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 "><span class="keyword">~task_scheduler_observer()</span>
+        </td>
+
+        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+          <p>Disables observing and destroys the observer instance.
+           Waits for extant invocations of <samp class="codeph">on_scheduler_entry</samp> and
+           <samp class="codeph">on_scheduler_exit</samp> to complete.
+          </p>
+
+        </td>
+
+       </tr>
+
+       <tr>
+        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 "><span class="keyword">void observe( bool state=true )</span>
+        </td>
+
+        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+          <p>Enables observing if <samp class="codeph">state</samp> is true;
+           disables observing if <samp class="codeph">state</samp> is false.
+          </p>
+
+        </td>
+
+       </tr>
+
+       <tr>
+        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 "><span class="keyword">bool is_observing() const</span>
+        </td>
+
+        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+          <p><strong>Returns</strong>: True if observing is
+           enabled; false otherwise.
+          </p>
+
+        </td>
+
+       </tr>
+
+       <tr>
+        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 "><span class="keyword">virtual void on_scheduler_entry( bool is_worker )</span>
+        </td>
+
+        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+          <p>
+           The task scheduler invokes this method for each thread that starts participating
+           in TBB work or enters an arena after the observation is enabled.
+           For threads that already execute tasks, the method is invoked
+           before executing the first task stolen after enabling the observation.
+          </p>
+
+          <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+           <p>If a thread enables the observation and then
+            spawns a task, it is guaranteed that the task, as well as all the tasks it creates,
+            will be executed by threads which have invoked <samp class="codeph">on_scheduler_entry</samp>.
+           </p>
+
+          </div>
+
+          <p>The flag <samp class="codeph">is_worker</samp> is true
+           if the thread was created by TBB; false otherwise.
+          </p>
+
+          <p><strong>Effects</strong>: The default behavior does nothing.
+          </p>
+
+        </td>
+
+       </tr>
+
+       <tr>
+        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d103757e31 "><span class="keyword">virtual void on_scheduler_exit( bool is_worker )</span>
+        </td>
+
+        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d103757e34 ">
+          <p>The task scheduler invokes this method when
+           a thread stops participating in task processing or leaves an arena.
+          </p>
+
+          <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+           <p>Sometimes
+            <samp class="codeph">on_scheduler_exit</samp> is invoked for a thread but
+            <samp class="codeph">on_scheduler_entry</samp> is not. This situation can arise
+            if a thread never steals a task after the observation is enabled.
+           </p>
+
+          </div>
+
+          <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+           <p>A process does not wait for the worker threads to clean up,
+            and can terminate before <samp class="codeph">on_scheduler_exit</samp> is invoked.
+           </p>
+
+          </div>
+
+          <p><strong>Effects</strong>: The default behavior does nothing.
+          </p>
+
+        </td>
+
+       </tr>
+
+
+      </tbody>
+
+    </table>
+</div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/task_scheduler/task_scheduler_observer.html">task_scheduler_observer</a></div>
+</div>
+<div></div>
+</body>
+</html>

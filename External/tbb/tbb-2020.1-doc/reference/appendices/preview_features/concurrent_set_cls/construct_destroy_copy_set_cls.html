@@ -1,0 +1,346 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Construct, Destroy, Copy" />
+<meta name="DC.subject" content="Construct, Destroy, Copy" />
+<meta name="keywords" content="Construct, Destroy, Copy" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/concurrent_set_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="construct_destroy_copy_set_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Construct, Destroy, Copy</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="construct_destroy_copy_set_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Construct, Destroy, Copy</h1>
+
+  
+  <div>
+    <div class="section">
+      The following table provides information on the members of the
+      <samp class="codeph">concurrent_set</samp> and <samp class="codeph">concurrent_multiset</samp>
+      template classes.
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all">
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="50.632911392405056%" id="d31872e47">Member</th>
+
+              <th class="cellrowborder" valign="top" width="49.36708860759494%" id="d31872e50">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">concurrent_[multi]set()</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs an empty set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">
+                    explicit concurrent_[multi]set(const key_compare&amp; c, const allocator_type&amp; alloc = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    explicit concurrent_[multi]set(const allocator_type&amp; alloc)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs an empty set using compare <samp class="codeph">c</samp> and allocator <samp class="codeph">alloc</samp>.
+                  If the absence of arguments, their default values are used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p><samp class="codeph">template &lt;typename InputIterator&gt;</samp></p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(InputIterator first, InputIterator last, const key_compare&amp; comp = key_compare(),
+                    const allocator_type&amp; alloc = allocator_type())
+                  </samp>
+                </p>
+
+                <p><samp class="codeph">template &lt;typename InputIterator&gt;</samp></p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(InputIterator first, InputIterator last, const allocator_type&amp; alloc)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs a set, containing copies of the elements in the half-open interval <samp class="codeph">[first, last)</samp>
+                  using compare <samp class="codeph">comp</samp> and allocator <samp class="codeph">alloc</samp>. If the absence of arguments, their default
+                  values are used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(const concurrent_[multi]set&amp; other)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs a copy of the set <samp class="codeph">other</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(const concurrent_[multi]set&amp; other, const allocator_type&amp; alloc)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs a copy of the set <samp class="codeph">other</samp> using allocator <samp class="codeph">alloc</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(concurrent_[multi]set&amp;&amp; other)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs a set by moving elements from <samp class="codeph">other</samp>.
+                </p>
+
+                <p>
+                  <samp class="codeph">other</samp> is left in a valid, but unspecified state.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(concurrent_[multi]set&amp;&amp; other, const allocator_type&amp; alloc)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Constructs a set by moving elements from <samp class="codeph">other</samp> using allocator <samp class="codeph">alloc</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">other</samp> is left in a valid, but unspecified state.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(std::initializer_list&lt;value_type&gt; il, const key_compare&amp; comp = key_compare(),
+                    const allocator_type&amp; alloc = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_[multi]set(std::initializer_list&lt;value_type&gt; il, const allocator_type&amp; alloc)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Equivalent to <samp class="codeph">concurrent_[multi]set(il.begin(), il.end(), comp, alloc)</samp> and
+                </p>
+
+                <p>
+                  <samp class="codeph">concurrent_[multi]set(il.begin(), il.end(), alloc)</samp> respectively.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">~concurrent_[multi]set()</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Destroys the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">concurrent_[multi]set&amp; operator=(const concurrent_[milti]set&amp; other)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  If <samp class="codeph">*this</samp> and <samp class="codeph">other</samp> are distinct, clears the <samp class="codeph">*this</samp>
+                  and copies elements from <samp class="codeph">other</samp> to <samp class="codeph">*this</samp>. Otherwise, does nothing.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">concurrent_[multi]set&amp; operator=(concurrent_[multi]set&amp;&amp; other)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  If <samp class="codeph">*this</samp> and <samp class="codeph">other</samp> are distinct, clears the <samp class="codeph">*this</samp>
+                  and moves elements from <samp class="codeph">other</samp> to <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <samp class="codeph">other</samp> is left in a valid, but unspecified state. Otherwise, do nothing.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d31872e47 ">
+                <p>
+                  <samp class="codeph">concurrent_[multi]set&amp; operator=(std::initializer_list&lt;value_type&gt; il)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d31872e50 ">
+                <p>
+                  Assigns contents of <samp class="codeph">il</samp> to <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/concurrent_set_cls.html">concurrent_set and concurrent_multiset Template Classes</a></div>
+</div>
+<div></div>
+</body>
+</html>

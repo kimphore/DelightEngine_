@@ -1,0 +1,291 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Data Flow Graph" />
+<meta name="DC.subject" content="Data Flow Graph, Flow Graph" />
+<meta name="keywords" content="Data Flow Graph, Flow Graph" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Graph_Main_Categories.html" />
+<meta name="DC.Relation" scheme="URI" content="Flow_Graph_resource_tips.html#flow_graph_resource_tips" />
+<meta name="DC.Relation" scheme="URI" content="Dependence_Graph.html#Dependence_Graph" />
+<meta name="DC.Relation" scheme="URI" content="Predefined_Node_Types.html#predefined_node_types" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="Data_Flow_Graph" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Data Flow Graph</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="Data_Flow_Graph">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Data Flow Graph</h1>
+ 
+   
+  <div> 
+	 <p>In a data flow graph, nodes are computations that send and receive data
+		messages. Some nodes may only send messages, others may only receive messages,
+		and others may send messages in response to messages that they receive. 
+	 </p>
+ 
+	 <p>In the following data flow graph, the left-most node generates the
+		integer values from 1 to 10 and passes them to two successor nodes. One of the
+		successors squares each value it receives and passes the result downstream. The
+		second successor cubes each value it receives and passes the result downstream.
+		The right-most node receives values from both of the middle nodes. As it
+		receives each value, it adds it to a running sum of values. When the
+		application is run to completion, the value of sum will be equal to the sum of
+		the sequence of squares and cubes from 1 to 10. 
+	 </p>
+ 
+	 <p> 
+		<div class="fignone" id="simple_data_flow_title"><span class="figcap">Simple Data Flow Graph</span> 
+		  <br /><div class="imagecenter"><img src="Images/flow_graph.jpg" alt="Simple data flow graph" align="center" /></div><br /> 
+		</div>
+ 
+	 </p>
+ 
+	 <p>The following code snippet shows an implementation of the 
+		<strong>Simple Data Flow Graph</strong> shown above: 
+	 </p>
+ 
+	 <pre>    int sum = 0;
+    graph g;
+    function_node&lt; int, int &gt; squarer( g, unlimited, [](const int &amp;v) { 
+        return v*v; 
+    } );
+    function_node&lt; int, int &gt; cuber( g, unlimited, [](const int &amp;v) { 
+        return v*v*v; 
+    } );
+    function_node&lt; int, int &gt; summer( g, 1, [&amp;](const int &amp;v ) -&gt; int { 
+        return sum += v; 
+    } );
+    make_edge( squarer, summer );
+    make_edge( cuber, summer );
+
+    for ( int i = 1; i &lt;= 10; ++i ) {
+      squarer.try_put(i);
+      cuber.try_put(i);
+    }
+    g.wait_for_all();
+
+    cout &lt;&lt; "Sum is " &lt;&lt; sum &lt;&lt; "\n";
+</pre> 
+	 <p>In the implementation above, the following 
+		<span class="keyword">function_node</span>s are created: 
+	 </p>
+ 
+	 <ul> 
+		<li>one to square values 
+		</li>
+ 
+		<li>one to cube values 
+		</li>
+ 
+		<li>one to add values to the global sum 
+		</li>
+ 
+	 </ul>
+ 
+	 <p>Since the squarer and cuber nodes are side-effect free, they are created
+		with an unlimited concurrency. The summer node updates the sum through a
+		reference to a global variable and therefore is not safe to execute in
+		parallel. It is therefore created with a concurrency limit of 1. The node 
+		<span class="keyword">F</span> from 
+		<strong>Simple Data Flow Graph</strong> above is implemented as a loop that puts
+		messages to both the squarer and cuber node. 
+	 </p>
+ 
+	 <p>A slight improvement over the first implementation is to introduce an
+		additional node type, a 
+		<span class="keyword">broadcast_node</span>. A 
+		<span class="keyword">broadcast_node</span> broadcasts any message it receives to
+		all of its successors. 
+	 </p>
+ 
+	 <p> This enables replacing the two 
+		<span class="keyword">try_puts</span> in the loop with a single 
+		<span class="keyword">try_put</span>: 
+	 </p>
+ 
+	 <pre>    broadcast_node&lt;int&gt; b(g);
+    make_edge( b, squarer );
+    make_edge( b, cuber );
+    for ( int i = 1; i &lt;= 10; ++i ) {
+      b.try_put(i);
+    }
+    g.wait_for_all();
+</pre> 
+	 <p>An even better option, which will make the implementation even more like
+		the 
+		<strong>Simple Data Flow Graph</strong> above, is to introduce a 
+		<span class="keyword">source_node</span>. A 
+		<span class="keyword">source_node</span>, as the name implies only sends messages
+		and does not receive messages. Its constructor takes three arguments: 
+	 </p>
+ 
+	 <pre>template&lt; typename Body &gt; source_node( graph &amp;<em>g</em>, Body <em>body</em>, bool <em>is_active</em>=true)</pre> 
+	 
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"> 
+		   
+		   
+		  <thead align="left"> 
+			 <tr> 
+				<th class="cellrowborder" valign="top" width="22.727272727272727%" id="d111719e145">Parameter 
+				</th>
+ 
+				<th class="cellrowborder" valign="top" width="77.27272727272727%" id="d111719e148">Description 
+				</th>
+ 
+			 </tr>
+</thead>
+ 
+		  <tbody> 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d111719e145 "><span class="keyword">g</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d111719e148 "> 
+				  <p>The graph the node belongs to. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d111719e145 "><span class="keyword">body</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d111719e148 "> 
+				  <p>the body of the source node. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="22.727272727272727%" headers="d111719e145 "><span class="keyword">is_active 
+				  </span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="77.27272727272727%" headers="d111719e148 "> 
+				  <p>This argument sets whether the node will begin sending
+					 messages immediately after a successor is attached to it, or if it must wait to
+					 be activated. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+		  </tbody>
+ 
+		</table>
+</div>
+ 
+	 <p> The body is a function object, or lambda expression, that contains a
+		function operator: 
+	 </p>
+ 
+	 <pre>bool Body::operator()(OutputType &amp;v );</pre> 
+	 <p>The runtime library will repeatedly invoke a 
+		<span class="keyword">source_node</span> body until it returns false. You can
+		replace the loop in the example with a 
+		<span class="keyword">source_node</span>: 
+	 </p>
+ 
+	 <pre>    source_node&lt; int &gt; src( g, src_body(10), false );
+    make_edge( src, squarer );
+    make_edge( src, cuber );
+    src.activate();
+    g.wait_for_all();
+</pre> 
+	 <p>The runtime library will repeatedly invoke the function operator in 
+		<span class="keyword">src_body</span> until it returns false. You therefore need to
+		create body that will act like the body of the loop in the 
+		<strong>Simple Data Flow Graph</strong> above. The final implementation after all
+		of these changes is shown below: 
+	 </p>
+ 
+	 <pre>    class src_body {
+        const int my_limit;
+        int my_next_value;
+    public:
+        src_body(int l) : my_limit(l), my_next_value(1) {}
+        bool operator()( int &amp;v ) {
+            if ( my_next_value &lt;= my_limit ) {
+                v = my_next_value++;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
+
+    int main() {
+      int sum = 0;
+      graph g;
+      function_node&lt; int, int &gt; squarer( g, unlimited, [](const int &amp;v) { 
+          return v*v; 
+      } );
+      function_node&lt; int, int &gt; cuber( g, unlimited, [](const int &amp;v) { 
+          return v*v*v; 
+      } );
+      function_node&lt; int, int &gt; summer( g, 1, [&amp;](const int &amp;v ) -&gt; int { 
+          return sum += v; 
+      } );
+      make_edge( squarer, summer );
+      make_edge( cuber, summer );
+      source_node&lt; int &gt; src( g, src_body(10), false );
+      make_edge( src, squarer );
+      make_edge( src, cuber );
+      src.activate();
+      g.wait_for_all();
+      cout &lt;&lt; "Sum is " &lt;&lt; sum &lt;&lt; "\n";
+    }
+</pre> 
+	 <p>This final implementation has all of the nodes and edges from the 
+		<strong>Simple Data Flow Graph</strong> above. In this simple example, there is not
+		much advantage in using a 
+		<span class="keyword">source_node</span> over an explicit loop. But, because a 
+		<span class="keyword">source_node</span> is able to react to the behavior of
+		downstream nodes, it can limit memory use in more complex graphs. For more
+		information, see 
+		<a href="create_token_based_system.html#create_token_based_system">Creating a Token-Based System</a> 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Graph_Main_Categories.html">Graph Application Categories</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Flow_Graph_resource_tips.html#flow_graph_resource_tips">Flow Graph Tips for Limiting Resource Consumption 
+		  </a></div>
+<div><a href="Dependence_Graph.html#Dependence_Graph">Dependence Graph 
+		  </a></div>
+<div><a href="Predefined_Node_Types.html#predefined_node_types">Predefined Node Types 
+		  </a></div></div></div> 
+
+</body>
+</html>

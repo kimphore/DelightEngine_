@@ -1,0 +1,132 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Zip Iterator" />
+<meta name="DC.subject" content="Zip Iterator" />
+<meta name="keywords" content="Zip Iterator" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/iterators.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="zip_iterator" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Zip Iterator</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="zip_iterator">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1"> Zip Iterator </h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle"> Summary </h2> 
+    Iterates over several containers simultaneously. The dereferenced value is a tuple of the dereferenced values of the involved iterators.
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Header </h2>
+       <pre>#include "tbb/iterators.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Syntax </h2> 
+<pre>
+template &lt;typename... Types&gt;
+class zip_iterator {
+public:
+    typedef typename std::make_signed&lt;std::size_t&gt;::type difference_type;
+    typedef std::tuple&lt;typename std::iterator_traits&lt;Types&gt;::value_type...&gt; value_type;
+    typedef <em>unspecified</em> reference;
+    typedef std::tuple&lt;typename std::iterator_traits&lt;Types&gt;::pointer...&gt; pointer;
+    zip_iterator();
+    explicit zip_iterator(Types... args);
+    zip_iterator(const zip_iterator&amp; input);
+    zip_iterator&amp; operator=(const zip_iterator&amp; input);
+    reference operator*() const;
+    reference operator[](difference_type i) const;
+    difference_type operator-(const zip_iterator&amp; it) const;
+    zip_iterator&amp; operator+=(difference_type forward);
+    zip_iterator&amp; operator-=(difference_type backward);
+    zip_iterator&amp; operator++();
+    zip_iterator&amp; operator--();
+    zip_iterator operator++(int);
+    zip_iterator operator--(int);
+    zip_iterator operator-(difference_type backward) const;
+    zip_iterator operator+(difference_type forward) const;
+    friend zip_iterator operator+(difference_type forward, const zip_iterator&amp; it);
+    bool operator==(const zip_iterator&amp; it) const;
+    bool operator!=(const zip_iterator&amp; it) const;
+    bool operator&lt;(const zip_iterator&amp; it) const;
+    bool operator&gt;(const zip_iterator&amp; it) const;
+    bool operator&lt;=(const zip_iterator&amp; it) const;
+    bool operator&gt;=(const zip_iterator&amp; it) const;
+    std::tuple&lt;Types...&gt; base() const;
+};
+
+template&lt;typename... T&gt;
+zip_iterator&lt;T...&gt; make_zip_iterator(T&amp;&amp;... args);
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Description </h2> 
+    <p>
+      zip_iterator is a random access iterator used for iterating over several containers simultaneously in STL algorithms. The operator*() function returns a tuple of the dereferenced values of the individual iterators used in parallel iterating of the containers. The individual iterators must have equal iteration space sizes and their initial values must be the same points in the iteration spaces. Otherwise,  behavior is undefined.
+      make_zip_iterator creates a zip_iterator object, deducing the target type from the types of arguments.
+    </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Example </h2>
+      
+      <p>
+        The following example illustrates calculations performed by getting data from arrays a, b, and storing it to array c.
+      </p>
+
+<pre>#include &lt;algorithm&gt;
+#include &lt;tuple&gt;
+#include &lt;vector&gt;
+#include &lt;tbb/iterators.h&gt;
+
+int main() {
+    const int N = 100000;
+    std::vector&lt;float&gt; a(N), b(N), c(N);
+
+    tbb::counting_iterator&lt;int&gt; cnt0(0), cntN(N);
+    std::for_each(cnt0, cntN, [&amp;a](int i){ a[i] = i*i; });
+    std::for_each(cnt0, cntN, [&amp;b](int i){ b[i] = i*i*i; });
+
+    auto start = tbb::make_zip_iterator(a.begin(), b.begin(), c.begin());
+    auto end   = tbb::make_zip_iterator(a.end(), b.end(), c.end());
+
+    std::for_each(start, end, [](const std::tuple&lt;float&amp;, float&amp;, float&amp;&gt;&amp; v) {
+          std::get&lt;2&gt;(v) = std::get&lt;0&gt;(v) + std::get&lt;1&gt;(v);
+    });
+
+    return 0;
+}</pre>
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/iterators.html">Iterators</a></div>
+</div>
+<div></div>
+</body>
+</html>

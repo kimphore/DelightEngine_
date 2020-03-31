@@ -1,0 +1,95 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Destroying Graphs That Run Outside the Main Thread" />
+<meta name="DC.subject" content="flow graph tips, destroying graphs that run outside the main thread, destroying graphs that run outside the main thread" />
+<meta name="keywords" content="flow graph tips, destroying graphs that run outside the main thread, destroying graphs that run outside the main thread" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_waiting_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="always_use_wait_for_all.html#always_use_wait4all" />
+<meta name="DC.Relation" scheme="URI" content="avoid_dynamic_node_removal.html#avoid_dynamic_node_removal" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="avoid_dynamic_node_removal" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Destroying Graphs That Run Outside the Main Thread</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="avoid_dynamic_node_removal">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  
+  <h1 class="topictitle1">Destroying Graphs That Run Outside the Main Thread</h1>
+ 
+   
+  <div> 
+    <p>Make sure to enqueue a task to wait for and destroy graphs that run
+      outside the main thread. 
+    </p>
+ 
+    <p>You may not always want to block the main application thread by calling 
+      <span class="keyword">wait_for_all()</span>. However, it is safest to call 
+      <span class="keyword">wait_for_all</span> on a graph before destroying it. A common
+      solution is to enqueue a task to build and wait for the graph to complete. For
+      example, assume you really do not want to call a 
+      <span class="keyword">wait_for_all</span> in the example from 
+      <a href="always_use_wait_for_all.html#always_use_wait4all">Always Use wait_for_all()</a>,
+      Instead you can enqueue a task that creates the graph and waits for it: 
+    </p>
+ 
+    <pre>class background_task : public tbb::task {
+public:
+  /* override */ task *execute() {
+    graph g;
+    function_node&lt; int, int &gt; f( g, 1, []( int i ) -&gt; int {
+      return spin_for(i);
+    } );
+    f.try_put(1);
+    g.wait_for_all();
+    return NULL;
+  }
+};
+
+void no_wait_for_all_enqueue() {
+  task::enqueue( * (new( task::allocate_root() ) background_task()) );
+  // do other things without waiting…
+}
+</pre> 
+    <p>In the code snippet above, the enqueued task executes at some point, but
+      it's not clear when. If you need to use the results of the enqueued task, or
+      even ensure that it completes before the program ends, you will need to use
+      some mechanism to signal from the enqueued task that the graph is complete. See
+      the Developer Reference for more information on enqueued tasks. 
+    </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_waiting_tips.html">Flow Graph Tips for Waiting for and Destroying a Flow Graph</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="always_use_wait_for_all.html#always_use_wait4all">Always Use wait_for_all() 
+        </a></div>
+<div><a href="avoid_dynamic_node_removal.html#avoid_dynamic_node_removal">Avoid Dynamic Node Removal 
+        </a></div></div></div> 
+
+</body>
+</html>

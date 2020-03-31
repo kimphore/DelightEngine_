@@ -1,0 +1,108 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Edges" />
+<meta name="DC.subject" content="Flow Graph Concepts, Edges" />
+<meta name="keywords" content="Flow Graph Concepts, Edges" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Relation" scheme="URI" content="Nodes.html#Nodes" />
+<meta name="DC.Relation" scheme="URI" content="Graph_Object.html#Graph_Object" />
+<meta name="DC.Relation" scheme="URI" content="Mapping_Nodes2Tasks.html#Mapping_Nodes2Tasks" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="Edges" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Edges</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="Edges">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Edges</h1>
+ 
+   
+  <div> 
+	 <p>Most applications contain multiple nodes with edges connecting them to
+		each other. In the flow graph interface, edges are directed channels over which
+		messages are passed. They are created by calling the function 
+		<samp class="codeph">make_edge( p, s )</samp> with two arguments: 
+		<span class="keyword">p</span>, the predecessor, and 
+		<span class="keyword">s</span>, the successor. You can modify the example used in
+		the 
+		<strong>Nodes</strong> topic to include a second node that squares the value it
+		receives before printing it and then connect that to the first node with an
+		edge. 
+	 </p>
+ 
+	 <pre>    graph g;
+    function_node&lt; int, int &gt; n( g, unlimited, []( int v ) -&gt; int { 
+        cout &lt;&lt; v;
+        spin_for( v );
+        cout &lt;&lt; v;
+        return v;
+    } );
+    function_node&lt; int, int &gt; m( g, 1, []( int v ) -&gt; int {
+        v *= v;
+        cout &lt;&lt; v;
+        spin_for( v );
+        cout &lt;&lt; v;
+        return v;
+    } );
+    make_edge( n, m );
+    n.try_put( 1 );
+    n.try_put( 2 );
+    n.try_put( 3 );
+    g.wait_for_all();
+</pre> 
+	 <p>Now there are two 
+		<span class="keyword">function_node</span>s, 
+		<span class="keyword">n</span> and 
+		<span class="keyword">m</span>. The call to 
+		<span class="keyword">make_edge</span> creates an edge from 
+		<span class="keyword">n</span> to 
+		<span class="keyword">m</span>. The node 
+		<span class="keyword">n</span> is created with unlimited concurrency, while 
+		<span class="keyword">m</span> has a concurrency limit of 1. The invocations of 
+		<span class="keyword">n</span> can all proceed in parallel, while the invocations
+		of m will be serialized. Because there is an edge from 
+		<span class="keyword">n</span> to 
+		<span class="keyword">m</span>, each value 
+		<span class="keyword">v</span>, returned by 
+		<span class="keyword">n</span>, will be automatically passed to node 
+		<span class="keyword">m</span> by the runtime library. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Nodes.html#Nodes">Nodes 
+		  </a></div>
+<div><a href="Graph_Object.html#Graph_Object">Graph Object 
+		  </a></div>
+<div><a href="Mapping_Nodes2Tasks.html#Mapping_Nodes2Tasks">Mapping Nodes to Tasks 
+		  </a></div></div></div> 
+
+</body>
+</html>

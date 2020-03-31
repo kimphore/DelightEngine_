@@ -1,0 +1,160 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Parallelizing Simple Loops" />
+<meta name="DC.subject" content="Parallelizing Simple Loops" />
+<meta name="keywords" content="Parallelizing Simple Loops" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/title.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Initializing_and_Terminating_the_Library.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/parallel_for.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/parallel_reduce.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Advanced_Example.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Advanced_Topic_Other_Kinds_of_Iteration_Spaces.html" />
+<meta name="DC.Relation" scheme="URI" content="Debug_Versus_Release_Libraries.html#tutorial_Debug_Versus_Release_Libraries" />
+<meta name="DC.Relation" scheme="URI" content="Which_Dynamic_Libraries_to_Use.html#tutorial_Which_Dynamic_Libraries_to_Use" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Parallelizing_Simple_Loops" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Parallelizing Simple Loops</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Parallelizing_Simple_Loops">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Parallelizing Simple Loops</h1>
+ 
+   
+  <div> 
+	 <p>The simplest form of scalable parallelism is a loop of iterations that
+		can each run simultaneously without interfering with each other. The following
+		sections demonstrate how to parallelize simple loops. 
+	 </p>
+ 
+	 <div class="Note"><h3 class="NoteTipHead">Note</h3>  
+		<p>Intel&reg; Threading Building Blocks (Intel&reg; TBB) components are defined
+		  in namespace 
+		  <samp class="codeph">tbb</samp>. For brevity’s sake, the namespace is explicit in
+		  the first mention of a component, but implicit afterwards. 
+		</p>
+ 
+	 </div>
+ 
+	 <p>When compiling Intel TBB programs, be sure to link in the Intel TBB
+		shared library, otherwise undefined references will occur. The following table
+		shows compilation commands that use the debug version of the library. Remove
+		the "<samp class="codeph">_debug</samp>" portion to link against the production version of
+		the library.
+	 </p>
+ 
+	 
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl8" width="100%" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">Sample command lines for simple debug builds</span></caption><thead align="left"> 
+		<tr> 
+		  <th class="cellrowborder" valign="top" width="50%" id="d124102e55">Operating System 
+		  </th>
+ 
+		  <th class="cellrowborder" valign="top" width="50%" id="d124102e58">Command line 
+		  </th>
+ 
+		</tr>
+</thead>
+ 
+	 <tbody> 
+		<tr> 
+		  <td class="cellrowborder" valign="top" width="50%" headers="d124102e55 "> 
+			 <p>Windows* OS 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" valign="top" width="50%" headers="d124102e58 "> 
+			 <p> 
+				<samp class="codeph">icl /MD example.cpp tbb_debug.lib 
+				</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+		<tr> 
+		  <td class="cellrowborder" valign="top" width="50%" headers="d124102e55 "> 
+			 <p>Linux* OS 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" valign="top" width="50%" headers="d124102e58 "> 
+			 <p> 
+				<samp class="codeph">icc example.cpp -ltbb_debug</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+		<tr> 
+		  <td class="cellrowborder" valign="top" width="50%" headers="d124102e55 "> 
+			 <p>macOS* Systems 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" valign="top" width="50%" headers="d124102e58 "> 
+			 <p> 
+				<samp class="codeph">icc example.cpp -ltbb_debug</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+	 </tbody>
+ 
+  </table>
+</div>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/title.html">Intel&reg; Threading Building Blocks Developer Guide</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../tbb_userguide/Initializing_and_Terminating_the_Library.html">Initializing and Terminating the Library</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/parallel_for.html">parallel_for</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/parallel_reduce.html">parallel_reduce</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/Advanced_Example.html">Advanced Example</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/Advanced_Topic_Other_Kinds_of_Iteration_Spaces.html">Advanced Topic: Other Kinds of Iteration Spaces</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="Debug_Versus_Release_Libraries.html#tutorial_Debug_Versus_Release_Libraries">Debug Versus Release Libraries 
+		  </a></div>
+<div><a href="Which_Dynamic_Libraries_to_Use.html#tutorial_Which_Dynamic_Libraries_to_Use">Which Dynamic Libraries to Use 
+		  </a></div></div></div> 
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Threads" />
+<meta name="DC.subject" content="Threads" />
+<meta name="keywords" content="Threads" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/thread_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/thread_id.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/this_thread_namespace.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="threads" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Threads</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="threads">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Threads</h1>
+ 
+  
+  <div> 
+	 <div class="section"> 
+	  <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+        This feature is deprecated and will be removed in the future.
+        </p>
+</div>
+
+		<p>Intel&reg; Threading Building Blocks (Intel&reg; TBB)
+		  provides a wrapper around the platform's native threads, based upon the
+		  C++11 standard. Using this wrapper has two benefits:
+		</p>
+ 
+		<ul> 
+		  <li> 
+			 <p>It makes threaded code portable across
+				platforms.
+			 </p>
+ 
+		  </li>
+ 
+		  <li> 
+			 <p>It eases later migration to ISO C++11
+				threads.
+			 </p>
+ 
+		  </li>
+ 
+		</ul>
+ 
+		<p>The library defines the wrapper in namespace 
+		  <samp class="codeph">std</samp>, not namespace 
+		  <samp class="codeph">tbb</samp>, as explained in Section Namespace.
+		</p>
+ 
+		<p>The significant departures from C++11 are shown in
+		  the table below. 
+		</p>
+ 
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl36" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">Differences Between C++11 and Intel TBB
+		  Thread Class</span></caption> 
+		   
+		   
+		  <thead align="left">
+			 <tr> 
+				<th class="cellrowborder" valign="top" width="NaN%" id="d16001e71"> 
+				  <p>C++11
+				  </p>
+ 
+				</th>
+ 
+				<th class="row-nocellborder" valign="top" width="NaN%" id="d16001e77"> 
+				  <p>Intel TBB
+				  </p>
+ 
+				</th>
+ 
+			 </tr>
+</thead>
+
+		  <tbody> 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d16001e71 "> 
+				  <p><samp class="codeph">template&lt;class Rep, class
+						Period&gt; std::this_thread::sleep_for(</samp>
+				  </p>
+ 
+				  <p><samp class="codeph">const std::chrono::duration&lt;Rep,
+						Period&gt;&amp; rel_time)</samp>
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d16001e77 "> 
+				  <p><samp class="codeph">std::this_thread::sleep_for(
+						const tbb::tick_count::interval_t&amp; )</samp>
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d16001e71 "> 
+				  <p>
+						<samp class="codeph">std::thread::id</samp> can be hashed with 
+						<samp class="codeph">std::hash</samp> template class.
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d16001e77 "> 
+				  <p>
+						<samp class="codeph">std::thread::id</samp> can be hashed with
+						<samp class="codeph">tbb::tbb_hash_compare</samp> and <samp class="codeph">tbb::tbb_hash</samp>
+						template classes.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d16001e71 "> 
+				  <p>rvalue reference parameters
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d16001e77 "> 
+				  <p>Parameter changed to plain value, or
+					 function removed, as appropriate.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d16001e71 "> 
+				  <p>constructor for 
+					 <samp class="codeph">std::thread</samp> takes arbitrary number of
+					 arguments.
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d16001e77 "> 
+				  <p>constructor for 
+					 <samp class="codeph">std::thread</samp> takes 0-3 arguments.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="NaN%" headers="d16001e71 "> 
+				  <p>destructor for 
+					 <samp class="codeph">std::thread</samp> calls
+                                         <samp class="codeph">terminate()</samp>, if
+					 the thread is <samp class="codeph">joinable()</samp>.
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="NaN%" headers="d16001e77 "> 
+				  <p>destructor for 
+					 <samp class="codeph">std::thread</samp> calls
+                                         <samp class="codeph">detach()</samp>, if
+					 the thread is <samp class="codeph">joinable()</samp>.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+		  </tbody>
+ 
+		</table>
+</div>
+ 
+		<p>The other changes are for compatibility with the
+		  C++03 standard or Intel TBB. For example, constructors that have an
+		  arbitrary number of arguments require the variadic template features of C++11.
+		</p>
+ 
+		<div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+		  <p>Threads are heavy weight entities on most
+			 systems, and running too many threads on a system can seriously degrade
+			 performance. Consider using a task based solution instead if practical. 
+		  </p>
+ 
+		</div>
+ 
+	 </div>
+ 
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/deprecated_features/cpp_obsolete.html">Obsolete C++ functionality</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/thread_cls.html">thread Class</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/thread_id.html">thread::id</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/this_thread_namespace.html">this_thread Namespace</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

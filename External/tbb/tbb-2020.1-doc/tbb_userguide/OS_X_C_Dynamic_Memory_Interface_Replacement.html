@@ -1,0 +1,90 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="macOS* C/C++ Dynamic Memory Interface Replacement" />
+<meta name="DC.subject" content="macOS* C/C++ Dynamic Memory Interface Replacement" />
+<meta name="keywords" content="macOS* C/C++ Dynamic Memory Interface Replacement" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Automically_Replacing_malloc.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Linux_C_Dynamic_Memory_Interface_Replacement" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>macOS* C/C++ Dynamic Memory Interface Replacement</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Linux_C_Dynamic_Memory_Interface_Replacement">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">macOS* C/C++ Dynamic Memory Interface Replacement </h1>
+
+
+<div>
+<p>Release version of the proxy library is <samp class="codeph">libtbbmalloc_proxy.dylib</samp>,
+   debug version <samp class="codeph">libtbbmalloc_proxy_debug.dylib</samp>.</p>
+
+<p>The following dynamic memory functions are replaced:</p>
+
+<ul>
+    <li><p>Standard C library functions: <samp class="codeph">malloc</samp>,
+           <samp class="codeph">calloc</samp>, <samp class="codeph">realloc</samp>, <samp class="codeph">free</samp></p>
+</li>
+
+    <li><p>Standard POSIX* function: <samp class="codeph">posix_memalign</samp></p>
+</li>
+
+    <li><p>Replaceable global C++ operators <samp class="codeph">new</samp> and <samp class="codeph">delete</samp></p>
+</li>
+
+    <li><p>Other functions: <samp class="codeph">valloc</samp>, <samp class="codeph">malloc_size</samp></p>
+</li>
+
+</ul>
+
+<p>You can do the replacement either by loading the proxy library at program load time using
+   the <samp class="codeph">DYLD_INSERT_LIBRARIES</samp> environment variable (without changing the executable file),
+   or by linking the main executable file with the proxy library.</p>
+
+<p>The OS program loader must be able to find the proxy library and the scalable memory allocator library
+   at program load time. For that you may include the directory containing the libraries
+   in the <samp class="codeph">DYLD_LIBRARY_PATH</samp> environment variable.</p>
+
+<div class="section"><h2 class="sectiontitle">Examples</h2>
+
+<p>These examples show how to set <samp class="codeph">DYLD_INSERT_LIBRARIES</samp>
+   and how to link a program to use the memory allocation replacements.</p>
+
+<pre># Set DYLD_INSERT_LIBRARIES to load the release version of the proxy library
+DYLD_INSERT_LIBRARIES=libtbbmalloc_proxy.dylib 
+# Link with the release version of the proxy library
+clang++ foo.o bar.o -ltbbmalloc_proxy -o a.out
+</pre>
+<p>To use the debug version of the library, replace <em>tbbmalloc_proxy</em>
+   with <em>tbbmalloc_proxy_debug</em> in the above examples.</p>
+
+</div>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Automically_Replacing_malloc.html">Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation</a></div>
+</div>
+<div></div>
+</body>
+</html>

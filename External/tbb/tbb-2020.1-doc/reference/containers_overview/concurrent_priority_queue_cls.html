@@ -1,0 +1,798 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="concurrent_priority_queue Template Class" />
+<meta name="DC.subject" content="concurrent_priority_queue Template Class" />
+<meta name="keywords" content="concurrent_priority_queue Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/containers_overview.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="concurrent_priority_queue_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>concurrent_priority_queue Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="concurrent_priority_queue_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">concurrent_priority_queue Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        Template class for priority queue with concurrent operations.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <p>
+<pre>
+template&lt;typename T, typename Alloc = cache_aligned_allocator&lt;T&gt; &gt;
+class concurrent_priority_queue;
+</pre>
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <p>
+        <pre>#include "tbb/concurrent_priority_queue.h"</pre>
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        A <samp class="codeph">concurrent_priority_queue</samp> is a container that permits multiple threads to
+        concurrently push and pop items. Items are popped in priority order as determined by a
+        template parameter. The capacity of the queue is unbounded, subject to memory limitations on
+        the target machine.
+      </p>
+
+      <p>
+        The interface is similar to STL <samp class="codeph">std::priority_queue</samp> except where it must
+        differ to make concurrent modification safe.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">
+          Differences Between STL queue and Intel&reg; Threading Building Blocks
+          concurrent_priority_queue
+        </span></caption>
+          
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="NaN%" id="d47404e91">
+                <p>
+                  Feature
+                </p>
+
+              </th>
+
+              <th class="cellrowborder" valign="top" width="NaN%" id="d47404e97">
+                <p>
+                  STL std::priority_queue
+                </p>
+
+              </th>
+
+              <th class="row-nocellborder" valign="top" width="NaN%" id="d47404e103">
+                <p>
+                  concurrent_priority_queue
+                </p>
+
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e91 ">
+                <p>
+                  Choice of underlying container
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e97 ">
+                <p>
+                  Sequence template parameter
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="NaN%" headers="d47404e103 ">
+                <p>
+                  No choice of underlying container; allocator choice is provided instead
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e91 ">
+                <p>
+                  Access to highest priority item
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e97 ">
+                <p>
+                  <samp class="codeph">
+                    const value_type&amp; top() const
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="NaN%" headers="d47404e103 ">
+                <p>
+                  Not available. Unsafe for concurrent container
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e91 ">
+                <p>
+                  Copy and pop item if present
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e97 ">
+                <p>
+                  <samp class="codeph">
+                    bool b=!q.empty(); if(b) { x=q.top(); q.pop(); }
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="NaN%" headers="d47404e103 ">
+                <p>
+                  <samp class="codeph">bool b = q.try_pop(x);</samp>
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e91 ">
+                <p>
+                  Get number of items in queue
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e97 ">
+                <p>
+                  <samp class="codeph">size_type size() const</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="NaN%" headers="d47404e103 ">
+                <p>
+                  Same, but may be inaccurate due to pending concurrent push or pop operations
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e91 ">
+                <p>
+                  Check if there are items in queue
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="NaN%" headers="d47404e97 ">
+                <p>
+                  <samp class="codeph">bool empty() const</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="NaN%" headers="d47404e103 ">
+                <p>
+                  Same, but may be inaccurate due to pending concurrent push or pop operations
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+    template &lt;typename T, typename Compare=std::less&lt;T&gt;,
+                 typename A=cache_aligned_allocator&lt;T&gt; &gt;
+    class concurrent_priority_queue {
+    public:
+        typedef T value_type;
+        typedef T&amp; reference;
+        typedef const T&amp; const_reference;
+        typedef size_t size_type;
+        typedef ptrdiff_t difference_type;
+        typedef A allocator_type;
+
+        // Constructors
+        concurrent_priority_queue(const allocator_type&amp; a = allocator_type());
+        concurrent_priority_queue(const Compare&amp; c, allocator_type&amp; a = allocator_type());
+        concurrent_priority_queue(size_type init_capacity,
+                                  const allocator_type&amp; a = allocator_type());
+        concurrent_priority_queue(size_type init_capacity, const Compare&amp; c, 
+                                  const allocator_type&amp; a = allocator_type());
+        template&lt;typename InputIterator&gt;
+        concurrent_priority_queue(InputIterator begin, InputIterator end,
+                                  const allocator_type&amp; a = allocator_type());
+        template&lt;typename InputIterator&gt;
+        concurrent_priority_queue(InputIterator begin, InputIterator end,
+                                  const Compare&amp; c, const allocator_type&amp; a = allocator_type());
+        concurrent_priority_queue(const concurrent_priority_queue&amp; src,
+                                  const allocator_type&amp; a = allocator_type());
+        // Supported since C++11
+        concurrent_priority_queue(concurrent_priority_queue&amp;&amp; src);
+        concurrent_priority_queue(concurrent_priority_queue&amp;&amp; src,
+                                  const allocator_type&amp; a);
+        concurrent_priority_queue(std::initializer_list&lt;T&gt; il,
+                                  const allocator_type &amp;a = allocator_type());
+        concurrent_priority_queue(std::initializer_list&lt;T&gt; il,
+                                  const Compare&amp; c, const allocator_type &amp;a = allocator_type());
+
+        // Assignment
+        concurrent_priority_queue&amp; operator=(const concurrent_priority_queue&amp; src);
+        template&lt;typename InputIterator&gt;
+        void assign(InputIterator begin, InputIterator end);
+        // Supported since C++11
+        concurrent_priority_queue&amp; operator=(concurrent_priority_queue&amp;&amp; src);
+        concurrent_priority_queue&amp; operator=(std::initializer_list&lt;T&gt; il);
+        void assign(std::initializer_list&lt;T&gt; il);
+
+        void swap(concurrent_priority_queue&amp; other);
+
+        ~concurrent_priority_queue();
+
+        allocator_type get_allocator() const;
+
+        bool empty() const;
+        size_type size() const;
+
+        void push(const_reference elem);
+        // Supported since C++11
+        void push(T&amp;&amp; elem);
+        template&lt;typename... Args&gt;
+        void emplace(Args&amp;&amp;... args);
+
+        bool try_pop(reference elem);
+
+        void clear();
+    };
+}
+</pre>
+      <p>
+        Where possible, constructors of <samp class="codeph">concurrent_priority_queue</samp> support class template argument deduction for C++17. For example
+      </p>
+
+      <pre>
+std::vector&lt;int&gt; v = {0, 1, 2};
+tbb::concurrent_priority_queue pq(v.begin(), v.end);</pre>
+      <p>
+      declares <samp class="codeph">pq</samp> as <samp class="codeph">tbb::concurrent_priority_queue&lt;int, tbb::cache_aligned_allocator&lt;int&gt;&gt;</samp>.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the members of this template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d47404e279">
+                Member
+              </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d47404e282">
+                Description
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <p>
+                 <span class="keyword">
+                  concurrent_priority_queue(const allocator_type&amp; a = allocator_type())
+                 </span>
+                </p>
+
+                <p>
+                 <span class="keyword">
+                  concurrent_priority_queue(const Compare&amp; c, const allocator_type&amp; a = allocator_type())
+                 </span>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Constructs an empty queue.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <p>
+                 <span class="keyword">
+                  concurrent_priority_queue(size_type init_capacity,
+                  const allocator_type&amp; a = allocator_type())
+                 </span>
+                </p>
+
+                <p>
+                 <span class="keyword">
+                  concurrent_priority_queue(size_type init_capacity, const Compare&amp; c,
+                  const allocator_type&amp; a = allocator_type())
+                 </span>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Constructs an empty queue with the specified initial capacity.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <p>
+                 <span class="keyword">
+                  template &lt;typename InputIterator&gt;
+                  concurrent_priority_queue(InputIterator begin, InputIterator end,
+                  const allocator_type&amp; a = allocator_type())
+                 </span>
+                </p>
+
+                <p>
+                 <span class="keyword">
+                  template &lt;typename InputIterator&gt;
+                  concurrent_priority_queue(InputIterator begin, InputIterator end,
+                  const Compare&amp; c, const allocator_type&amp; a = allocator_type())
+                 </span>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Constructs a queue containing copies of elements in the iterator half-open
+                  interval <samp class="codeph">[begin, end)</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <p>
+                 <span class="keyword">
+                  concurrent_priority_queue(std::initializer_list&lt;T&gt; il,
+                  const allocator_type &amp;a = allocator_type())
+                 </span>
+               </p>
+
+                <p>
+                 <span class="keyword">
+                  concurrent_priority_queue(std::initializer_list&lt;T&gt; il,
+                  const Compare&amp; c, const allocator_type &amp;a = allocator_type())
+                 </span>
+               </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Equivalent to
+                  <samp class="codeph">
+                    concurrent_priority_queue(il.begin(), il.end(), [c,] a)
+                  </samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  concurrent_priority_queue(const concurrent_priority_queue&amp; src,
+                  const allocator_type&amp; a = allocator_type())
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Constructs a copy of <samp class="codeph">src</samp>. This operation is not thread-safe and
+                  may result in an error or an invalid copy of <samp class="codeph">src</samp> if another
+                  thread is concurrently modifying <samp class="codeph">src.</samp>
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  concurrent_priority_queue(concurrent_priority_queue&amp;&amp; src)
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Constructs a new queue by moving content from
+                  <samp class="codeph">src</samp>. <samp class="codeph">src</samp> is left in an unspecified state, but
+                  can be safely destroyed. This operation is unsafe if there are pending concurrent
+                  operations on the <samp class="codeph">src</samp> queue.
+              </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  concurrent_priority_queue(concurrent_priority_queue&amp;&amp; src,
+                  const allocator_type&amp; a)
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Constructs a new queue by moving content from <samp class="codeph">src</samp>
+                  using the allocator <samp class="codeph">a</samp>. <samp class="codeph">src</samp> is left in an
+                  unspecified state, but can be safely destroyed. This operation is unsafe if there
+                  are pending concurrent operations on the <samp class="codeph">src</samp> queue.
+              </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  concurrent_priority_queue&amp; operator=(const concurrent_priority_queue&amp; src)
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Assigns contents of <samp class="codeph">src</samp> to <samp class="codeph">*this</samp>. This operation
+                  is not thread-safe and may result in an error or an invalid copy of
+                  <samp class="codeph">src</samp> if another thread is concurrently modifying
+                  <samp class="codeph">src</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  concurrent_priority_queue&amp; operator=(concurrent_priority_queue&amp;&amp; src);
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Moves data from <samp class="codeph">src</samp> to
+                  <samp class="codeph">*this</samp>. <samp class="codeph">src</samp> is left in an unspecified
+                  state, but can be safely destroyed. This operation is unsafe if there are pending
+                  concurrent operations on the <samp class="codeph">src</samp> queue.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  concurrent_priority_queue&amp; operator=(std::initializer_list&lt;T&gt; il)
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Assigns contents of the initializer list <samp class="codeph">il</samp> to
+                  <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  template &lt;typename InputIterator&gt;
+                  void assign(InputIterator begin, InputIterator end, const allocator_type&amp;)
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Assigns contents of the iterator half-open interval <samp class="codeph">[begin, end)</samp>
+                  to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">void assign(std::initializer_list&lt;T&gt; il)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Equivalent to
+                  <samp class="codeph">
+                    assign(il.begin(), il.end())
+                  </samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">~concurrent_priority_queue()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Destroys all items in the queue, and the container itself, so that it can no
+                  longer be used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">bool empty() const</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">true</samp> if queue has no items;
+                  <samp class="codeph">false</samp> otherwise. May be inaccurate when concurrent
+                  <samp class="codeph">push</samp> or <samp class="codeph">try_pop</samp> operations are pending. This
+                  operation reads shared data and may trigger a race condition in race detection
+                  tools when used concurrently.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">size_type size() const</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  <strong>Returns</strong>: Number of items in the queue. May be inaccurate when concurrent
+                  <samp class="codeph">push</samp> or <samp class="codeph">try_pop</samp> operations are pending. This
+                  operation reads shared data and may trigger a race condition in race detection
+                  tools when used concurrently.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">void push(const_reference elem)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Pushes a copy of <samp class="codeph">elem</samp> into the queue. This operation is
+                  thread-safe with other <samp class="codeph">push</samp>, <samp class="codeph">try_pop</samp> and
+                  <samp class="codeph">emplace</samp> operations.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">void push(T&amp;&amp; elem)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Pushes a given element into the queue using move constructor. This
+                  operation is thread-safe with other <samp class="codeph">push</samp>,
+                  <samp class="codeph">try_pop</samp> and <samp class="codeph">emplace</samp> operations.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">
+                  template&lt;typename... Args&gt;
+                  void emplace(Args&amp;&amp;... args);
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Supported since C++11. Pushes a new element into the queue. The element is constructed
+                  with given arguments. This operation is thread-safe with other
+                  <samp class="codeph">push</samp>, <samp class="codeph">try_pop</samp> and <samp class="codeph">emplace</samp>
+                  operations.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">bool try_pop(reference elem)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  If the queue is not empty, copies the highest priority item from the queue and
+                  assigns it to <samp class="codeph">elem</samp>, and destroys the popped item in the queue;
+                  otherwise, does nothing. This operation is thread-safe with other
+                  <samp class="codeph">push</samp>, <samp class="codeph">try_pop</samp> and <samp class="codeph">emplace</samp>
+                  operations.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">true</samp> if an item was popped;
+                  <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword"> void clear()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Clears the queue; results in <samp class="codeph">size()==0</samp>. This operation is not
+                  thread-safe.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">void swap(concurrent_priority_queue&amp; other)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  Swaps the queue contents with those of other. This operation is not thread-safe.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d47404e279 ">
+                <span class="keyword">allocator_type get_allocator() const</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d47404e282 ">
+                <p>
+                  <strong>Returns</strong>: A copy of allocator used to construct the queue.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/containers_overview.html">Containers Overview</a></div>
+</div>
+<div></div>
+</body>
+</html>

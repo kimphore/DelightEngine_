@@ -1,0 +1,203 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Create a Token-Based System" />
+<meta name="DC.subject" content="flow graph tips, token-based system, token-based system" />
+<meta name="keywords" content="flow graph tips, token-based system, token-based system" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_resource_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_limiter_node.html#use_limiter_node" />
+<meta name="DC.Relation" scheme="URI" content="use_concurrency_limits.html#use_concurrency_limits" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="create_token_based_system" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Create a Token-Based System</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="create_token_based_system">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Create a Token-Based System</h1>
+ 
+   
+  <div> 
+	 <p> A more flexible solution to limit the number of messages in a flow
+		graph is to use tokens. In a token-based system, a limited number of tokens are
+		available in the graph and a message will not be allowed to enter the graph
+		until it can be paired with an available token. When a message is retired from
+		the graph, its token is released, and can be paired with a new message that
+		will then be allowed to enter. 
+	 </p>
+ 
+	 <p>The 
+		<span class="keyword">tbb::pipeline</span> and 
+		<span class="keyword">tbb::parallel_pipeline</span> algorithms rely on a
+		token-based system. In the flow graph interface, there is no explicit support
+		for tokens, but 
+		<span class="keyword">join_nodes</span> can be used to create an analogous system.
+		A 
+		<span class="keyword">join_node</span> has two template arguments, the tuple that
+		describes the types of its inputs and a buffer policy: 
+	 </p>
+ 
+	 <pre>template&lt;typename OutputTuple, graph_buffer_policy JP = queueing&gt;
+class join_node;
+</pre> 
+	 <p> The buffer policy can be one of the following: 
+	 </p>
+ 
+	 <p> 
+	 <ul> 
+		<li><span class="keyword">queueing</span>. This type of policy causes inputs to be
+		  matched first-in-first-out; that is, the inputs are joined together to form a
+		  tuple in the order they are received. 
+		</li>
+ 
+		<li><span class="keyword">tag_matching</span>. This type of policy joins inputs
+		  together that have matching tags. 
+		</li>
+ 
+		<li><span class="keyword">reserving</span>. This type of policy causes the 
+		  <span class="keyword">join_node</span> to do no internally buffering, but instead
+		  to consume inputs only when it can first reserve an input on each port from an
+		  upstream source. If it can reserve an input at each port, it gets those inputs
+		  and joins those together to form an output tuple. 
+		</li>
+ 
+	 </ul>
+ A token-based system can be created by using reserving join_nodes. 
+	 </p>
+ 
+	 <p>In the example below, there is a 
+		<span class="keyword">source_node</span> that generates 
+		<span class="keyword">M</span> big objects and a 
+		<span class="keyword">buffer_node</span> that is pre-filled with three tokens. The 
+		<span class="keyword">token_t</span> can be anything, for example it could be 
+		<span class="keyword">typedef int token_t;</span>. The 
+		<span class="keyword">source_node</span> and 
+		<span class="keyword">buffer_node</span> are connected to a reserving 
+		<span class="keyword">join_node</span>. The 
+		<span class="keyword">source_node</span> will only generate an input when one is
+		pulled from it by the reserving 
+		<span class="keyword">join_node</span>, and the reserving 
+		<span class="keyword">join_node</span> will only pull the input from the 
+		<span class="keyword">source_node</span> when it knows there is also an item to
+		pull from the 
+		<span class="keyword">buffer_node</span>. 
+	 </p>
+ 
+	 <pre>  graph g;
+
+  int src_count = 0;
+  int number_of_objects = 0;
+  int max_objects = 3;
+
+  source_node&lt; big_object * &gt; s( g, [&amp;]( big_object* &amp;v ) -&gt; bool {
+	  if ( src_count &lt; M ) {
+		v = new big_object();
+        ++src_count;
+        return true;
+      } else {
+        return false;
+      }
+  } );
+
+  join_node&lt; tuple_t, reserving &gt; j(g);
+
+  buffer_node&lt; token_t &gt; b(g);
+
+  function_node&lt; tuple_t, token_t &gt; f( g, unlimited, 
+    []( const tuple_t &amp;t ) -&gt; token_t {
+        spin_for(1);
+	 cout &lt;&lt; get&lt;1&gt;(t) &lt;&lt; "\n";
+        delete get&lt;0&gt;(t);
+	 return get&lt;1&gt;(t);
+  } );
+
+  make_edge( s, input_port&lt;0&gt;(j) );
+  make_edge( b, input_port&lt;1&gt;(j) );
+  make_edge( j, f );
+  make_edge( f, b );
+
+  b.try_put( 1 );
+  b.try_put( 2 );
+  b.try_put( 3 );
+
+  g.wait_for_all();
+</pre> 
+	 <p> In the above code, you can see that the 
+		<span class="keyword">function_node</span> returns the token back to the 
+		<span class="keyword">buffer_node</span>. This cycle in the flow graph allows the
+		token to be recycled and paired with another input from the source_node. So
+		like in the previous sections, there will be at most four big objects in the
+		graph. There could be three big objects in the 
+		<span class="keyword">function_node</span> and one buffered in the 
+		<span class="keyword">source_node</span>, awaiting a token to be paired with. 
+	 </p>
+ 
+	 <p> Since there is no specific 
+		<span class="keyword">token_t</span> defined for the flow graph, you can use any
+		type for a token, including objects or pointers to arrays. Therefore, unlike in
+		the example above, the 
+		<span class="keyword">token_t</span> doesn't need to be a dummy type; it could for
+		example be a buffer or other object that is essential to the computation. We
+		could, for example, modify the example above to use the big objects themselves
+		as the tokens, removing the need to repeatedly allocate and deallocate them,
+		and essentially create a free list of big objects using a cycle back to the 
+		<span class="keyword">buffer_node</span>. 
+	 </p>
+ 
+	 <p> Also, in our example above, the 
+		<span class="keyword">buffer_node</span> was prefilled by a fixed number of
+		explicit calls to 
+		<span class="keyword">try_put</span>, but there are other options. For example, a 
+		<span class="keyword">source_node</span> could be attached to the input of the 
+		<span class="keyword">buffer_node</span>, and it could generate the tokens. In
+		addition, our 
+		<span class="keyword">function_node</span> could be replaced by a 
+		<span class="keyword">multifunction_node</span> that can optionally put 0 or more
+		outputs to each of its output ports. Using a 
+		<span class="keyword">multifunction_node</span>, you can choose to recycle or not
+		recycle a token, or even generate more tokens, thereby increasing or decreasing
+		the allowed concurrency in the graph. 
+	 </p>
+ 
+	 <p>A token based system is therefore very flexible. You are free to declare
+		the token to be of any type and to inject or remove tokens from the system as
+		it is executing, thereby having dynamic control of the allowed concurrency in
+		the system. Since you can pair the token with an input at the source, this
+		approach enables you to limit resource consumption across the entire graph. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_resource_tips.html">Flow Graph Tips for Limiting Resource Consumption</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_limiter_node.html#use_limiter_node">Use limiter_node 
+		  </a></div>
+<div><a href="use_concurrency_limits.html#use_concurrency_limits">Use Concurrency Limits 
+		  </a></div></div></div> 
+
+</body>
+</html>

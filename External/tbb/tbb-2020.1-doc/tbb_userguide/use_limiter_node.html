@@ -1,0 +1,128 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Using limiter_node" />
+<meta name="DC.subject" content="flow graph tips, use limiter_node, limit messages in sub-graph, limiter_node" />
+<meta name="keywords" content="flow graph tips, use limiter_node, limit messages in sub-graph, limiter_node" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_resource_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_concurrency_limits.html#use_concurrency_limits" />
+<meta name="DC.Relation" scheme="URI" content="create_token_based_system.html#create_token_based_system" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="use_limiter_node" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Using limiter_node</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="use_limiter_node">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Using limiter_node</h1>
+ 
+   
+  <div> 
+	 <p>One way to limit resource consumption is to use a 
+		<span class="keyword">limiter_node</span> to set a limit on the number of messages
+		that can flow through a given point in your graph. The constructor for a
+		limiter node takes two arguments:
+	 </p>
+ 
+	 <pre>limiter_node( graph &amp;g, size_t threshold )</pre>
+	 <p>The first argument is a reference to the graph it belongs to. The second
+		argument sets the maximum number of items that should be allowed to pass
+		through before the node starts rejecting incoming messages.
+	 </p>
+ 
+	 <p>A 
+		<span class="keyword">limiter_node</span> maintains an internal count of the
+		messages that it has allowed to pass. When a message leaves the controlled part
+		of the graph, a message can be sent to the decrement port on the 
+		<span class="keyword">limiter_node</span> to decrement the count, allowing
+		additional messages to pass through. In the example below, a 
+		<span class="keyword">source_node</span> will generate M big objects. But the user
+		wants to allow at most three big objects to reach the 
+		<span class="keyword">function_node</span> at a time, and to prevent the 
+		<span class="keyword">source_node</span> from generating all 
+		<span class="keyword">M</span> big objects at once. 
+	 </p>
+ 
+	 <pre>  graph g;
+
+  int src_count = 0;
+  int number_of_objects = 0;
+  int max_objects = 3;
+
+  source_node&lt; big_object * &gt; s( g, [&amp;]( big_object* &amp;v ) -&gt; bool {
+	  if ( src_count &lt; M ) {
+		v = new big_object();
+        ++src_count;
+        return true;
+      } else {
+        return false;
+      }
+  } );
+
+  limiter_node&lt; big_object * &gt; l( g, max_objects );
+
+  function_node&lt; big_object *, continue_msg &gt; f( g, unlimited, 
+    []( big_object *v ) -&gt; continue_msg {
+	  spin_for(1);
+      delete v;
+      return continue_msg();
+  } );
+
+
+  make_edge( l, f );
+  make_edge( f, l.decrement );
+  make_edge( s, l );
+  g.wait_for_all();
+</pre> 
+	 <p>The example above prevents the 
+		<span class="keyword">source_node</span> from generating all 
+		<span class="keyword">M</span> big objects at once. The 
+		<span class="keyword">limiter_node</span> has a threshold of 3, and will therefore
+		start rejecting incoming messages after its internal count reaches 3. When the 
+		<span class="keyword">source_node</span> sees its message rejected, it stops
+		calling its body object and temporarily buffers the last generated value. The 
+		<span class="keyword">function_node</span> has its output, a 
+		<span class="keyword">continue_msg</span>, sent to the decrement port of the 
+		<span class="keyword">limiter_node</span>. So, after it completes executing, the 
+		<span class="keyword">limiter_node</span> internal count is decremented. When the
+		internal count drops below the threshold, messages begin flowing from the 
+		<span class="keyword">source_node</span> again. So in this example, at most four
+		big objects exist at a time, the three that have passed through the 
+		<span class="keyword">limiter_node</span> and the one that is buffered in the 
+		<span class="keyword">source_node</span>. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_resource_tips.html">Flow Graph Tips for Limiting Resource Consumption</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_concurrency_limits.html#use_concurrency_limits">Use Concurrency Limits 
+		  </a></div>
+<div><a href="create_token_based_system.html#create_token_based_system">Create a Token-Based System</a></div></div></div> 
+
+</body>
+</html>

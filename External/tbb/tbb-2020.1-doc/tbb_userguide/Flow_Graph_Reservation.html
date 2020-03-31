@@ -1,0 +1,278 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Reservation" />
+<meta name="DC.subject" content="Flow Graph Basics, Reservations" />
+<meta name="keywords" content="Flow Graph Basics, Reservations" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="flow_graph_reservations" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Reservation</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="flow_graph_reservations">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Reservation</h1>
+ 
+   
+  <div> 
+	 <p>
+             The 
+             Intel&reg; Threading Building Blocks (Intel&reg; TBB) flow graph
+                 <samp class="codeph">join_node</samp> has four possible policies: <samp class="codeph">queueing</samp>,
+                 <samp class="codeph">reserving</samp>, <samp class="codeph">key_matching</samp> and <samp class="codeph">tag_matching</samp>. 
+                 <samp class="codeph">join_nodes</samp> need messages at every input before they can
+                 create an output message.  The reserving <samp class="codeph">join_node</samp> does
+                 not have internal buffering, and it does not pull messages from its
+                 inputs until it has a message at each input.  To create an output
+                 message it temporarily reserves a message at each input port, and
+                 only if all input ports succeed reserving messages will an output message
+                 be created.  If any input port fails to reserve a message, no message
+                 will be pulled by the <samp class="codeph">join_node</samp>.
+         </p>
+ 
+         <p>
+             To support the reserving <samp class="codeph">join_node</samp> some nodes support
+             <strong>reservation</strong> of their outputs.  The way reservation works is:
+             <ul>
+                 <li>When a node connected to a reserving <samp class="codeph">join_node</samp> in push state tries
+                 to push a message, the <samp class="codeph">join_node</samp> always rejects the push and the edge
+                 connecting the nodes is switched to pull mode.</li>
+
+                 <li>The reserving input port calls <samp class="codeph">try_reserve</samp> on each edge in pull
+                 state.  This may fail; if so, the reserving input port switches that edge to push
+                 state, and tries to reserve the next node connected by an edge in pull state.
+                 While the input port's predecessor is in reserved state, no other node can retrieve
+                 the reserved value.  </li>
+
+                 <li>If each input port successfully reserves an edge in pull state,
+                 the reserving <samp class="codeph">join_node</samp> will create a message using the
+                 reserved messages and try to push the resulting message to any nodes
+                 connected to it.  </li>
+
+                 <li>If the message is successfully pushed to a successor, the predecessors
+                 that were reserved are signaled that the messages were used (by calling
+                 <samp class="codeph">try_consume()</samp>.) Those messages will be discarded by the
+                 predecessor nodes, because they have been successfully pushed.</li>
+
+                 <li>If the message was not successfully pushed to any successor, the predecessors
+                 that were reserved are signaled that the messages were not used (by calling
+                 <samp class="codeph">try_release()</samp>.)  At this point, the messages may be
+                 pushed to or pulled by other nodes.</li>
+
+             </ul>
+
+             Because the reserving <samp class="codeph">join_node</samp> will only attempt to push when each input port
+             has at least one edge in a pull state, and will only attempt to create and push a message if
+             all input ports succeed reserving messages, 
+             at least one of the predecessors to each of the reserving <samp class="codeph">join_node</samp>
+             input ports
+             must be reservable.
+         </p>
+
+         <p>
+             The following example demonstrates a reserving <samp class="codeph">join_node</samp>'s behavior.
+             <samp class="codeph">buffer_nodes</samp> buffer their output, so they accept a switch of
+             their output edge from push to pull mode.  <samp class="codeph">broadcast_nodes</samp> do
+             not buffer messages and do not support <samp class="codeph">try_get()</samp> or <samp class="codeph">try_reserve()</samp>.
+	 </p>
+
+<pre>
+void run_example2() {  // example for Flow_Graph_Reservation.xml
+    graph g;
+    broadcast_node&lt;int&gt; bn(g);
+    buffer_node&lt;int&gt; buf1(g);
+    buffer_node&lt;int&gt; buf2(g);
+    typedef join_node&lt;tuple&lt;int,int&gt; reserving&gt; join_type;
+    join_type jn(g);
+    buffer_node&lt;join_type::output_type&gt; buf_out(g);
+    join_type::output_type tuple_out;
+    int icnt;
+
+    // join_node predecessors are both reservable buffer_nodes
+    make_edge(buf1,input_port&lt;0&gt;jn));
+    make_edge(bn,input_port&lt;0&gt;jn));      // attach a broadcast_node
+    make_edge(buf2,input_port&lt;1&gt;jn));
+    make_edge(jn, buf_out);
+    bn.try_put(2);
+    buf1.try_put(3);
+    buf2.try_put(4);
+    buf2.try_put(7);
+    g.wait_for_all();
+    while (buf_out.try_get(tuple_out)) {
+        printf("join_node output == (%d,%d)\n",get&lt;0&gt;tuple_out), get&lt;1&gt;tuple_out) );
+    }
+    if(buf1.try_get(icnt)) printf("buf1 had %d\n", icnt);
+    else printf("buf1 was empty\n");
+    if(buf2.try_get(icnt)) printf("buf2 had %d\n", icnt);
+    else printf("buf2 was empty\n");
+}
+</pre>
+         <p>
+             In the example above, port 0 of the reserving <samp class="codeph">join_node</samp> <samp class="codeph">jn</samp>
+             has two predecessors: a <samp class="codeph">buffer_node</samp> <samp class="codeph">buf1</samp> and a
+             <samp class="codeph">broadcast_node</samp> <samp class="codeph">bn</samp>.
+             Port 1 of the <samp class="codeph">join_node</samp> has one predecessor, <samp class="codeph">buffer_node</samp> <samp class="codeph">buf2</samp>.
+         </p>
+
+         <div class="fignone" id="reserve_step1"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_1.png" height="222" width="400" alt="bn.try_put(2)" align="center" /></div><br /> 
+	 </div>
+
+         <p>
+             We will discuss one possible execution sequence (the scheduling of tasks
+             may differ slightly, but the end result will be the same.)
+         </p>
+
+<pre>
+    bn.try_put(2);
+</pre>
+         <p>
+             <samp class="codeph">bn</samp> attempts to forward 2 to <samp class="codeph">jn</samp>.  <samp class="codeph">jn</samp>
+             does not accept the value and the arc from <samp class="codeph">bn</samp> to <samp class="codeph">jn</samp> reverses.
+             Because neither bn nor jn buffer messages, the message is dropped.
+             Because not all the inputs to <samp class="codeph">jn</samp> have available predecessors, <samp class="codeph">jn</samp>
+             does nothing further.
+         </p>
+
+         <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+             <p>
+             Any node which does not support reservation will not work correctly when attached to a
+             reserving <samp class="codeph">join_node</samp>.  This program demonstrates why this occurs;
+             connecting non-reserving nodes to nodes requiring support for reservation is <strong>not</strong>
+             recommended practice.
+             </p>
+
+         </div>
+
+         <div class="fignone" id="reserve_step2"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_2.png" height="222" width="400" alt="bn.try_put(2)" align="center" /></div><br /> 
+	 </div>
+
+<pre>
+    buf1.try_put(3);
+</pre>
+         <p>
+             <samp class="codeph">buf1</samp> attempts to forward 3 to <samp class="codeph">jn</samp>.  <samp class="codeph">jn</samp>
+             does not accept the value and the arc from <samp class="codeph">buf1</samp> to <samp class="codeph">jn</samp> reverses.
+             Because not all the inputs to <samp class="codeph">jn</samp> have available predecessors, <samp class="codeph">jn</samp>
+             does nothing further.
+         </p>
+
+         <div class="fignone" id="reserve_step3"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_3.png" height="222" width="400" alt="buf1.try_put(3)" align="center" /></div><br /> 
+	 </div>
+
+<pre>
+    buf2.try_put(4);
+</pre>
+         <p>
+             <samp class="codeph">buf2</samp> attempts to forward 4 to <samp class="codeph">jn</samp>.  <samp class="codeph">jn</samp>
+             does not accept the value and the arc from <samp class="codeph">buf2</samp> to <samp class="codeph">jn</samp> reverses.
+             Now both inputs of <samp class="codeph">jn</samp> have predecessors, a task to build and forward
+             a message from <samp class="codeph">jn</samp> will be spawned.  We assume that task is not yet executing.
+         </p>
+
+         <div class="fignone" id="reserve_step4"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_4.png" height="222" width="400" alt="buf2.try_put(4)" align="center" /></div><br /> 
+	 </div>
+
+<pre>
+    buf2.try_put(7);
+</pre>
+         <p>
+             <samp class="codeph">buf2</samp> has no successor (because the arc to <samp class="codeph">jn</samp> is
+             reversed,) so it stores the value 7.
+         </p>
+
+         <div class="fignone" id="reserve_step5"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_5.png" height="222" width="400" alt="buf2.try_put(7)" align="center" /></div><br /> 
+	 </div>
+
+         <p>
+             Now the task spawned to run <samp class="codeph">jn</samp> runs.
+             <ul>
+                 <li><samp class="codeph">jn</samp> tries to reserve <samp class="codeph">bn</samp>, which fails.
+                 The arc to <samp class="codeph">bn</samp> switches back to the forward direction.</li>
+
+                 <li><samp class="codeph">jn</samp> tries to reserve <samp class="codeph">buf1</samp>, which succeeds (reserved nodes
+                 are colored grey.)
+                 <samp class="codeph">jn</samp> receives the value 3 from <samp class="codeph">buf1</samp>, but it remains in <samp class="codeph">buf1</samp> (in case the attempt
+                 to forward a message from <samp class="codeph">jn</samp> fails.)
+                 </li>
+
+                 <li><samp class="codeph">jn</samp> tries to reserve <samp class="codeph">buf2</samp>, which succeeds.
+                 <samp class="codeph">jn</samp> receives the value 4 from <samp class="codeph">buf2</samp>, but it remains in <samp class="codeph">buf2</samp>.
+                 </li>
+
+                 <li><samp class="codeph">jn</samp> constructs the output message <samp class="codeph">tuple&lt;3,4&gt;</samp>.</li>
+
+             </ul>
+
+         </p>
+
+         <div class="fignone" id="reserve_step6"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_6.png" height="222" width="400" alt="jn reserves buffers, constructs message." align="center" /></div><br /> 
+	 </div>
+
+         <p>
+             Now <samp class="codeph">jn</samp> pushes its message to <samp class="codeph">buf_out</samp>, which accepts it.
+             Because the push succeeded, <samp class="codeph">jn</samp> signals <samp class="codeph">buf1</samp> and <samp class="codeph">buf2</samp> that the reserved
+             values were used, and the buffers discard those values.  Now <samp class="codeph">jn</samp> attempts to reserve again.
+             <ul>
+                 <li>No attempt to pull from <samp class="codeph">bn</samp> is made, because the edge from
+                 <samp class="codeph">bn</samp> to <samp class="codeph">jn</samp> is in push state.</li>
+
+                 <li><samp class="codeph">jn</samp> tries to reserve <samp class="codeph">buf1</samp>, which fails.
+                 The arc to <samp class="codeph">buf1</samp> switches back to the forward direction.</li>
+
+                 <li><samp class="codeph">jn</samp>
+                     does not try any further actions.
+                 </li>
+
+             </ul>
+
+         </p>
+
+         <div class="fignone" id="reserve_step7"> 
+		<br /><div class="imagecenter"><img src="Images/flow_graph_reserve_buffers_7.png" height="222" width="400" alt="jn fails to reserve buf1, reverses arc." align="center" /></div><br /> 
+	 </div>
+
+         <p>
+             No further activity occurs in the graph, and the <samp class="codeph">wait_for_all()</samp> will complete.  The output
+             of this code is
+         </p>
+
+<pre>
+join_node output == (3,4)
+buf1 was empty
+buf2 had 7
+</pre>
+  </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div></div>
+</body>
+</html>

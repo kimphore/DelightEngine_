@@ -1,0 +1,132 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="task_scheduler_observer" />
+<meta name="DC.subject" content="task_scheduler_observer" />
+<meta name="keywords" content="task_scheduler_observer" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/task_scheduler.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/task_scheduler/task_scheduler_observer/task_scheduler_observer_member.html" />
+<meta name="DC.Relation" scheme="URI" content="fpu_settings.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="task_scheduler_observer_member" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>task_scheduler_observer</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="task_scheduler_observer_member">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">task_scheduler_observer</h1>
+
+    
+    <div>
+        <div class="section"><h2 class="sectiontitle">Summary</h2>
+            <p>Class that represents thread's interest in task scheduling services.</p>
+
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Syntax</h2>
+            <pre>class task_scheduler_observer;</pre>
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Header</h2>
+            <pre>#include "tbb/task_scheduler_observer.h"</pre>
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Description</h2>
+            <p>
+              A <samp class="codeph">task_scheduler_observer</samp> permits clients to observe when a thread starts
+              and stops processing tasks, either globally or in a certain task scheduler arena. You typically
+              derive your own observer class from <samp class="codeph">task_scheduler_observer</samp>, and override
+              virtual methods <samp class="codeph">on_scheduler_entry</samp> or <samp class="codeph">on_scheduler_exit</samp>.
+              Observation can be enabled and disabled for an observer instance; it is disabled on creation.
+              Remember to call <samp class="codeph">observe()</samp> to enable observation.
+            </p>
+
+            <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                <p>
+                  <samp class="codeph">task_scheduler_observer</samp> is not suitable for floating-point settings management. Using it
+                  for this purpose will cause undefined behavior. See Section Floating-point Settings for more details.
+                </p>
+
+            </div>
+
+            <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                <p>
+                  Exceptions thrown and not caught in the overridden methods of <samp class="codeph">task_scheduler_observer</samp>
+                  result in undefined behavior.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Members</h2>
+<pre>
+namespace tbb {
+    class task_scheduler_observer {
+    public:
+        explicit task_scheduler_observer( bool local = false );
+        explicit task_scheduler_observer( task_arena &amp; a );
+        virtual ~task_scheduler_observer();
+        void observe( bool state=true );
+        bool is_observing() const;
+        virtual void on_scheduler_entry( bool is_worker ) {}
+        virtual void on_scheduler_exit( bool is_worker } {}
+    };
+}
+</pre>
+        </div>
+
+        <div class="section"><h2 class="sectiontitle">Example</h2>
+            <p>
+              The following example sketches the code of an observer that pins
+              TBB worker threads to hardware threads.
+            </p>
+
+<pre>
+class pinning_observer: public tbb::task_scheduler_observer {
+public:
+    affinity_mask_t m_mask; // HW affinity mask to be used for threads in an arena
+    pinning_observer( tbb::task_arena &amp;a, affinity_mask_t mask )
+      : tbb::task_scheduler_observer(a), m_mask(mask) {
+        observe(true); // activate the observer
+    }
+    /*override*/ void on_scheduler_entry( bool worker ) {
+        set_thread_affinity(tbb::this_task_arena::current_thread_index(), m_mask);
+    }
+    /*override*/ void on_scheduler_exit( bool worker ) { }
+};
+</pre>
+        </div>
+
+    </div>
+
+    
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/task_scheduler.html">Task Scheduler</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/task_scheduler/task_scheduler_observer/task_scheduler_observer_member.html">task_scheduler_observer Members</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="fpu_settings.html">Floating-point Settings</a></div></div></div>
+
+</body>
+</html>

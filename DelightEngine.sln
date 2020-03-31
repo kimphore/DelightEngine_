@@ -7,6 +7,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DelightEngine", "DelightEngine\DelightEngine.vcxproj", "{A1FA5E4D-8BFC-423F-8A8B-87B442ACD1C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{B399178F-007E-4344-8DC2-4206ACAB17CF}"
+	ProjectSection(SolutionItems) = preProject
+		Shaders\simplePixelShader.hlsl = Shaders\simplePixelShader.hlsl
+		Shaders\simpleVertexShader.hlsl = Shaders\simpleVertexShader.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Memo", "Memo", "{651D6DA6-89E2-4290-89BD-30D66F01AB7B}"
+	ProjectSection(SolutionItems) = preProject
+		Memo\DX12Study.txt = Memo\DX12Study.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

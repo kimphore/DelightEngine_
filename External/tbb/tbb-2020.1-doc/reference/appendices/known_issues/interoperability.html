@@ -1,0 +1,94 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Interoperability Issues" />
+<meta name="DC.subject" content="Known Issues, interoperability" />
+<meta name="keywords" content="Known Issues, interoperability" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/known_issues.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="interoperability_issues" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Interoperability Issues</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="interoperability_issues">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">Interoperability Issues</h1>
+
+
+<div>
+  <div class="section"><h2 class="sectiontitle">Coexistence of different versions</h2>
+    <p>An application cannot use more than one instance of the
+      Intel&reg; Threading Building Blocks (Intel&reg; TBB) runtime library within a process.
+      If application modules (including 3rd party libraries used by the application) were built
+      with different versions of Intel TBB, the application should use the runtime library
+      which version is the biggest of all used or higher, and ensure it to be the first Intel TBB
+      runtime library loaded into the application process. Using multiple instances of
+      the runtime library, or using the library of a version smaller than required by any
+      of the application modules, may result in errors at load time or at run time.
+    </p>
+
+  </div>
+
+  <div class="section"><h2 class="sectiontitle">Interoperability with OpenMP*</h2>
+    <p>If you use Intel TBB
+      and OpenMP* constructs called one after the other at short intervals in the same program,
+      and you use Intel&reg; C++ Compiler for your OpenMP code, set the <samp class="codeph">KMP_BLOCKTIME</samp>
+      environment variable to a small value (20 milliseconds or less) to improve performance.
+      You can also make this setting within your program via the <samp class="codeph">kmp_set_blocktime()</samp>
+      library call.
+    </p>
+
+    <p>If you use Intel TBB and OpenMP together in a program on Linux* OS,
+      setting thread affinity with the <samp class="codeph">KMP_AFFINITY</samp>, <samp class="codeph">OMP_PROC_BIND</samp>
+      etc. environment variables or programmatically before the Intel TBB task scheduler
+      is initialized may limit the default number of worker threads used by Intel TBB.
+      To resolve the issue, update to Intel C++ Compiler 16.0 Update 1 or later
+      and Intel TBB 4.4 Update 2 or later.
+    </p>
+
+  </div>
+
+  <div class="section"><h2 class="sectiontitle">Other issues</h2>
+    <p>If your application includes
+      <samp class="codeph">&lt;tbb/enumerable_thread_specific.h&gt;</samp> or <samp class="codeph">&lt;tbb/tbb.h&gt;</samp>
+      for offload execution on an Intel&reg; Xeon Phi&#8482; coprocessor, you may see link
+      errors related to <samp class="codeph">libpthread</samp>. To resolve this issue, use the following
+      compiler option: <samp class="codeph">/Qoffload-option,mic,compiler,"-pthread"</samp> on Windows* OS,
+      or <samp class="codeph">-qoffload-option,mic,compiler,"-pthread"</samp> on Linux* OS.
+    </p>
+
+  </div>
+
+  <p>See the Intel C++ Compiler documentation for more details on
+    the mentioned options, functions and environment variables.
+  </p>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/known_issues.html">Known Issues</a></div>
+</div>
+<div></div>
+</body>
+</html>

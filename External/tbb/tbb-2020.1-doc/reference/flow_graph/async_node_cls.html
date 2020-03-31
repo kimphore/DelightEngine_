@@ -1,0 +1,635 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="async_node Template Class" />
+<meta name="DC.subject" content="async_node Template Class" />
+<meta name="keywords" content="async_node Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/functional_nodes.html" />
+<meta name="DC.Relation" scheme="URI" content="lightweight_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="async_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>async_node Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="async_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">async_node Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        A template class that is a <samp class="codeph">graph_node</samp>,
+        <samp class="codeph">receiver&lt;Input&gt;</samp> and a <samp class="codeph">sender&lt;Output&gt;</samp>. It
+        executes a user-provided body on incoming messages. The body submits input messages to an
+        external activity for processing outside of the Intel TBB thread pool. This node also
+        provides <samp class="codeph">gateway_type</samp> interface that allows the external activity to
+        communicate with the flow graph.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt; typename Input,
+           typename Output,
+           typename Policy = queueing_lightweight,
+           typename Allocator=cache_aligned_allocator&lt;Input&gt; &gt;
+class async_node;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+<pre>
+#include "tbb/flow_graph.h"
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        An <samp class="codeph">async_node</samp> allows a flow graph to communicate with an external activity
+        managed by the user or another runtime. This node receives messages of type
+        <samp class="codeph">Input</samp> and invokes the body to submit a message to the external activity. To
+        return a result back and push it to the output port of async_node, the
+        <samp class="codeph">gateway_type</samp> is provided.
+      </p>
+
+      <p>
+        An <samp class="codeph">async_node</samp> has a user-settable concurrency limit.  It can have
+        <samp class="codeph">flow::unlimited</samp> concurrency, which allows an unlimited number of invocations of
+        the body to execute concurrently. It can have <samp class="codeph">flow::serial</samp> concurrency,
+        which allows only a single call of body to execute concurrently. The user can also provide a
+        value of type <samp class="codeph">size_t</samp> to limit concurrency to a value between 1 and
+        <samp class="codeph">unlimited</samp>.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          Since Intel&reg; Threading Building Blocks 2019 <samp class="codeph">async_node</samp>
+          has <samp class="codeph">lightweight</samp> semantics by default. See description of
+          <samp class="codeph">lightweight</samp> policy for more details.
+        </p>
+
+      </div>
+
+      <p>
+        The Body concept for <samp class="codeph">async_node</samp> is shown below.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl8" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">async_node Body Concept</span></caption>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="50%" id="d67463e144">
+                <p>
+                  Pseudo-Signature
+                </p>
+
+              </th>
+
+              <th class="row-nocellborder" valign="top" width="50%" id="d67463e150">
+                <p>
+                  Semantics
+                </p>
+
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e144 ">
+                <p>
+                  <samp class="codeph">B::B( const B&amp; )</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e150 ">
+                <p>
+                  Copy constructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e144 ">
+                <p>
+                  <samp class="codeph">B::~B()</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e150 ">
+                <p>
+                  Destructor.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e144 ">
+                <p>
+                  <samp class="codeph">void operator=( const B&amp; )</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e150 ">
+                <p>
+                  Assignment.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e144 ">
+                <p>
+                  <samp class="codeph">
+                    void B::operator()( const input_type &amp;v, gateway_type &amp;gateway )
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e150 ">
+                <p>
+                  The input value <samp class="codeph">v</samp> is submitted by the flow graph to an external activity. The
+                  <samp class="codeph">gateway</samp> interface allows the external activity to communicate
+                  with the enclosing flow graph.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          The body object passed to an <samp class="codeph">async_node</samp> is copied. Therefore updates to
+          member variables will not affect the original object used to construct the node. If the
+          state held within a body object must be inspected from outside of the node, the
+          <samp class="codeph">copy_body</samp> function can be used to obtain an updated copy.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          The body object may throw an exception or cancel its enclosing graph. See
+          <samp class="codeph">task_group_context</samp> and Exceptions sections for a description.
+        </p>
+
+      </div>
+
+      <p>
+        The <samp class="codeph">gateway_type</samp> interface is shown below.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl9" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">gateway_type Interface</span></caption>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="50%" id="d67463e283">
+                <p>
+                  Pseudo-Signature
+                </p>
+
+              </th>
+
+              <th class="row-nocellborder" valign="top" width="50%" id="d67463e289">
+                <p>
+                  Semantics
+                </p>
+
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e283 ">
+                <p>
+                  <samp class="codeph">bool try_put( const output_type &amp;v )</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e289 ">
+                <p>
+                  Broadcasts <samp class="codeph">v</samp> to all successors of an
+                  <samp class="codeph">async_node</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e283 ">
+                <p>
+                  <samp class="codeph">void reserve_wait()</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e289 ">
+                <p>
+                  Notifies a flow graph that work has been submitted to an external activity.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr valign="top">
+              <td class="cellrowborder" valign="top" width="50%" headers="d67463e283 ">
+                <p>
+                  <samp class="codeph">void release_wait()</samp>
+                </p>
+
+              </td>
+
+              <td class="row-nocellborder" valign="top" width="50%" headers="d67463e289 ">
+                <p>
+                  Notifies a flow graph that work submitted to an external activity has completed.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          There is no requirement to call <samp class="codeph">gateway_type::reserve_wait()</samp>
+          method for each input message submitted to an external activity. The only requirement is that
+          each call to <samp class="codeph">gateway_type::reserve_wait()</samp> must have a corresponding
+          call to <samp class="codeph">gateway_type::release_wait()</samp>.
+        </p>
+
+        <p>
+          <samp class="codeph">graph::wait_for_all()</samp> will not exit while there are some reserve_wait()
+          calls without matching <samp class="codeph">release_wait()</samp>’s.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The example below shows an <samp class="codeph">async_node</samp> that submits some work to
+        <samp class="codeph">AsyncActivity</samp> for processing by a user thread.
+      </p>
+
+<pre>
+#include "tbb/flow_graph.h"
+#include "tbb/concurrent_queue.h"
+#include &lt;thread&gt;
+
+using namespace tbb::flow;
+typedef int input_type;
+typedef int output_type;
+typedef tbb::flow::async_node&lt;input_type, output_type&gt; async_node_type;
+
+class AsyncActivity {
+public:
+    typedef async_node_type::gateway_type gateway_type;
+
+    struct work_type {
+        input_type input;
+        gateway_type* gateway;
+    };
+
+    AsyncActivity() : service_thread( [this]() {
+        while( !end_of_work() ) {
+            work_type w;
+            while( my_work_queue.try_pop(w) ) {
+                output_type result = do_work( w.input );
+                //send the result back to the graph
+                w.gateway-&gt;try_put( result );
+                // signal that work is done
+                w.gateway-&gt;release_wait();
+            }
+        }
+    } ) {}
+
+    void submit( input_type i, gateway_type* gateway ) {
+        work_type w = {i, gateway};
+        gateway-&gt;reserve_wait();
+        my_work_queue.push(w);
+    }
+private:
+    bool end_of_work() {
+        // indicates that the thread should exit
+    }
+
+    output_type do_work( input_type&amp; v ) {
+        // performs the work on input converting it to output
+    }
+
+    tbb::concurrent_queue&lt;work_type&gt; my_work_queue;
+    std::thread service_thread;
+};
+
+int main() {
+    AsyncActivity async_activity;
+    tbb::flow::graph g;
+
+    async_node_type async_consumer( g, unlimited,
+    // user functor to initiate async processing
+    [&amp;] ( input_type input, async_node_type::gateway_type&amp; gateway ) {
+    async_activity.submit( input, &amp;gateway );
+    } );
+
+    tbb::flow::source_node&lt;input_type&gt; s( g, [](input_type&amp; v)-&gt;bool { /* produce data for async work */ } );
+    tbb::flow::async_node&lt;output_type&gt; f( g, unlimited, [](const output_type&amp; v) { /* consume data from async work */ } );
+
+    tbb::flow::make_edge( s, async_consumer );
+    tbb::flow::make_edge( async_consumer, f );
+
+    g.wait_for_all();
+}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+    namespace flow {
+
+        template &lt; typename Input, typename Output,
+                   typename Policy = queueing_lightweight,
+                   typename Allocator = cache_aligned_allocator&lt;Input&gt; &gt;
+        class async_node : public graph_node, public receiver&lt;Input&gt;, public sender&lt;Output&gt; {
+        public:
+            template &lt;typename Body&gt;
+            async_node( graph&amp; g, size_t concurrency, Body body );
+            async_node( const async_node&amp; src );
+
+            typedef <em>implementation-defined</em> gateway_type;
+            gateway_type&amp; gateway();
+
+            // receiver&lt;Input&gt;
+            typedef Input input_type;
+            typedef sender&lt;input_type&gt; predecessor_type;
+            bool try_put( const input_type&amp; v );
+            bool register_predecessor( predecessor_type&amp; p );
+            bool remove_predecessor( predecessor_type&amp; p );
+
+            // sender&lt;Output&gt;
+            typedef Output output_type;
+            typedef receiver&lt;output_type&gt; successor_type;
+            bool register_successor( successor_type&amp; r );
+            bool remove_successor( successor_type&amp; r );
+            bool try_get( output_type&amp; v );
+            bool try_reserve( output_type&amp; v );
+            bool try_release();
+            bool try_consume();
+        };
+
+    }
+}
+</pre>
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members of this template class.</span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d67463e432">Member </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d67463e435">Description </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">template&lt;typename Body&gt; async_node(graph&amp; g, size_t concurrency, Body body)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  Constructs an <samp class="codeph">async_node</samp> that will invoke a copy of
+                  <samp class="codeph">body</samp>. At most <samp class="codeph">concurrency</samp> calls to body may be
+                  made concurrently.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">async_node( const async_node&amp; src )</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  Constructs an <samp class="codeph">async_node</samp> that has the same initial state that
+                  <samp class="codeph">src</samp> had when it was constructed. The <samp class="codeph">async_node</samp>
+                  that is constructed will have a reference to the same graph object as
+                  <samp class="codeph">src</samp>, will have a copy of the initial body used by
+                  <samp class="codeph">src</samp>, and have the same concurrency threshold as <samp class="codeph">src</samp>.
+                  The predecessors and successors of <samp class="codeph">src</samp> will not be copied.
+                  <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                    <p>
+                      The new body object is copy-constructed from a copy of the original body
+                      provided to <samp class="codeph">src</samp> at its construction. Therefore changes made
+                      to member variables in <samp class="codeph">src</samp>'s body after the construction of
+                      <samp class="codeph">src</samp> will not affect the body of the new
+                      <samp class="codeph">async_node</samp>.
+                    </p>
+
+                  </div>
+
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">gateway_type&amp; gateway()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  Returns reference to <samp class="codeph">gateway_type</samp> interface.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">bool try_put( const input_type&amp; v )</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  A task is spawned that executes the <samp class="codeph">body(v)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: always returns <samp class="codeph">true</samp>, it is responsibility of
+                  <samp class="codeph">body</samp> to be able to pass <samp class="codeph">v</samp> to an external activity.
+                  If a message is not properly processed by the <samp class="codeph">body</samp> it will be
+                  lost.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">bool try_get( output_type&amp; v )</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  An <samp class="codeph">async_node</samp> does not contain buffering of its output. Therefore
+                  it always rejects <samp class="codeph">try_get</samp> calls.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: false
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">bool try_reserve( output_type&amp; v )</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  An <samp class="codeph">async_node</samp> does not contain buffering of its output. Therefore
+                  it cannot be reserved.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: false
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">bool try_release()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  An <samp class="codeph">async_node</samp> does not contain buffering of its output. Therefore
+                  it cannot be reserved.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: false
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d67463e432 ">
+                <samp class="codeph">bool try_consume()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d67463e435 ">
+                <p>
+                  An <samp class="codeph">async_node</samp> does not contain buffering of its output. Therefore
+                  it cannot be reserved.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: false
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/functional_nodes.html">Functional Nodes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="lightweight_policy.html">Lightweight policy</a></div>
+<div><a href="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html">Helper Functions for Expressing Graphs</a></div></div></div>
+
+</body>
+</html>

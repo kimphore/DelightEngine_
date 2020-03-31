@@ -1,0 +1,167 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Dependency Flow Graph Example" />
+<meta name="DC.subject" content="Dependency Flow Graph Example" />
+<meta name="keywords" content="Dependency Flow Graph Example" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/overview.html" />
+<meta name="DC.Relation" scheme="URI" content="continue_msg_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="continue_node_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="dependency_flow_graph_example" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Dependency Flow Graph Example</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="dependency_flow_graph_example">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Dependency Flow Graph Example</h1>
+ 
+   
+  <div> 
+	 <p>In the following example, five computations A-E are set up with the
+		partial ordering shown below in "A simple dependency graph.". For each edge in
+		the flow graph, the node at the tail of the edge must complete its execution
+		before the node at the head may begin. 
+	 </p>
+ 
+	 <div class="Note"><h3 class="NoteTipHead">Note</h3>  
+		<p>This is a simple syntactic example only. Since each node in a flow
+		  graph may execute as an independent task, the granularity of each node should
+		  follow the general guidelines for tasks as described in Section 3.2.3 of the
+		  Intel&reg; Threading Building Blocks Tutorial. 
+		</p>
+ 
+	 </div>
+ 
+	 <div class="fignone" id="fig5_dep_graph"><span class="figcap">A simple dependency graph.</span> 
+		 
+		<br /><div class="imagecenter"><img id="image_45FEEBCB0EBD40C19CCD9FDB0E503A15" src="../Resources/dep_graph.jpg" height="409" width="249" alt="A simple dependency graph." align="center" /></div><br /> 
+	 </div>
+ 
+	 <pre>#include &lt;cstdio&gt;
+#include "tbb/flow_graph.h"
+
+using namespace tbb::flow;
+
+struct body {
+    std::string my_name;
+    body(const char *name) : my_name(name) {}
+    void operator()(continue_msg) const {
+        printf("%s\n", my_name.c_str());
+    }
+};
+
+int main() {
+    graph g;
+
+    broadcast_node&lt; continue_msg &gt; start(g);
+    continue_node&lt;continue_msg&gt; a(g, body("A"));
+    continue_node&lt;continue_msg&gt; b(g, body("B"));
+    continue_node&lt;continue_msg&gt; c(g, body("C"));
+    continue_node&lt;continue_msg&gt; d(g, body("D"));
+    continue_node&lt;continue_msg&gt; e(g, body("E"));
+
+    make_edge(start, a);
+    make_edge(start, b);
+    make_edge(a, c);
+    make_edge(b, c);
+    make_edge(c, d);
+    make_edge(a, e);
+
+    for (int i = 0; i &lt; 3; ++i) {
+        start.try_put(continue_msg());
+        g.wait_for_all();
+    }
+
+    return 0;
+}</pre>
+	 <p>In this example, nodes A-E print out their names. All of these nodes are
+		therefore able to use 
+		<span class="keyword">struct body</span> to construct their body objects. 
+	 </p>
+ 
+	 <p>In function 
+		<span class="keyword">main</span>, the flow graph is set up once and then run three
+		times. All of the nodes in this example pass around 
+		<span class="keyword">continue_msg</span> objects. This type is used to communicate
+		that a node has completed its execution. 
+	 </p>
+ 
+	 <p>The first line in function 
+		<span class="keyword">main</span> instantiates a 
+		<span class="keyword">graph</span> object, 
+		<span class="keyword">g</span>. On the next line, a 
+		<span class="keyword">broadcast_node</span> named 
+		<span class="keyword">start</span> is created. Anything passed to this node will be
+		broadcast to all of its successors. The node 
+		<span class="keyword">start</span> is used in the 
+		<span class="keyword">for</span> loop at the bottom of 
+		<span class="keyword">main</span> to launch the execution of the rest of the flow
+		graph. 
+	 </p>
+ 
+	 <p>In the example, five 
+		<span class="keyword">continue_node</span> objects are created, named a - e. Each
+		node is constructed with a reference to 
+		<span class="keyword">graph</span> 
+		<span class="keyword">g</span> and the function object to invoke when it runs. The
+		successor / predecessor relationships are set up by the 
+		<span class="keyword">make_edge</span> calls that follow the declaration of the
+		nodes. 
+	 </p>
+ 
+	 <p>After the nodes and edges are set up, the 
+		<span class="keyword">try_put</span> in each iteration of the 
+		<span class="keyword">for</span> loop results in a broadcast of a 
+		<span class="keyword">continue_msg</span> to both 
+		<span class="keyword">a</span> and 
+		<span class="keyword">b</span>. Both 
+		<span class="keyword">a</span> and 
+		<span class="keyword">b</span> are waiting for a single 
+		<span class="keyword">continue_msg</span>, since they both have only a single
+		predecessor, 
+		<span class="keyword">start</span>. 
+	 </p>
+ 
+	 <p>When they receive the message from 
+		<span class="keyword">start</span>, they execute their body objects. When complete,
+		they each forward a 
+		<span class="keyword">continue_msg</span> to their successors, and so on. The graph
+		uses tasks to execute the node bodies as well as to forward messages between
+		the nodes, allowing computation to execute concurrently when possible. 
+	 </p>
+ 
+	 <p>The classes and functions used in this example are described in detail
+		in topics linked from the Flow Graph parent topic. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/overview.html">Overview</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="continue_msg_cls.html">continue_msg Class
+		  </a></div>
+<div><a href="continue_node_cls.html">continue_node Class
+		  </a></div></div></div>
+
+</body>
+</html>

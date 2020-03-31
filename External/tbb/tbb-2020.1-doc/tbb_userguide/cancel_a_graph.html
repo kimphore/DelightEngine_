@@ -1,0 +1,131 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Cancel a Graph Explicitly" />
+<meta name="DC.subject" content="flow graph tips, cancel a graph explicitly, cancel a graph explicitly" />
+<meta name="keywords" content="flow graph tips, cancel a graph explicitly, cancel a graph explicitly" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_exception_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="catching_exceptions.html#catching_exceptions" />
+<meta name="DC.Relation" scheme="URI" content="use_graph_reset.html#use_graph_reset" />
+<meta name="DC.Relation" scheme="URI" content="cancelling_nested_parallelism.html#cancelling_nested_parallelism" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="cancel_a_graph" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Cancel a Graph Explicitly</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="cancel_a_graph">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Cancel a Graph Explicitly</h1>
+ 
+   
+  <div> 
+	 <p> To cancel a graph execution without an exception, you can create the
+		graph using an explicit 
+		<span class="keyword">task_group_context</span>, and then call 
+		<span class="keyword">cancel_group_execution()</span> on that object. This is done
+		in the example below: 
+	 </p>
+ 
+	 <pre>  task_group_context t;
+  graph g(t);
+
+  function_node&lt; int, int &gt; f1( g, 1, []( int i ) {  return i; } );
+
+  function_node&lt; int, int &gt; f2( g, 1, 
+      []( const int i ) -&gt; int {
+          cout &lt;&lt; "Begin " &lt;&lt; i &lt;&lt; "\n";
+          spin_for(0.2);
+          cout &lt;&lt; "End " &lt;&lt; i &lt;&lt; "\n";
+          return i;
+  } );
+
+  function_node&lt; int, int &gt; f3( g, 1, []( int i ) {  return i; } );
+
+  make_edge( f1, f2 );
+  make_edge( f2, f3 );
+  f1.try_put(1);
+  f1.try_put(2);
+  spin_for(0.1);
+  t.cancel_group_execution();
+  g.wait_for_all();
+</pre> 
+	 <p>When a graph execution is canceled, any node that has already started to
+		execute will execute to completion, but any node that has not started to
+		execute will not start. So in the example above, 
+		<span class="keyword">f2</span> will print both the 
+		<span class="keyword">Begin</span> and 
+		<span class="keyword">End</span> message for input 
+		<span class="keyword">1</span>, but will not receive the input 
+		<span class="keyword">2</span>. 
+	 </p>
+ 
+	 <p>You can also get the 
+		<span class="keyword">task_group_context</span> that a node belongs to from within
+		the node body and use it to cancel the execution of the graph it belongs to: 
+	 </p>
+ 
+	 <pre>  graph g;
+
+  function_node&lt; int, int &gt; f1( g, 1, []( int i ) {  return i; } );
+
+  function_node&lt; int, int &gt; f2( g, 1, 
+      []( const int i ) -&gt; int {
+	   cout &lt;&lt; "Begin " &lt;&lt; i &lt;&lt; "\n";
+	   spin_for(0.2);
+          cout &lt;&lt; "End " &lt;&lt; i &lt;&lt; "\n";
+          task::self().group()-&gt;cancel_group_execution();
+          return i;
+  } );
+
+  function_node&lt; int, int &gt; f3( g, 1, []( int i ) {  return i; } );
+
+  make_edge( f1, f2 );
+  make_edge( f2, f3 );
+  f1.try_put(1);
+  f1.try_put(2);
+  g.wait_for_all();
+
+</pre> 
+	 <p>You can get the 
+		<span class="keyword">task_group_context</span> from a node's body even if the
+		graph was not explicitly passed one at construction time. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_exception_tips.html">Flow Graph Tips for Exception Handling and Cancellation</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="catching_exceptions.html#catching_exceptions">Catching Exceptions Inside the Node that Throws the Exception
+			 
+		  </a></div>
+<div><a href="use_graph_reset.html#use_graph_reset">Use graph::reset() to Reset a Canceled Graph 
+		  </a></div>
+<div><a href="cancelling_nested_parallelism.html#cancelling_nested_parallelism">Canceling Nested Parallelism 
+		  </a></div></div></div> 
+
+</body>
+</html>

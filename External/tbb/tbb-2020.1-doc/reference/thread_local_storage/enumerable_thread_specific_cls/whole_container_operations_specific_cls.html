@@ -1,0 +1,342 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Whole Container Operations" />
+<meta name="DC.subject" content="Whole Container Operations" />
+<meta name="keywords" content="Whole Container Operations" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/thread_local_storage/enumerable_thread_specific_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="whole_container_operations_specific_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Whole Container Operations</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="whole_container_operations_specific_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Whole Container Operations</h1>
+ 
+  
+  <div>
+	 <div class="section">
+		<p><strong>Safety</strong>
+		</p>
+ 
+		<p>These operations must not be invoked concurrently
+		  on the same instance of 
+		  <samp class="codeph">enumerable_thread_specific</samp>. 
+		</p>
+
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of this template class. 
+		  </span><thead align="left"> 
+				<tr> 
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d106419e44">Member 
+				  </th>
+ 
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d106419e47">Description 
+				  </th>
+ 
+				</tr>
+</thead>
+ 
+			 <tbody> 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">enumerable_thread_specific()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Constructs an 
+						<samp class="codeph">enumerable_thread_specific</samp> where each thread-local
+						element will be default-constructed.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">template&lt;typename Finit&gt;
+						explicit enumerable_thread_specific( Finit finit )</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Constructs an
+						<samp class="codeph">enumerable_thread_specific</samp> such that any
+						thread-local element will be created by copying the result of 
+						<samp class="codeph">finit()</samp>. 
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+						<p>The expression 
+						  <samp class="codeph">finit()</samp> must be safe to evaluate
+						  concurrently by multiple threads. It is evaluated each time a thread-local
+						  element is created.
+						</p>
+
+						<p>C++11 and beyond: this constructor 
+						  is only available (i.e. participates in overload resolution)
+						  if <samp class="codeph">finit()</samp> is a valid expression.
+						</p>
+
+					 </div>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 ">
+					 <p><span class="keyword">explicit enumerable_thread_specific( const T&amp; exemplar )</span></p>
+
+					 <p><span class="keyword">explicit enumerable_thread_specific( T&amp;&amp; exemplar )</span></p>
+
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Constructs an 
+						<samp class="codeph">enumerable_thread_specific</samp> where each thread-local
+						element will be copy-constructed from 
+						<samp class="codeph"><em>exemplar</em></samp>.
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+						<p>C++11 and beyond: move constructor of
+						  <samp class="codeph">T</samp> can be used to store <samp class="codeph"><em>exemplar</em></samp>
+						  internally, however thread-local elements are always copy-constructed.
+						</p>
+
+					 </div>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">template &lt;typename... Args&gt;
+						enumerable_thread_specific( Args&amp;&amp;... args );</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Supported since C++11. Constructs 
+						<samp class="codeph">enumerable_thread_specific</samp> such that any
+						thread-local element will be constructed by invoking
+						<samp class="codeph">T(<em>args</em>...)</samp>. 
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+						<p>This constructor does not participate in overload resolution
+						  if the type of the first argument in <samp class="codeph"><em>args</em>...</samp> is <samp class="codeph">T</samp>,
+						  or <samp class="codeph">enumerable_thread_specific&lt;T&gt;</samp>, or <samp class="codeph"><em>foo</em>()</samp>
+						  is a valid expression for a value <samp class="codeph"><em>foo</em></samp> of that type.
+						</p>
+
+					 </div>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 ">
+					 <p><span class="keyword">enumerable_thread_specific
+						     ( const enumerable_thread_specific&amp; other )</span></p>
+ 
+					 <p><span class="keyword">template&lt;typename Alloc, ets_key_usage_type Cachetype&gt;
+						     enumerable_thread_specific( const enumerable_thread_specific
+						     &lt;T, Alloc, Cachetype&gt;&amp; other )</span></p>
+
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Constructs an <samp class="codeph">enumerable_thread_specific</samp>
+						as a copy of <samp class="codeph"><em>other</em></samp>. The values are
+						copy-constructed from the values in 
+						<samp class="codeph"><em>other</em></samp> and have same thread
+						correspondence.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 ">
+					 <p><span class="keyword">enumerable_thread_specific
+						     ( enumerable_thread_specific&amp;&amp; other )</span></p>
+ 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Supported since C++11. Constructs an <samp class="codeph">enumerable_thread_specific</samp>
+						by moving the content of <samp class="codeph"><em>other</em></samp> intact.
+						<samp class="codeph"><em>other</em></samp> is left in an unspecified state, but can be safely destroyed.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 ">
+						 <p><span class="keyword">template&lt;typename Alloc, ets_key_usage_type Cachetype&gt;
+						     enumerable_thread_specific( enumerable_thread_specific
+						     &lt;T, Alloc, Cachetype&gt;&amp;&amp; other )</span></p>
+
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Supported since C++11. Constructs an <samp class="codeph">enumerable_thread_specific</samp>
+						using per-element move construction from the values in <samp class="codeph"><em>other</em></samp>, and
+						keeping their thread correspondence.
+						<samp class="codeph"><em>other</em></samp> is left in an unspecified state, but can be safely destroyed.
+					 </p>
+
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">~enumerable_thread_specific()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Destroys all elements in 
+						<samp class="codeph">*this</samp>. Destroys any native TLS keys that
+						were created for this instance.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">enumerable_thread_specific&amp;
+						operator=( const enumerable_thread_specific&amp; other );</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Copies the content of 
+						<samp class="codeph"><em>other</em></samp> to <samp class="codeph">*this</samp>.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">template&lt;typename Alloc,
+                        ets_key_usage_type Cachetype&gt; enumerable_thread_specific&amp;
+						operator=( const enumerable_thread_specific&lt;T, Alloc, Cachetype&gt;&amp;
+						other );</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Copies the content of 
+						<samp class="codeph"><em>other</em></samp> to <samp class="codeph">*this</samp>.
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+						<p>The allocator and key usage
+						  specialization is unchanged by this call.
+						</p>
+
+					 </div>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">enumerable_thread_specific&amp;
+						operator=( enumerable_thread_specific&amp;&amp; other );</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Supported since C++11. Moves the content of 
+						<samp class="codeph"><em>other</em></samp> to <samp class="codeph">*this</samp> intact. 
+						<samp class="codeph"><em>other</em></samp> is left in an unspecified state, but can be safely destroyed.
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword">template&lt;typename Alloc,
+                        ets_key_usage_type Cachetype&gt; enumerable_thread_specific&amp;
+						operator=( enumerable_thread_specific&lt;T, Alloc, Cachetype&gt;&amp;&amp;
+						other );</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Supported since C++11. Moves the content of <samp class="codeph"><em>other</em></samp>
+						to <samp class="codeph">*this</samp> using per-element move construction
+						and keeping thread correspondence.
+						<samp class="codeph"><em>other</em></samp> is left in an unspecified state, but can be safely destroyed.
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+						<p>The allocator and key usage
+						  specialization is unchanged by this call.
+						</p>
+
+					 </div>
+ 
+				  </td>
+ 
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d106419e44 "><span class="keyword"> void clear()</span> 
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d106419e47 ">
+					 <p>Destroys all elements in 
+						<samp class="codeph">*this</samp>. Destroys and then recreates any
+						native TLS keys used in the implementation. 
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+						<p>In the current implementation, there is
+						  no performance advantage of using clear instead of destroying and
+						  reconstructing an 
+						  <samp class="codeph">enumerable_thread_specific</samp>. 
+						</p>
+
+					 </div>
+
+				  </td>
+
+				</tr>
+ 
+			 </tbody>
+ 
+		  </table>
+</div>
+
+	 </div>
+ 
+  </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/thread_local_storage/enumerable_thread_specific_cls.html">enumerable_thread_specific Template Class</a></div>
+</div>
+<div></div>
+</body>
+</html>

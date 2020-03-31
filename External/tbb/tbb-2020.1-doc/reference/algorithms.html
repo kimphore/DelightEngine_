@@ -1,0 +1,107 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Algorithms" />
+<meta name="DC.subject" content="Algorithms" />
+<meta name="keywords" content="Algorithms" />
+<meta name="DC.Relation" scheme="URI" content="../reference/reference.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/splittable_concept.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/range_concept.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/partitioners.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_for_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_reduce_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_deterministic_reduce_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_sort_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_scan_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_do_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_for_each_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_pipeline_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/algorithms/parallel_invoke_func.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="algorithms" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Algorithms</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="algorithms">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">Algorithms</h1>
+
+     
+    <div> 
+        <p>Most parallel algorithms provided by Intel&reg;
+            Threading Building Blocks (Intel&reg; TBB) are generic. They operate on all
+            types that model the necessary concepts. Parallel algorithms may be nested. For
+            example, the body of a <samp class="codeph">parallel_for</samp> can invoke another <samp class="codeph">parallel_for</samp>. 
+        </p>
+ 
+        <div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+            <p> When the body of an outer parallel algorithm invokes another parallel
+                algorithm, it may cause the outer body to be re-entered for a different
+                iteration of the outer algorithm. 
+            </p>
+ 
+            <p>For example, if the outer body holds a global lock while calling an
+                inner parallel algorithm, the body will deadlock if the re-entrant invocation
+                attempts to acquire the same global lock. This ill-formed example is a special
+                case of a general rule that code should not hold a lock while calling code
+                written by another author. 
+            </p>
+ 
+        </div>
+ 
+    </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../reference/reference.html">Intel&reg; Threading Building Blocks Developer Reference</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../reference/algorithms/splittable_concept.html">Splittable Concept</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/range_concept.html">Range Concept</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/partitioners.html">Partitioners</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_for_func.html">parallel_for Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_reduce_func.html">parallel_reduce Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_deterministic_reduce_func.html">parallel_deterministic_reduce Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_sort_func.html">parallel_sort Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_scan_func.html">parallel_scan Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_do_func.html">parallel_do Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_for_each_func.html">parallel_for_each Template Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_pipeline_func.html">parallel_pipeline Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../reference/algorithms/parallel_invoke_func.html">parallel_invoke Template Function</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,362 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Range Concept" />
+<meta name="DC.subject" content="Range Concept" />
+<meta name="keywords" content="Range Concept" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/algorithms.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/algorithms/range_concept/blocked_range_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/algorithms/range_concept/blocked_range2d_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/algorithms/range_concept/blocked_range3d_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="parallel_for_func.html#parallel_for_func" />
+<meta name="DC.Relation" scheme="URI" content="parallel_reduce_func.html#parallel_reduce_func" />
+<meta name="DC.Relation" scheme="URI" content="parallel_scan_func.html#parallel_scan_func" />
+<meta name="DC.Relation" scheme="URI" content="../containers_overview/container_range_concept.html#container_range_concept" />
+<meta name="DC.Relation" scheme="URI" content="splittable_concept/proportional_split_cls.html#proportional_split_cls" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/preview_features/blocked_rangeNd_cls.html#blocked_rangeNd" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="range_concept" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Range Concept</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="range_concept">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Range Concept</h1>
+
+  
+  <div>
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>Requirements for type representing a recursively divisible set of
+		  values.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Requirements</h2>
+		
+		<p>The following table lists the requirements for a
+		  Range type
+		  <samp class="codeph">R</samp>.
+		</p>
+
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl8" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">Range Concept</span></caption>
+		  <thead align="left">
+			 <tr>
+				<th class="cellrowborder" valign="top" width="50%" id="d7294e64">
+				  <p>Pseudo-Signature
+				  </p>
+
+				</th>
+
+				<th class="row-nocellborder" valign="top" width="50%" id="d7294e70">
+				  <p>Semantics
+				  </p>
+
+				</th>
+
+			 </tr>
+</thead>
+
+		  <tbody>
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> R::R( const R&amp; )</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p> Copy constructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> R::~R()</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p> Destructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> bool R::empty() const</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p> True if range is empty.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> bool R::is_divisible()
+						const</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p> True if range can be partitioned into two
+					 subranges.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> R::R( R&amp; r, split )</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p>
+                                    Basic splitting constructor. Splits <samp class="codeph">r</samp> into two
+                                    subranges.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> R::R( R&amp; r, proportional_split
+						proportion )</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p>
+					 <strong>Optional</strong>. Proportional splitting constructor. Splits
+					 <samp class="codeph">r</samp> into two subranges in accordance with
+					 <samp class="codeph">proportion</samp>.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr valign="top">
+				<td class="cellrowborder" valign="top" width="50%" headers="d7294e64 ">
+				  <p><samp class="codeph"> static const bool
+						R::is_splittable_in_proportion</samp>
+				  </p>
+
+				</td>
+
+				<td class="row-nocellborder" valign="top" width="50%" headers="d7294e70 ">
+				  <p>
+					 <strong>Optional</strong>. If true, the proportional splitting
+					 constructor is defined for the range and may be used by
+					 parallel algorithms.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+		  </tbody>
+
+		</table>
+</div>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle"> Description</h2>
+		
+		<p> A Range can be recursively subdivided into two parts. Subdivision is
+		  done by calling
+		  <em>splitting constructor</em> of Range. There are two types of splitting
+		  constructors:
+		</p>
+
+		<ul>
+		  <li> Basic splitting constructor. It is recommended that the division be
+			 into nearly equal parts in this constructor, but it is not required. Splitting
+			 as evenly as possible typically yields the best parallelism.
+		  </li>
+
+		  <li> Proportional splitting constructor. This constructor is optional and
+			 can be omitted along with
+			 <em>is_splittable_in_proportion</em> class variable. When using this
+			 type of constructor, for the best results, follow the given proportion with
+			 rounding to the nearest integer if necessary.
+		  </li>
+
+		</ul>
+
+		<p> Ideally, a range is recursively splittable until the parts represent
+		  portions of work that are more efficient to execute serially rather than split
+		  further. The amount of work represented by a Range typically depends upon
+		  higher level context, hence a typical type that models a Range should provide a
+		  way to control the degree of splitting. For example, the template class
+		  <samp class="codeph">blocked_range</samp> has a
+		  <em>grainsize</em> parameter that specifies the biggest range considered
+		  indivisible.
+		</p>
+
+		<p> If the set of values has a sense of direction, then by convention the
+		  splitting constructor should construct the second part of the range, and update
+		  its argument to be the first part of the range. This enables
+		  <samp class="codeph">parallel_for</samp>, <samp class="codeph">parallel_reduce</samp> and
+		  <samp class="codeph">parallel_scan</samp> algorithms, when running sequentially,
+		  to work across a range in the increasing order, typical of an ordinary
+		  sequential loop.
+		</p>
+
+		<p>Since a Range declares a splitting and copy constructors, the default
+		 constructor for it will not be automatically generated. You will need to
+		 explicitly define the default constructor or add any other constructor to
+		 create an instance of Range type in the program.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle"> Example</h2>
+		
+		<p>
+                  The following code defines a type <samp class="codeph">TrivialNaturalRange</samp> that models the Range concept. It
+                  represents a half-open interval [lower,upper) that is divisible down to a single natural number. Splitting can be done
+                  via basic or proportional splitting constructors. The basic splitting constructor divides the range in half. The
+                  proportional splitting constructor divides the range in the given proportion <samp class="codeph">p</samp>, with
+                  <samp class="codeph">r</samp> updated to be the left part and a new <samp class="codeph">TrivialNaturalRange</samp> constructed for
+                  the right part. Note that special care has been taken to ensure non-emptiness of the involved
+                  <samp class="codeph">TrivialNaturalRange</samp> instances.
+		</p>
+
+		<pre>#include &lt;tbb/tbb_stddef.h&gt; // for split tags
+
+struct TrivialNaturalRange {
+    // restore the default constructor
+    TrivialNaturalRange() {}
+
+    size_t lower;
+    size_t upper;
+    bool empty() const { return lower == upper; }
+    bool is_divisible() const { return upper &gt; lower + 1; }
+
+    // basic splitting constructor
+    TrivialNaturalRange(TrivialNaturalRange&amp; r, tbb::split) {
+        size_t m = r.lower + (r.upper - r.lower) / 2;
+        upper = r.upper;
+        r.upper = lower = m;
+    }
+
+    // optional proportional splitting constructor
+    TrivialNaturalRange(TrivialNaturalRange&amp; r, tbb::proportional_split p) {
+        size_t m = r.lower + ((r.upper - r.lower) * p.left()) / (p.left() + p.right());
+        if (m == r.lower)
+            m++;
+        else if (m == r.upper)
+            m--;
+        upper = r.upper;
+        r.upper = lower = m;
+    }
+
+    // optional trait that enables proportional split
+    static const bool is_splittable_in_proportion = true;
+};</pre>
+		<p>
+		  <samp class="codeph">TrivialNaturalRange</samp> is for demonstration purpose only and not
+		  practical. Use the library class
+		  <samp class="codeph">blocked_range</samp> instead.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle"> Model Types</h2>
+		
+		<p>Type
+		  <samp class="codeph">blocked_range</samp> models a one-dimensional range.
+		</p>
+
+		<p>Type
+		  <samp class="codeph">blocked_range2</samp>d models a two-dimensional range.
+		</p>
+
+		<p>Type
+		  <samp class="codeph">blocked_range3d</samp> models a three-dimensional range.
+		</p>
+
+		<p>Type
+		  <samp class="codeph">blocked_rangeNd</samp> models a N-dimensional range (preview functionality).
+		</p>
+
+		<p>The Container Range Concept models a container as a range.
+		</p>
+
+	 </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/algorithms.html">Algorithms</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/algorithms/range_concept/blocked_range_cls.html">blocked_range Template Class</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/algorithms/range_concept/blocked_range2d_cls.html">blocked_range2d Template Class</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/algorithms/range_concept/blocked_range3d_cls.html">blocked_range3d Template Class</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="parallel_for_func.html#parallel_for_func">parallel_for Template Function
+		  </a></div>
+<div><a href="parallel_reduce_func.html#parallel_reduce_func">parallel_reduce Template Function
+		  </a></div>
+<div><a href="parallel_scan_func.html#parallel_scan_func">parallel_scan Template Function
+		  </a></div>
+<div><a href="../containers_overview/container_range_concept.html#container_range_concept">Container Range Concept
+		  </a></div>
+<div><a href="splittable_concept/proportional_split_cls.html#proportional_split_cls">proportional_split Class</a></div>
+<div><a href="../appendices/preview_features/blocked_rangeNd_cls.html#blocked_rangeNd">blocked_rangeNd Template Class
+		  </a></div></div></div>
+
+</body>
+</html>

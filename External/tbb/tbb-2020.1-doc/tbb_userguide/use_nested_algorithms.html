@@ -1,0 +1,126 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Use Nested Algorithms to Increase Scalability" />
+<meta name="DC.subject" content="flow graph tips, use nested algorithms, use nested algorithms, nested algorithms, increase scalability" />
+<meta name="keywords" content="flow graph tips, use nested algorithms, use nested algorithms, nested algorithms, increase scalability" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_nested_parallelism_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_nested_flow_graphs.html#use_nested_flow_graphs" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="use_nested_algorithms" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Use Nested Algorithms to Increase Scalability</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="use_nested_algorithms">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Use Nested Algorithms to Increase Scalability</h1>
+ 
+   
+  <div> 
+	 <p>One powerful way to increase the scalability of a flow graph is to nest
+		other parallel algorithms inside of node bodies. Doing so, you can use a flow
+		graph as a coordination language, expressing the most coarse-grained
+		parallelism at the level of the graph, with finer grained parallelism nested
+		within. 
+	 </p>
+ 
+	 <p>In the example below, five nodes are created: a 
+		<span class="keyword">source_node</span>, 
+		<span class="keyword">matrix_source</span>, that reads a sequence of matrices from
+		a file, two 
+		<span class="keyword">function_nodes</span>, 
+		<span class="keyword">n1</span> and 
+		<span class="keyword">n2</span>, that receive these matrices and generate two new
+		matrices by applying a function to each element, and two final 
+		<span class="keyword">function_nodes</span>, 
+		<span class="keyword">n1_sink</span> and 
+		<span class="keyword">n2_sink</span>, that process these resulting matrices. The 
+		<span class="keyword">matrix_source</span> is connected to both 
+		<span class="keyword">n1</span> and 
+		<span class="keyword">n2</span>. The node 
+		<span class="keyword">n1</span> is connected to 
+		<span class="keyword">n1_sink</span>, and 
+		<span class="keyword">n2</span> is connected to 
+		<span class="keyword">n2_sink</span>. In the lambda expressions for 
+		<span class="keyword">n1</span> and 
+		<span class="keyword">n2</span>, a 
+		<span class="keyword">parallel_for</span> is used to apply the functions to the
+		elements of the matrix in parallel. The functions 
+		<span class="keyword">read_next_matrix</span>, 
+		<span class="keyword">f1</span>, 
+		<span class="keyword">f2</span>,<span class="keyword"> consume_f1</span> and 
+		<span class="keyword">consume_f2</span> are not provided below. 
+	 </p>
+ 
+	 <pre>    graph g;
+    source_node&lt; double * &gt; matrix_source( g, [&amp;]( double * &amp;v ) -&gt; bool {
+      double *a = read_next_matrix();
+      if ( a ) {
+        v = a;
+        return true;
+      } else {
+        return false;
+      }
+    }, false );
+    function_node&lt; double *, double * &gt; n1( g, unlimited, [&amp;]( double *a ) -&gt; double * {
+      double *b = new double[N];
+      parallel_for( 0, N, [&amp;](int i) {
+        b[i] = f1(a[i]);
+      } );
+      return b;
+    } );
+    function_node&lt; double *, double * &gt; n2( g, unlimited, [&amp;]( double *a ) -&gt; double * {
+      double *b = new double[N];
+      parallel_for( 0, N, [&amp;](int i) {
+        b[i] = f2(a[i]);
+      } );
+      return b;
+    } );
+    function_node&lt; double *, double * &gt; n1_sink( g, unlimited, 
+      []( double *b ) -&gt; double * {
+        return consume_f1(b);
+    } );
+    function_node&lt; double *, double * &gt; n2_sink( g, unlimited, 
+      []( double *b ) -&gt; double * {
+        return consume_f2(b);
+    } );
+    make_edge( matrix_source, n1 );
+    make_edge( matrix_source, n2 );
+    make_edge( n1, n1_sink );
+    make_edge( n2, n2_sink );
+    matrix_source.activate();
+    g.wait_for_all();
+</pre> 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_nested_parallelism_tips.html">Flow Graph Tips on Nested Parallelism</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_nested_flow_graphs.html#use_nested_flow_graphs">Use Nested Flow Graphs 
+		  </a></div></div></div> 
+
+</body>
+</html>

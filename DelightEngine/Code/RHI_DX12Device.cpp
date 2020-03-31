@@ -83,7 +83,7 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 	{
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 
-		for (_uint i = 0; i < 2; ++i)
+		for (UInt32 i = 0; i < 2; ++i)
 		{
 			Delight::FailedReturnString(m_Swapchain->GetBuffer(i, DELIGHT_IID_PPV_ARGS(&m_RenderTargets[i])), TEXT(""));
 			m_Device->CreateRenderTargetView(m_RenderTargets[i].GetData(), nullptr, rtvHandle);
@@ -101,7 +101,7 @@ void CRHIDirectX12::GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** 
 	Delight::Comptr<IDXGIAdapter1> adapter;	
 	*ppAdapter = nullptr;
 
-	for (_uint index = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(index, &adapter); ++index)
+	for (UInt32 index = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(index, &adapter); ++index)
 	{
 		DXGI_ADAPTER_DESC1 desc;
 		adapter->GetDesc1(&desc);

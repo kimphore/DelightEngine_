@@ -1,0 +1,180 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="tbb_thread Class" />
+<meta name="DC.subject" content="tbb_thread Class" />
+<meta name="keywords" content="tbb_thread Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/deprecated_features/cpp_obsolete.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../general_conventions/namespaces.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tbb_thread_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>tbb_thread Class</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tbb_thread_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">tbb_thread Class</h1>
+ 
+   
+  <div> 
+  <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+      This feature is deprecated and will be removed in the future.
+  </p>
+</div>
+
+	 <p>Intel&reg; Threading Building Blocks (Intel&reg; TBB) 3.0 introduces a header 
+		<samp class="codeph">tbb/compat/thread</samp> that
+		defines class 
+		<samp class="codeph">std::thread</samp>. Prior
+		versions had a header 
+		<span class="filepath">tbb/tbb_thread.h</span>
+		that defined class 
+		<samp class="codeph">tbb_thread</samp>. The old
+		header and names are still available, but deprecated in favor of the
+		replacements shown in Table 48. 
+	 </p>
+ 
+	 
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl48" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">Table 48: Replacements for Deprecated
+	 Names</span></caption> 
+	 <thead align="left"> 
+		<tr> 
+		  <th class="cellrowborder" align="center" valign="top" width="20%" id="d15681e61"> 
+			 <p>Entity 
+			 </p>
+ 
+		  </th>
+ 
+		  <th class="cellrowborder" align="center" valign="top" width="40%" id="d15681e67"> 
+			 <p>Deprecated 
+			 </p>
+ 
+		  </th>
+ 
+		  <th class="cellrowborder" align="center" valign="top" width="40%" id="d15681e73"> 
+			 <p>Replacement 
+			 </p>
+ 
+		  </th>
+ 
+		</tr>
+</thead>
+ 
+	 <tbody> 
+		<tr> 
+		  <td class="cellrowborder" align="left" valign="top" width="20%" headers="d15681e61 "> 
+			 <p>Header 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e67 "> 
+			 <p><samp class="codeph">tbb/tbb_thread.h</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e73 "> 
+			 <p><samp class="codeph">tbb/compat/thread</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+		<tr> 
+		  <td class="cellrowborder" rowspan="3" valign="middle" width="20%" headers="d15681e61 "> 
+			 <p>Identifiers 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e67 "> 
+			 <p><samp class="codeph">tbb::tbb_thread</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e73 "> 
+			 <p><samp class="codeph">std::thread</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+		<tr> 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e67 "> 
+			 <p><samp class="codeph">tbb::this_tbb_thread</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e73 "> 
+			 <p><samp class="codeph">std::this_thread</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+		<tr> 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e67 "> 
+			 <p><samp class="codeph">tbb::this_tbb_thread::sleep</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		  <td class="cellrowborder" align="left" valign="top" width="40%" headers="d15681e73 "> 
+			 <p><samp class="codeph">std::this_tbb_thread::sleep_for</samp> 
+			 </p>
+ 
+		  </td>
+ 
+		</tr>
+ 
+	 </tbody>
+ 
+  </table>
+</div>
+ 
+  <p>Most of the changes reflect a change in the way that
+	 the library implements C++11 features (std namespace). The change from 
+	 <samp class="codeph">sleep</samp> to 
+	 <samp class="codeph">sleep_for</samp> reflects a
+	 change in the C++11 working draft. 
+  </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/deprecated_features/cpp_obsolete.html">Obsolete C++ functionality</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../../general_conventions/namespaces.html">std Namespace 
+		  </a></div></div></div>
+
+</body>
+</html>

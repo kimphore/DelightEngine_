@@ -1,0 +1,116 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Interface for constructing a pipeline filter" />
+<meta name="DC.subject" content="Interface for constructing a pipeline filter" />
+<meta name="keywords" content="Interface for constructing a pipeline filter" />
+<meta name="DC.Relation" scheme="URI" content="../../../../../reference/appendices/deprecated_features/redundant/pipeline_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="filter_cls.html#filter_cls" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="interface_for_constructing_filter" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../../intel_css_styles.css" />
+<title>Interface for constructing a pipeline filter</title>
+<script src="../../../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="interface_for_constructing_filter">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(5);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Interface for constructing a pipeline
+	 filter</h1>
+
+  
+  <div>
+  	<div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+  		This feature is deprecated and will be removed in the future.
+	</p>
+</div>
+
+	 <p>The interface for constructing a filter evolved over
+		several releases of Intel&reg; Threading Building Blocks (Intel&reg; TBB).
+	 </p>
+
+	 
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table describe obsolete aspects of the interface. 
+		</span><thead align="left"> 
+			 <tr> 
+				<th class="cellrowborder" valign="top" width="33.89830508474576%" id="d20387e47">Member 
+				</th>
+ 
+				<th class="cellrowborder" valign="top" width="66.10169491525423%" id="d20387e50">Description 
+				</th>
+ 
+			 </tr>
+</thead>
+ 
+		  <tbody> 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d20387e47 "><span class="keyword">filter::filter( bool is_serial
+					 )</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d20387e50 ">
+				  <p>Constructs a serial in-order filter if 
+					 <samp class="codeph">is_serial</samp> is
+					 true, or a parallel filter if 
+					 <samp class="codeph">is_serial</samp> is
+					 false. This deprecated constructor is superseded by the constructor 
+					 <samp class="codeph">filter( filter::mode
+						)</samp>
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d20387e47 "><span class="keyword">filter::serial</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d20387e50 ">
+				  <p>The filter mode value 
+					 <samp class="codeph">filter::serial</samp>
+					 is now named filter::serial_in_order. The new name distinguishes it more
+					 clearly from the mode 
+					 <samp class="codeph">filter::serial_out_of_order</samp>.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+		  </tbody>
+ 
+		</table>
+</div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../../reference/appendices/deprecated_features/redundant/pipeline_cls.html">pipeline Class</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="filter_cls.html#filter_cls">filter Class (deprecated)
+		  </a></div></div></div>
+
+</body>
+</html>

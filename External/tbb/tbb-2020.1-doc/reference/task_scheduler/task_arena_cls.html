@@ -1,0 +1,745 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="task_arena Class and this_task_arena Namespace" />
+<meta name="DC.subject" content="task_arena Class, this_task_arena Namespace" />
+<meta name="keywords" content="task_arena Class, this_task_arena Namespace" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/task_scheduler.html" />
+<meta name="DC.Relation" scheme="URI" content="../task_groups.html#taskgroups" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/deprecated_features/redundant/task_scheduler_init_cls.html#task_scheduler_init_cls" />
+<meta name="DC.Relation" scheme="URI" content="task_scheduler_observer.html" />
+<meta name="DC.Relation" scheme="URI" content="../exceptions.html" />
+<meta name="DC.Relation" scheme="URI" content="fpu_settings.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="task_arena_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>task_arena Class and this_task_arena Namespace</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="task_arena_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">task_arena Class and this_task_arena Namespace</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        A class that represents an explicit, user-managed task scheduler arena, and a namespace
+        for functions applicable to the current arena.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>class task_arena;</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>#include "tbb/task_arena.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        A <samp class="codeph">task_arena</samp> class represents a place where threads may share and execute tasks.
+      </p>
+
+      <p>
+        The number of threads that may simultaneously execute tasks in a task_arena is limited
+        by its concurrency level. The concurrency level affects only that arena, and is not affected
+        by previous <samp class="codeph">task_scheduler_init</samp> specifications.
+      </p>
+
+      <p>
+        <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+          The total number of threads that the scheduler may use is limited by whichever is largest:
+          the default number of threads for the machine or the value specified for the first task
+          scheduler initialization. Therefore the number of threads assigned to a task_arena will
+          never exceed that maximum value, regardless of its concurrency level. Moreover, a task_arena
+          might not get the specified number of threads even if it is lower than the allowed maximum.
+        </div>
+
+      </p>
+
+      <p>
+        Each user thread that explicitly or implicitly initializes the task scheduler creates and
+        uses an implicit internal task arena object. The tasks spawned or enqueued into one arena
+        cannot be executed in another arena.
+      </p>
+
+      <p>
+        A <samp class="codeph">task_arena</samp> instance also holds a reference to such internal
+        representation, but does not fully control its lifetime. The internal representation cannot
+        be destroyed while it contains tasks or other threads reference it.
+      </p>
+
+      <p>
+        <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+          The <samp class="codeph">task_arena</samp> constructors do not create an internal arena object.
+          It may already exist in case of the "attaching" constructor, otherwise it is created
+          by explicit call to <samp class="codeph">task_arena::initialize</samp> or lazily on first use.
+        </div>
+
+      </p>
+
+      <p>
+        <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+          Intel&reg; Threading Building Blocks (Intel&reg; TBB) does not allocate an implicit
+          arena object for the current thread when dealing with an explicit arena object represented
+          by <samp class="codeph">task_arena</samp>. But, a subsequent scheduler initialization in the same
+          thread will use default settings, regardless of the number of threads specified for
+          <samp class="codeph">task_scheduler_init</samp>. This provides backward compatibility with previous
+          Intel TBB releases where a call to any method related to the task scheduler initialized
+          the scheduler for the current thread, including creation of an implicit arena object.
+        </div>
+
+      </p>
+
+      <p>
+        The namespace <samp class="codeph">this_task_arena</samp> contains global functions for interaction
+        with the arena (either explicit <samp class="codeph">task_arena</samp> or implicit arena object)
+        currently used by the calling thread.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+    class task_arena {
+    public:
+        static const int automatic = <em>implementation-defined</em>;
+        static const int not_initialized = <em>implementation-defined</em>;
+        struct attach {};
+
+        task_arena(int max_concurrency = automatic, unsigned reserved_for_masters = 1);
+        task_arena(const task_arena &amp;s);
+        explicit task_arena(task_arena::attach);
+        ~task_arena();
+
+        void initialize();
+        void initialize(int max_concurrency, unsigned reserved_for_masters = 1);
+        void initialize(task_arena::attach);
+        void terminate();
+
+        bool is_active() const;
+        int max_concurrency() const;
+
+        // Supported until C++11
+        template&lt;typename F&gt; void execute(F&amp; f);
+        template&lt;typename F&gt; void execute(const F&amp; f);
+        template&lt;typename F&gt; void enqueue(const F&amp; f);
+        template&lt;typename F&gt; void enqueue(const F&amp; f, priority_t p);
+
+        // Supported since C++11
+        template&lt;typename F&gt; auto execute(F&amp; f) -&gt; decltype(f());
+        template&lt;typename F&gt; auto execute(const F&amp; f) -&gt; decltype(f());
+        template&lt;typename F&gt; void enqueue(F&amp;&amp; f);
+        template&lt;typename F&gt; void enqueue(F&amp;&amp; f, priority_t p);
+
+        static int current_thread_index(); // deprecated
+    };
+    namespace this_task_arena {
+        int current_thread_index();
+        int max_concurrency();
+
+        // Supported until C++11
+        template&lt;typename F&gt; void isolate(F&amp; f);
+        template&lt;typename F&gt; void isolate(const F&amp; f);
+
+        // Supported since C++11
+        template&lt;typename F&gt; auto isolate(F&amp; f) -&gt; decltype(f());
+        template&lt;typename F&gt; auto isolate(const F&amp; f) -&gt; decltype(f());
+    }
+}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Examples</h2>
+      
+      <p>
+        The following example runs two <samp class="codeph">parallel_for</samp> loops concurrently; one that is
+        scalable and one that is not. The non-scalable loop is limited to at most 2 threads so that
+        the majority of the threads can be saved for the more scalable loop. It uses
+        <samp class="codeph">task_group</samp> to wait for a specific subset of tasks.
+      </p>
+
+<pre>
+tbb::task_scheduler_init def_init; // Use the default number of threads.
+tbb::task_arena limited(2);        // No more than 2 threads in this arena.
+tbb::task_group tg;
+
+limited.execute([&amp;]{ // Use at most 2 threads for this job.
+    tg.run([]{ // run in task group
+        tbb::parallel_for(1, N, unscalable_work());
+    });
+});
+
+// Run another job concurrently with the loop above.
+// It can use up to the default number of threads.
+tbb::parallel_for(1, M, scalable_work());
+
+// Wait for completion of the task group in the limited arena.
+limited.execute([&amp;]{ tg.wait(); });
+</pre>
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the members of the class <samp class="codeph">task_arena</samp>.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d100357e184">
+                Member
+              </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d100357e187">
+                Description
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">
+                  task_arena(int max_concurrency = automatic, unsigned reserved_for_masters = 1)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Creates a <samp class="codeph">task_arena</samp> with a certain concurrency limit
+                  (<samp class="codeph">max_concurrency</samp>). Some portion of the limit can be
+                  reserved for application threads with <samp class="codeph">reserved_for_masters</samp>.
+                  The amount for reservation cannot exceed the limit.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  Before Intel TBB 4.4 Update 1, the only valid values for
+                  <samp class="codeph">reserved_for_masters</samp> were 0 and 1.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  If <samp class="codeph">max_concurrency</samp> and <samp class="codeph">reserved_for_masters</samp> are
+                  explicitly set to be equal and greater than 1, Intel TBB worker threads will never
+                  join the arena. As a result, the execution guarantee for enqueued tasks is not valid
+                  in such arena. Do not use <samp class="codeph">task_arena::enqueue()</samp> and
+                  <samp class="codeph">task::enqueue()</samp> with an arena set to have no worker threads.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <p>
+                  <samp class="codeph">static const int automatic</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Base value for some arena parameters. If parameter was set
+                  to this value, it will be defined automatically based on system configuration.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <p>
+                  <samp class="codeph">static const int not_initialized</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  When returned by a method or function, indicates that there is no active arena
+                  or that the arena object has not yet been initialized.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">task_arena(const task_arena&amp;)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Copies settings from another <samp class="codeph">task_arena</samp> instance.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">explicit task_arena(task_arena::attach)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Creates an instance of <samp class="codeph">task_arena</samp> that is connected
+                  to the internal arena currently used by the calling thread. If no such arena
+                  exists yet, creates a <samp class="codeph">task_arena</samp> with default parameters.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  Unlike other constructors, this one automatically initializes
+                  the new <samp class="codeph">task_arena</samp> when connecting to an already existing arena.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">~task_arena()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Removes the reference to the internal arena representation, and destroys the
+                  <samp class="codeph">task_arena</samp> instance. Not thread safe w.r.t. concurrent
+                  invocations of other methods.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <p><samp class="codeph">void initialize()</samp></p>
+
+                <p>
+                  <samp class="codeph">
+                    void initialize(int max_concurrency, unsigned reserved_for_masters = 1)
+                  </samp>
+                </p>
+
+                <p><samp class="codeph">void initialize(task_arena::attach)</samp></p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Performs actual initialization of internal arena representation. If arguments are
+                  specified, they override previous arena parameters. If an instance of class
+                  <samp class="codeph">task_arena::attach</samp> is specified as the argument, and there exists
+                  an internal arena currently used by the calling thread, the method ignores arena
+                  parameters and connects <samp class="codeph">task_arena</samp> to that internal arena.
+                  The method has no effect when called for an already initialized arena.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  After the call to <samp class="codeph">initialize</samp>, the arena parameters
+                  are fixed and cannot be changed.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">void terminate()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Removes the reference to the internal arena representation without destroying the
+                  task_arena object, which can then be re-used. Not thread safe w.r.t. concurrent
+                  invocations of other methods.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">bool is_active() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Returns <samp class="codeph">true</samp> if the arena has been initialized,
+                  <samp class="codeph">false</samp> otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">int max_concurrency() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Returns the concurrency level of the arena.
+                  Does not require the arena to be initialized and does not perform initialization.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <p><em>Until C++11:</em>
+                  <samp class="codeph">template&lt;F&gt; void enqueue(const F&amp; f)</samp>
+                </p>
+
+                <p><em>Since C++11:</em>
+                  <samp class="codeph">template&lt;F&gt; void enqueue(F&amp;&amp; f)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Enqueues a task into the arena to process the specified functor (which is copied or moved
+                  into the task), and immediately returns.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  The method does not require the calling thread to join the arena; i.e. any number
+                  of threads outside of the arena can submit work to it without blocking.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  There is no guarantee that tasks enqueued into an arena execute concurrently with
+                  respect to any other tasks there.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  An exception thrown and not caught in the functor results in undefined behavior.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <p><em>Until C++11:</em>
+                  <samp class="codeph">template&lt;F&gt; void enqueue(const F&amp; f, priority_t)</samp>
+                </p>
+
+                <p><em>Since C++11:</em>
+                  <samp class="codeph">template&lt;F&gt; void enqueue(F&amp;&amp; f, priority_t)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Enqueues a task with specified task priority. Is similar to
+                  <samp class="codeph">enqueue(f)</samp> in all other ways.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <p><em>Until C++11:</em></p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; void execute(F&amp;)</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; void execute(const F&amp;)</samp>
+                </p>
+
+                <p><em>Since C++11:</em></p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; auto execute(F&amp;) -&gt; decltype(f())</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; auto execute(const F&amp;) -&gt; decltype(f())</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  Executes the specified functor in the arena. Since C++11 the function returns
+                  the value returned by the functor.
+                </p>
+
+                <p>
+                  The calling thread joins the arena if possible, and executes the functor.
+                  Upon return it restores the previous task scheduler state
+                  and floating-point settings.
+                </p>
+
+                <p>
+                  If joining the arena is not possible, the call wraps the functor into a task,
+                  enqueues it into the arena, waits using an OS kernel synchronization object
+                  for another opportunity to join, and finishes after the task completion.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  Joining an arena (B) for the second time indirectly (like
+                  <samp class="codeph">B.execute([]{ A.execute([]{ B.execute(f); }); });</samp>)
+                  reduces effective concurrency of this arena and thus may lead to deadlock.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  Any number of threads outside of the arena can submit work to the arena and be
+                  blocked. However, only the maximal number of threads specified for the arena can
+                  participate in executing the work.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  <samp class="codeph">execute</samp> may decrement the arena demand for worker threads,
+                  causing a worker to leave, and thereby freeing a slot for the calling thread.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  An exception thrown in the functor will be captured and re-thrown from
+                  <samp class="codeph">execute</samp>. If exact exception propagation is unavailable or
+                  disabled, the exception will be wrapped into
+                  <samp class="codeph">tbb::captured_exception</samp> even for the same thread.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e184 ">
+                <samp class="codeph">static int current_thread_index()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e187 ">
+                <p>
+                  <strong>Deprecated</strong>.
+                  Is equivalent to <samp class="codeph">this_task_arena::current_thread_index()</samp>
+                  (see below) except that it returns -1 if the calling thread has not yet
+                  initialized the task scheduler.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The next table provides information on the members of the namespace <samp class="codeph">this_task_arena</samp>.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d100357e615">
+                Member
+              </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d100357e618">
+                Description
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e615 ">
+                <samp class="codeph">int current_thread_index()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e618 ">
+                <p>
+                  Returns the thread index in a task arena currently used by the calling
+                  thread, or <samp class="codeph">task_arena::not_initialized</samp> if the thread has not yet
+                  initialized the task scheduler.
+                </p>
+
+                <p>
+                  A thread index is an integer number between 0 and the arena concurrency level.
+                  Thread indexes are assigned to both application (master) threads and worker threads
+                  on joining an arena and are kept until exiting the arena. Indexes of threads that
+                  share an arena are unique - i.e. no two threads within the arena may have the same
+                  index at the same time - but not necessarily consecutive.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  Since a thread may exit the arena at any time if it does not execute a task, the
+                  index of a thread may change between any two tasks, even those belonging to the
+                  same task group or algorithm.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  Threads that use different arenas may have the same current index value.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  Joining a nested arena in <samp class="codeph">execute()</samp> may change current index
+                  value while preserving the index in the outer arena which will be restored on
+                  return.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  This method can be used, for example, by <samp class="codeph">task_scheduler_observer</samp>
+                  to pin threads entering an arena to specific hardware.
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e615 ">
+                <samp class="codeph">int max_concurrency()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e618 ">
+                <p>
+                  Returns the concurrency level of the task arena currently used by the calling
+                  thread. If the thread has not yet initialized the task scheduler, returns
+                  the concurrency level determined automatically for the hardware configuration.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d100357e615 ">
+                <p><em>Until C++11:</em></p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; void isolate(F&amp;)</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; void isolate(const F&amp;)</samp>
+                </p>
+
+                <p><em>Since C++11:</em></p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; auto isolate(F&amp;) -&gt; decltype(f())</samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">template&lt;F&gt; auto isolate(const F&amp;) -&gt; decltype(f())</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d100357e618 ">
+                <p>
+                  Runs the specified functor in isolation by restricting the calling thread to
+                  process only tasks scheduled in the scope of the functor (also called the
+                  isolation region). Since C++11 the function returns the value returned by
+                  the functor.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  The object returned by the functor cannot be a reference.
+                  <samp class="codeph">std::reference_wrapper</samp> can be used instead.
+                </div>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  Asynchronous parallel constructs such as a flow graph or a
+                  <samp class="codeph">task_group</samp> should be used with care within an isolated region.
+                  For <samp class="codeph">graph::wait_for_all</samp> or <samp class="codeph">task_group::wait</samp>
+                  executed in isolation, tasks scheduled by calling <samp class="codeph">try_put</samp> for a
+                  flow graph node or by <samp class="codeph">task_group::run</samp> are only accessible if
+                  scheduled in the same isolation region or in a task previously spawned in that
+                  region. Otherwise, performance issues and even deadlocks are possible.
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/task_scheduler.html">Task Scheduler</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../task_groups.html#taskgroups">
+          Task Groups
+        </a></div>
+<div><a href="../appendices/deprecated_features/redundant/task_scheduler_init_cls.html#task_scheduler_init_cls">
+          task_scheduler_init Class (deprecated)
+        </a></div>
+<div><a href="task_scheduler_observer.html">
+          task_scheduler_observer Class
+        </a></div>
+<div><a href="../exceptions.html">
+          Exceptions
+        </a></div>
+<div><a href="fpu_settings.html">
+          Floating-point Settings
+        </a></div></div></div>
+
+</body>
+</html>

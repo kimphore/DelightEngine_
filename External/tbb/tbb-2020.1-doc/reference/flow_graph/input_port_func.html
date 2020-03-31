@@ -1,0 +1,74 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="input_port Template Function" />
+<meta name="DC.subject" content="input_port Template Function" />
+<meta name="keywords" content="input_port Template Function" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/ports_and_edges.html" />
+<meta name="DC.Relation" scheme="URI" content="join_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="indexer_node_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="composite_node_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="input_port_func" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>input_port Template Function</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="input_port_func">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">input_port Template Function</h1>
+
+  
+  <div>
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>A template function that given a 
+		  <span class="keyword">join_node</span>, <span class="keyword">indexer_node</span> or a  
+		  <span class="keyword">composite_node</span> returns a reference to a specific input
+		  port.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		
+		<pre>template&lt;size_t N, typename NT&gt;
+typename flow::tuple_element&lt;N, typename NT::input_ports_type&gt;::type&amp;
+input_port(NT &amp;n);</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		
+		<pre>#include "tbb/flow_graph.h"</pre>
+	 </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/ports_and_edges.html">Ports And Edges</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="join_node_cls.html"> join_node Template Class 
+		  </a></div>
+<div><a href="indexer_node_cls.html"> indexer_node Template Class 
+		  </a></div>
+<div><a href="composite_node_cls.html"> composite_node Template Class </a></div></div></div>
+
+</body>
+</html>

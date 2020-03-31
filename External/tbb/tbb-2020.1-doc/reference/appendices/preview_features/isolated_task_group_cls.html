@@ -1,0 +1,165 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="isolated_task_group Class" />
+<meta name="DC.subject" content="isolated_task_group Class, isolation" />
+<meta name="keywords" content="isolated_task_group Class, isolation" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../task_groups/task_group_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../tbb_userguide/work_isolation.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="parallel_invoke_func" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>isolated_task_group Class</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="parallel_invoke_func">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">isolated_task_group Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        An <samp class="codeph">isolated_task_group</samp> is a <samp class="codeph">task_group</samp> with implicit
+        isolation.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+<pre>
+#define TBB_PREVIEW_ISOLATED_TASK_GROUP 1
+#include "tbb/task_group.h"
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+    class isolated_task_group {
+    public:
+        isolated_task_group();
+        ~isolated_task_group();
+
+        /* The same members as members of task_group */
+    };
+}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        An <samp class="codeph">isolated_task_group</samp> is a <samp class="codeph">task_group</samp> whose spawned tasks
+        share the same level of isolation. Therefore, threads calling members of <samp class="codeph">isolated_task_group</samp>
+        are restricted to process tasks scheduled only in the scope of this group. This functionality can be convenient
+        when implementing lazy initialization patterns.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The following code implements the lazy initialization approach. Only one thread can call the
+        <samp class="codeph">initialize</samp> function while other threads can join parallel constructions created by this
+        function.
+      </p>
+
+      <pre>#define TBB_PREVIEW_ISOLATED_TASK_GROUP 1
+#include "tbb/task_group.h"
+#include "tbb/parallel_for.h"
+
+#include &lt;atomic&gt;
+#include &lt;iostream&gt;
+#include &lt;cassert&gt;
+
+class parallel_once {
+    enum class init_state : int { none, in_process, done };
+
+    tbb::isolated_task_group    my_itg;
+    std::atomic&lt;init_state&gt;     my_state{ init_state::none };
+public:
+    template&lt;class Callable&gt;
+    void call(Callable f) {
+        // Check if the initialize function is already completed.
+        init_state s = my_state.load(std::memory_order_acquire);
+        switch (s) {
+        case init_state::none:
+            // The initialization is not done. Decide if the current thread has to call the initialize function.
+            if (my_state.compare_exchange_strong(s, init_state::in_process)) {
+                // The current thread has to start the initialize function.
+                my_itg.run_and_wait([this, f] {
+                    // The function is called only by one thread. However, other threads can join a nested parallel loop.
+                    f();
+                    my_state.store(init_state::done, std::memory_order_release);
+                });
+                break;
+            }
+            // [[fallthrough]]
+        case init_state::in_process:
+            // Another thread has started the initialize function, join the initialization work.
+            // The while loop is required because run_and_wait might be not called yet.
+            do {
+                my_itg.wait();
+            } while (my_state != init_state::done);
+            break;
+        case init_state::done:
+            // The initialization is done.
+            break;
+        }
+        assert(my_state == init_state::done);
+    }
+};
+
+void initialize() {
+    const int K = 10;
+    tbb::parallel_for(0, K, [](int i) {
+        std::cout &lt;&lt; i &lt;&lt; std::endl;
+    });
+}
+
+int main() {
+    const int N = 1000;
+
+    parallel_once po;
+    tbb::parallel_for(0, N, [&amp;po](int) {
+        // The initialize function is called once while other threads can join nested parallel loop.
+        po.call(initialize);
+    });
+
+    return 0;
+}</pre>
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/preview_features.html">Preview Features</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../task_groups/task_group_cls.html">task_group Class</a></div>
+<div><a href="../../../tbb_userguide/work_isolation.html">Task Isolation</a></div></div></div>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Cancellation Without An Exception" />
+<meta name="DC.subject" content="Cancellation Without An Exception" />
+<meta name="keywords" content="Cancellation Without An Exception" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Exceptions_and_Cancellation.html" />
+<meta name="DC.Relation" scheme="URI" content="Lambda_Expressions.html#tutorial_Lambda_Expressions" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Cancellation_Without_An_Exception" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Cancellation Without An Exception</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Cancellation_Without_An_Exception">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Cancellation Without An Exception</h1>
+ 
+   
+  <div> 
+	 <p>To cancel an algorithm but not throw an exception, use the expression 
+		<samp class="codeph">task::self().cancel_group_execution()</samp>. The part 
+		<samp class="codeph">task::self()</samp> references the innermost task on
+		the current thread. Calling 
+		<samp class="codeph">cancel_group_execution()</samp> cancels all tasks in its 
+		<samp class="codeph">task_group_context</samp>, which is explained in more detail in
+		<strong>Cancellation and Nested Parallelism</strong>. The method returns 
+		<samp class="codeph">true</samp> if it actually causes cancellation, 
+		<samp class="codeph">false</samp> if the 
+		<samp class="codeph">task_group_context</samp> was already cancelled. 
+	 </p>
+ 
+	 <p>The example below shows how to use 
+		<samp class="codeph">task::self().cancel_group_execution()</samp>. 
+	 </p>
+ 
+	 <pre>#include "tbb/tbb.h"
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+ 
+using namespace tbb;
+using namespace std;
+ 
+vector&lt;int&gt; Data;
+ 
+struct Update {
+    void operator()( const blocked_range&lt;int&gt;&amp; r ) const {
+        for( int i=r.begin(); i!=r.end(); ++i )
+            if( i&lt;Data.size() ) {
+                ++Data[i];
+            } else {
+                // Cancel related tasks.
+                if( task::self().cancel_group_execution() )
+                    cout &lt;&lt; "Index " &lt;&lt; i &lt;&lt; " caused cancellation\n";
+                return;
+            }
+    }
+};
+ 
+int main() {
+    Data.resize(1000);
+    parallel_for( blocked_range&lt;int&gt;(0, 2000), Update());
+    return 0;
+}</pre> 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Exceptions_and_Cancellation.html">Exceptions and Cancellation</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Lambda_Expressions.html#tutorial_Lambda_Expressions">Lambda Expressions
+		  </a></div></div></div> 
+
+</body>
+</html>

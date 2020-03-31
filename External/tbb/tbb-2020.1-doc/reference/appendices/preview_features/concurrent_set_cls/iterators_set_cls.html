@@ -1,0 +1,173 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Iterators" />
+<meta name="DC.subject" content="Iterators" />
+<meta name="keywords" content="Iterators" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/concurrent_set_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="iterators_set_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>Iterators</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="iterators_set_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Iterators</h1>
+
+  
+  <div>
+    <div class="section">
+      <p>
+        Template classes <samp class="codeph">concurrent_set</samp> and <samp class="codeph">concurrent_multiset</samp>
+        support forward iterators. Reverse iterators are not supported: <samp class="codeph">reverse_iterator</samp>
+        and <samp class="codeph">const_reverse_iterator</samp> member types, <samp class="codeph">rbegin()</samp> and <samp class="codeph">rend()</samp>
+        methods are not available.
+      </p>
+
+      <p>
+        Concurrent operations (<samp class="codeph">count, insert, find</samp>, etc.) do not invalidate any existing
+        iterators that point into the set. Erasure (<samp class="codeph">unsafe_erase</samp>, <samp class="codeph">unsafe_extract</samp>) does not invalidate iterators
+        other than those pointing to erased elements.
+      </p>
+
+      <p>
+        Note that an iterator obtained via <samp class="codeph">begin()</samp> will no longer point to the first
+        element in the set if <samp class="codeph">insert</samp> inserts an item before it.
+      </p>
+
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides information on the members of
+          <samp class="codeph">concurrent_set</samp> and <samp class="codeph">concurrent_multiset</samp>.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d32557e93">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d32557e96">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d32557e93 ">
+                <samp class="codeph">iterator begin()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d32557e96 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">iterator</samp> pointing to the first element in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d32557e93 ">
+                <samp class="codeph">const_iterator begin() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d32557e96 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">const_iterator</samp> pointing to the first element in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d32557e93 ">
+                <samp class="codeph">const_iterator cbegin() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d32557e96 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">const_iterator</samp> pointing to the first element in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d32557e93 ">
+                <samp class="codeph">iterator end()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d32557e96 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">iterator</samp> pointing to the immediately past last element in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d32557e93 ">
+                <samp class="codeph">const_iterator end() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d32557e96 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">const_iterator</samp> pointing to the immediately past last element in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d32557e93 ">
+                <samp class="codeph">const_iterator cend() const</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d32557e96 ">
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">const_iterator</samp> pointing to the immediately past last element in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/concurrent_set_cls.html">concurrent_set and concurrent_multiset Template Classes</a></div>
+</div>
+<div></div>
+</body>
+</html>

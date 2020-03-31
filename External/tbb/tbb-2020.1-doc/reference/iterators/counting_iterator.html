@@ -1,0 +1,145 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Counting Iterator" />
+<meta name="DC.subject" content="Counting Iterator" />
+<meta name="keywords" content="Counting Iterator" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/iterators.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="counting_iterator" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Counting Iterator</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="counting_iterator">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1"> Counting Iterator </h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle"> Summary </h2>  Iterator with the dereferenced value set as an integer counter. The counter changes according to arithmetics of the random access iterator type. </div>
+
+    <div class="section"><h2 class="sectiontitle"> Header </h2>
+       <pre>#include "tbb/iterators.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Syntax </h2> 
+<pre>
+template&lt;typename IntType&gt;
+class counting_iterator {
+public:
+    typedef typename std::make_signed&lt;IntType&gt;::type difference_type;
+    typedef IntType value_type;
+    typedef const IntType* pointer;
+    typedef const IntType&amp; reference;
+    typedef std::random_access_iterator_tag iterator_category;
+    
+    counting_iterator();
+    explicit counting_iterator(IntType init);
+    reference operator*() const;
+    value_type operator[](difference_type i) const;
+    difference_type operator-(const counting_iterator&amp; it) const;
+    counting_iterator&amp; operator+=(difference_type forward);
+    counting_iterator&amp; operator-=(difference_type backward);
+    counting_iterator&amp; operator++();
+    counting_iterator&amp; operator--();
+    counting_iterator operator++(int);
+    counting_iterator operator--(int);
+    counting_iterator operator-(difference_type backward) const;
+    counting_iterator operator+(difference_type forward) const;
+    friend counting_iterator operator+(difference_type forward, const counting_iterator it);
+    bool operator==(const counting_iterator&amp; it) const;
+    bool operator!=(const counting_iterator&amp; it) const;
+    bool operator&lt;(const counting_iterator&amp; it) const;
+    bool operator&gt;(const counting_iterator&amp; it) const;
+    bool operator&lt;=(const counting_iterator&amp; it) const;
+    bool operator&gt;=(const counting_iterator&amp; it) const;
+};
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Description </h2> 
+    <p>
+      counting_iterator is a random access iterator for STL algorithms. The counter changes according to arithmetic operations of the random access iterator type.
+      The operator*() function returns the current value of the integer counter.
+      Use the iterator for combination of a TBB parallel algorithm with a blocked_range of counting value concept and a STL algorithm which uses the iterators concept or
+      for getting an index of a container element to make some calculation or logic in your functor/lambda passed into an algorithm.
+    </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Example 1</h2>
+      
+      <p>
+        The following example shows usage of an STL algorithm with counting_iterator. You need to initialize array a in a way each even element is a square of the current index value and each odd element is the current index value.
+      </p>
+
+      <pre>#include &lt;algorithm&gt;
+#include &lt;tbb/iterators.h&gt;
+
+int main() {
+    const int N = 100000;
+    float a[N];
+
+    std::for_each(tbb::counting_iterator&lt;int&gt;(0), tbb::counting_iterator&lt;int&gt;(N),
+    [&amp;a](int i){
+        if(i%2 == 0)
+            a[i] = i*i;
+        else
+            a[i] = i;
+    });
+    return 0;
+}</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle"> Example 2</h2>
+      
+      <p>
+        The following example shows combination of a TBB parallel algorithm and a STL algorithm in case of a blocked_range is parameterized by a counting value.
+      </p>
+
+      <pre>#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;tbb/parallel_for.h&gt;
+#include &lt;tbb/iterators.h&gt;
+
+int main() {
+    std::vector&lt;int&gt; vec(1000000);
+
+    tbb::parallel_for( tbb::blocked_range&lt;int&gt;(0, vec.size(), /*grainsize=*/ 100),
+    [&amp;vec](tbb::blocked_range&lt;int&gt;&amp; r) {
+        using c_it = tbb::counting_iterator&lt;int&gt;;
+        std::copy(c_it(r.begin()), c_it(r.end()), vec.begin());
+    });
+    return 0;
+}</pre>
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/iterators.html">Iterators</a></div>
+</div>
+<div></div>
+</body>
+</html>

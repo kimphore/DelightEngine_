@@ -1,0 +1,168 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Communication Between Graphs" />
+<meta name="DC.subject" content="flow graph tips, communicating with nodes in different graphs, communication between graphs" />
+<meta name="keywords" content="flow graph tips, communicating with nodes in different graphs, communication between graphs" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Flow_Graph_making_edges_tips.html" />
+<meta name="DC.Relation" scheme="URI" content="use_make_edge.html#use_make_edge" />
+<meta name="DC.Relation" scheme="URI" content="broadcast_or_send.html#broadcast_or_send" />
+<meta name="DC.Relation" scheme="URI" content="use_source_node.html#use_source_node" />
+<meta name="DC.Relation" scheme="URI" content="avoiding_data_races.html#avoiding_data_races" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="communicate_with_nodes" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Communication Between Graphs</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="communicate_with_nodes">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Communication Between Graphs</h1>
+ 
+   
+  <div> 
+	 <p>All graph nodes require a reference to a graph object as one of the
+		arguments to their constructor. It is only safe to construct edges between
+		nodes that are part of the same graph. An edge expresses the topology of your
+		graph to the runtime library. Connecting two nodes in different graphs can make
+		it difficult to reason about whole graph operations, such as calls to 
+		<span class="keyword">graph::wait_for_all</span> and exception handling. To
+		optimize performance, the library may make calls to a node's predecessor or
+		successor at times that are unexpected by the user. 
+	 </p>
+ 
+	 <p>If two graphs must communicate, do NOT create an edge between them, but
+		instead use explicit calls to 
+		<span class="keyword">try_put</span>. This will prevent the runtime library from
+		making any assumptions about the relationship of the two nodes, and therefore
+		make it easier to reason about events that cross the graph boundaries. However,
+		it may still be difficult to reason about whole graph operations. For example,
+		consider the graphs below: 
+	 </p>
+ 
+	 <pre>    graph g;
+    function_node&lt; int, int &gt; n1( g, 1, [](int i) -&gt; int { 
+        cout &lt;&lt; "n1\n"; 
+        spin_for(i); 
+        return i; 
+    } );
+    function_node&lt; int, int &gt; n2( g, 1, [](int i) -&gt; int { 
+        cout &lt;&lt; "n2\n"; 
+        spin_for(i); 
+        return i; 
+    } );
+    make_edge( n1, n2 );
+
+    graph g2;
+    function_node&lt; int, int &gt; m1( g2, 1, [](int i) -&gt; int { 
+        cout &lt;&lt; "m1\n"; 
+        spin_for(i); 
+        return i; 
+    } );
+    function_node&lt; int, int &gt; m2( g2, 1, [&amp;](int i) -&gt; int { 
+        cout &lt;&lt; "m2\n"; 
+        spin_for(i); 
+        n1.try_put(i); 
+        return i; 
+    } );
+    make_edge( m1, m2 );
+
+    m1.try_put( 1 );
+
+    // The following call returns immediately:
+    g.wait_for_all();
+    // The following call returns after m1 &amp; m2
+    g2.wait_for_all();
+
+    // we reach here before n1 &amp; n2 are finished
+    // even though wait_for_all was called on both graphs
+</pre> 
+	 <p>In the example above, 
+		<span class="keyword">m1.try_put(1)</span> sends a message to node 
+		<span class="keyword">m1</span>, which runs its body and then sends a message to
+		node 
+		<span class="keyword">m2</span>. Next, node 
+		<span class="keyword">m2</span> runs its body and sends a message to 
+		<span class="keyword">n1</span> using an explicit 
+		<span class="keyword">try_put</span>. In turn, 
+		<span class="keyword">n1</span> runs its body and sends a message to 
+		<span class="keyword">n2</span>. The runtime library does not consider 
+		<span class="keyword">m2</span> to be a predecessor of 
+		<span class="keyword">n1</span> since no edge exists. 
+	 </p>
+ 
+	 <p>If you want to wait until all of the tasks spawned by these graphs are
+		done, you need to call the function 
+		<span class="keyword">wait_for_all</span> on both graphs. However, because there is
+		cross-graph communication, the order of the calls is important. In the
+		(incorrect) code segment above, the first call to 
+		<span class="keyword">g.wait_for_all()</span> returns immediately because there are
+		no tasks yet active in 
+		<span class="keyword">g</span>; the only tasks that have been spawned by then
+		belong to 
+		<span class="keyword">g2</span>. The call to 
+		<span class="keyword">g2.wait_for_all</span> returns after both 
+		<span class="keyword">m1</span> and 
+		<span class="keyword">m2</span> are done, since they belong to 
+		<span class="keyword">g2</span>; the call does not however wait for 
+		<span class="keyword">n1</span> and 
+		<span class="keyword">n2</span>, since they belong to 
+		<span class="keyword">g</span>. The end of this code segment is therefore reached
+		before 
+		<span class="keyword">n1</span> and 
+		<span class="keyword">n2</span> are done. 
+	 </p>
+ 
+	 <p>If the calls to 
+		<span class="keyword">wait_for_all</span> are swapped, the code works as expected: 
+	 </p>
+ 
+	 <pre>    g2.wait_for_all();
+    g.wait_for_all();
+
+    // all tasks are done
+</pre> 
+	 <p>While it is not too difficult to reason about how these two very small
+		graphs interact, the interaction of two larger graphs, perhaps with cycles,
+		will be more difficult to understand. Therefore, communication between nodes in
+		different graphs should be done with caution. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Flow_Graph_making_edges_tips.html">Flow Graph Tips on Making Edges</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="use_make_edge.html#use_make_edge">Use make_edge and remove_edge 
+		  </a></div>
+<div><a href="broadcast_or_send.html#broadcast_or_send">Sending to One or Multiple Successors 
+		  </a></div>
+<div><a href="use_source_node.html#use_source_node">Using source_node 
+		  </a></div>
+<div><a href="avoiding_data_races.html#avoiding_data_races">Avoiding Data Races 
+		  </a></div></div></div> 
+
+</body>
+</html>

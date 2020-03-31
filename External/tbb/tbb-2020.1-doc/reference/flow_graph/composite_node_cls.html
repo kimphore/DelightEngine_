@@ -1,0 +1,380 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="composite_node Template Class" />
+<meta name="DC.subject" content="composite_node Template Class" />
+<meta name="keywords" content="composite_node Template Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/service_nodes.html" />
+<meta name="DC.Relation" scheme="URI" content="input_port_func.html" />
+<meta name="DC.Relation" scheme="URI" content="output_port_func.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="composite_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>composite_node Template Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="composite_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">composite_node Template Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        A node that encapsulates a collection of other nodes as a first class graph node. The use of <samp class="codeph">composite_node</samp> requires C++11 support. On Microsoft Windows*, at least Visual
+        Studio 2013 is required.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>
+template&lt;typename InputTuple, typename OutputTuple&gt;
+class composite_node;
+      </pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>
+#include "tbb/flow_graph.h"
+      </pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        The <samp class="codeph">composite_node</samp> can package any number of other nodes. It
+        maintains input and output port references to nodes in the package that border the <samp class="codeph">composite_node</samp>. This allows for the references to be used to make edges to other nodes
+        outside of the <samp class="codeph">composite_node</samp>. The <samp class="codeph">InputTuple</samp> is a tuple of input types. The <samp class="codeph">composite_node</samp> has an input port for each type in <samp class="codeph">InputTuple</samp>. Likewise, the <samp class="codeph">OutputTuple</samp> is a tuple of
+        output types. The <samp class="codeph">composite_node</samp> has an output port for each
+        type in <samp class="codeph">OutputTuple</samp>.
+      </p>
+
+      <p>
+        The composite_node is a multi-port node with three specializations.
+        <ul>
+          <li>
+            <strong>A multi-port node with multi-input ports and multi-output ports:</strong> This specialization has a tuple of
+            input ports, each of which is a <samp class="codeph">receiver</samp> of a type in
+            <samp class="codeph">InputTuple</samp>. Each input port is a reference to a port of a
+            node that the <samp class="codeph">composite_node</samp> encapsulates. Similarly, this specialization also has a tuple
+            of output ports, each of which is a <samp class="codeph">sender</samp> of a type in
+            <samp class="codeph">OutputTuple</samp>. Each output port is a reference to a port of a
+            node that the <samp class="codeph">composite_node</samp> encapsulates.
+          </li>
+
+          <li>
+            <strong>A multi-port node with only input ports and no output ports:</strong> This specialization only has a tuple of
+            input ports.
+          </li>
+
+          <li>
+            <strong>A multi-port node with only output ports and no input_ports:</strong> This specialization only has a tuple of
+            output ports.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <p>
+        The function template <samp class="codeph">input_port</samp> can be used to get a reference
+        to a specific input port and the function template <samp class="codeph">output_port</samp>
+        can be used to get a reference to a specific output port.
+      </p>
+
+      <p>
+        Construction of a <samp class="codeph">composite_node</samp> is done in two stages:
+        <ul>
+          <li>
+            Defining the <samp class="codeph">composite_node</samp> with specification of <samp class="codeph">InputTuple</samp> and <samp class="codeph">OutputTuple</samp>.
+          </li>
+
+          <li>
+            Making aliases from the encapsulated nodes that border the <samp class="codeph">composite_node</samp> to the input and output ports of the <samp class="codeph">composite_node</samp>. This step is mandatory as without it the <samp class="codeph">composite_node</samp>'s input and output ports would not have been bound to any actual nodes. Making the
+            aliases is achieved by calling the method <samp class="codeph">set_external_ports</samp>.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <p>The composite_node is not copy-constructible.</p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <pre>
+#include "tbb/flow_graph.h"
+#include &lt;iostream&gt;
+#include &lt;tuple&gt;
+using namespace tbb::flow;
+
+class adder : public composite_node&lt;  tuple&lt;int, int&gt;,  tuple&lt;int&gt; &gt; {
+    join_node&lt; tuple&lt;int,int&gt;, queueing &gt; j;
+    function_node&lt; tuple&lt;int,int&gt;, int &gt; f;
+    typedef composite_node&lt; tuple&lt;int,int&gt;, tuple&lt;int&gt; &gt; base_type;
+
+    struct f_body {
+        int operator()(const tuple&lt;int,int&gt; &amp;t) {
+            int n = (get&lt;1&gt;(t)+1)/2;
+            int sum = get&lt;0&gt;(t) + get&lt;1&gt;(t);
+            std::cout &lt;&lt; "Sum of the first " &lt;&lt; n &lt;&lt;" positive odd numbers is  " &lt;&lt; n &lt;&lt;" squared: "  &lt;&lt; sum &lt;&lt; std::endl;
+            return  sum;
+        }
+    };
+
+public:
+    adder(graph &amp;g) : base_type(g), j(g), f(g, unlimited, f_body()) {
+        make_edge(j, f);
+        base_type::input_ports_type input_tuple(input_port&lt;0&gt;(j), input_port&lt;1&gt;(j));
+        base_type::output_ports_type output_tuple(f);
+        base_type::set_external_ports(input_tuple, output_tuple);
+    }
+};
+
+int main() {
+    graph g;
+    split_node&lt; tuple&lt;int, int, int, int&gt; &gt; s(g);
+    adder a0(g);
+    adder a1(g);
+    adder a2(g);
+
+    make_edge(output_port&lt;0&gt;(s), input_port&lt;0&gt;(a0));
+    make_edge(output_port&lt;1&gt;(s), input_port&lt;1&gt;(a0));
+
+    make_edge(output_port&lt;0&gt;(a0),input_port&lt;0&gt;(a1));
+    make_edge(output_port&lt;2&gt;(s), input_port&lt;1&gt;(a1));
+
+    make_edge(output_port&lt;0&gt;(a1), input_port&lt;0&gt;(a2));
+    make_edge(output_port&lt;3&gt;(s), input_port&lt;1&gt;(a2));
+
+    s.try_put(std::make_tuple(1,3,5,7));
+
+    g.wait_for_all();
+
+    return 0;
+}
+      </pre>
+      <p>
+        This example shows the use of <samp class="codeph">composite_node</samp> to encapsulate two
+        flow graph nodes (a <samp class="codeph">join_node</samp> and a <samp class="codeph">function_node</samp>). In the example the concept that the sum of the first <samp class="codeph">n</samp> positive odd numbers is the same as <samp class="codeph">n</samp> squared is demonstrated.
+      </p>
+
+      <p>
+        A class <samp class="codeph">adder</samp> is defined. This class has a <samp class="codeph">join_node j</samp> with two input ports and a <samp class="codeph">function_node f</samp>. <samp class="codeph">j</samp> receives a number at each of its
+        input ports and sends a tuple of these numbers to <samp class="codeph">f</samp> which adds
+        the numbers. To encapsulate these two nodes, the <samp class="codeph">adder</samp> inherits
+        from a <samp class="codeph">composite_node</samp> type with two input ports and one output
+        port to match the two input ports of <samp class="codeph">j</samp> and the one output port
+        of <samp class="codeph">f</samp>.
+      </p>
+
+      <p>
+        A <samp class="codeph">split_node s</samp> is created to serve as the source of the
+        positive odd numbers. The first four positive odd numbers 1, 3, 5 and 7 are used. Three <samp class="codeph">adders a0</samp>, <samp class="codeph">a1</samp> and <samp class="codeph">a2</samp> are created. The first <samp class="codeph">adder
+        a0</samp> receives 1 and 3 from the <samp class="codeph">split_node</samp>. These are
+        added and the sum forwarded to <samp class="codeph">a1</samp>. The second <samp class="codeph">adder a1</samp> receives the sum of 1 and 3 on one input port and receives 5 on the
+        other input port from the <samp class="codeph">split_node</samp>. These are also added and
+        the sum forwarded to <samp class="codeph">a2</samp>. Likewise, the third <samp class="codeph">adder a2</samp> receives the sum of 1, 3 and 5 on one input port and receives 7 on the
+        other input port from the <samp class="codeph">split_node</samp>. Each
+        <samp class="codeph">adder</samp> reports the sum it computes which is the square of the count of numbers accumulated when
+        that <samp class="codeph">adder</samp> is reached in the graph.
+      </p>
+
+      The output of running the example is as follows:
+      <pre>
+Sum of the first 2 positive odd numbers is  2^2: 4
+Sum of the first 3 positive odd numbers is  3^2: 9
+Sum of the first 4 positive odd numbers is  4^2: 16
+      </pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+      <pre>
+namespace tbb {
+namespace flow {
+
+    template&lt; typename InputTuple, typename OutputTuple &gt; class composite_node;
+
+    //composite_node with both input ports and output ports
+    template&lt; typename... InputTypes, typename... OutputTypes&gt;
+    class composite_node &lt;tbb::flow::tuple&lt;InputTypes...&gt;, tbb::flow::tuple&lt;OutputTypes...&gt; &gt; : public graph_node {
+    public:
+        typedef tbb::flow::tuple&lt; receiver&lt;InputTypes&gt;&amp;... &gt; input_ports_type;
+        typedef tbb::flow::tuple&lt; sender&lt;OutputTypes&gt;&amp;... &gt; output_ports_type;
+
+        composite_node( graph &amp;g );
+        virtual ~composite_node();
+
+        void set_external_ports(input_ports_type&amp;&amp; input_ports_tuple, output_ports_type&amp;&amp; output_ports_tuple);
+        input_ports_type&amp; input_ports();
+        output_ports_type&amp; output_ports();
+    };
+
+    //composite_node with only input ports
+    template&lt; typename... InputTypes&gt;
+    class composite_node &lt;tbb::flow::tuple&lt;InputTypes...&gt;, tbb::flow::tuple&lt;&gt; &gt; : public graph_node{
+    public:
+        typedef tbb::flow::tuple&lt; receiver&lt;InputTypes&gt;&amp;... &gt; input_ports_type;
+
+        composite_node( graph &amp;g );
+        virtual ~composite_node();
+
+        void set_external_ports(input_ports_type&amp;&amp; input_ports_tuple);
+        input_ports_type&amp; input_ports();
+    };
+
+    //composite_nodes with only output_ports
+    template&lt;typename... OutputTypes&gt;
+    class composite_node &lt;tbb::flow::tuple&lt;&gt;, tbb::flow::tuple&lt;OutputTypes...&gt; &gt; : public graph_node{
+    public:
+        typedef tbb::flow::tuple&lt; sender&lt;OutputTypes&gt;&amp;... &gt; output_ports_type;
+
+        composite_node( graph &amp;g );
+        virtual ~composite_node();
+
+        void set_external_ports(output_ports_type&amp;&amp; output_ports_tuple);
+        output_ports_type&amp; output_ports();
+    };
+}
+}
+      </pre>
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members of this template class.</span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d69942e325">Member </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d69942e328">Description </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d69942e325 ">
+                <span class="keyword">composite_node( graph &amp;g )</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d69942e328 ">
+                <p>
+                  Constructs a <samp class="codeph">composite_node</samp> that belongs to the
+                  <samp class="codeph">graph g</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d69942e325 ">
+                <span class="keyword">
+                  void set_external_ports(input_ports_type&amp;&amp; input_ports_tuple, output_ports_type&amp;&amp; output_ports_tuple);
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d69942e328 ">
+                <p>
+                  Creates input and output ports of the <samp class="codeph">composite_node</samp>
+                  as aliases to the ports referenced by <samp class="codeph">
+                  input_ports_tuple</samp> and <samp class="codeph">output_ports_tuple</samp>
+                  respectively. That is, a port referenced at position <samp class="codeph">N</samp> in <samp class="codeph">input_ports_tuple</samp> is mapped as the
+                  <samp class="codeph">Nth</samp> input port of the <samp class="codeph">composite_node</samp>, similarly for output ports.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d69942e325 ">
+                <span class="keyword">input_ports_type&amp; input_ports()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d69942e328 ">
+                <p>
+                  <strong>Returns</strong>: A <samp class="codeph">flow::tuple</samp> of <samp class="codeph">receivers</samp>. Each element is a reference to the actual node or input
+                  port that was aliased to that position in <samp class="codeph">set_external_ports()</samp>.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  <p>
+                    Calling input_ports() without a prior call to set_external_ports() results in undefined behavior.
+                  </p>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d69942e325 ">
+                <span class="keyword">output_ports_type&amp; output_ports()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d69942e328 ">
+                <p>
+                  <strong>Returns</strong>: A <samp class="codeph">flow::tuple</samp> of <samp class="codeph"> senders</samp>. Each element is a reference to the actual node or output
+                  port that was aliased to that position in <samp class="codeph">set_external_ports()</samp>.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  <p>
+                    Calling output_ports() without a prior call to set_external_ports() results in undefined behavior.
+                  </p>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/service_nodes.html">Service Nodes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="input_port_func.html">input_port Template Class</a></div>
+<div><a href="output_port_func.html">output_port Template Class</a></div></div></div>
+
+</body>
+</html>

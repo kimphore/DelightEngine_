@@ -1,0 +1,524 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Modifiers" />
+<meta name="DC.subject" content="Modifiers" />
+<meta name="keywords" content="Modifiers" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/containers_overview/concurrent_unordered_set_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../node_handles_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="modifiers_set_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Modifiers</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="modifiers_set_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Modifiers</h1>
+
+  
+  <div>
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following tables provides additional information on the members of the
+          <samp class="codeph">concurrent_unordered_set</samp> and
+          <samp class="codeph">concurrent_unordered_multiset</samp> template classes.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d59342e47">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d59342e50">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">std::pair&lt;iterator, bool&gt; insert(const value_type&amp; x)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Constructs a copy of <samp class="codeph"><em>x</em></samp> and attempts to insert it into the
+                  set. If the attempt fails because an item with the same key already exists, the copy is destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(<em>iterator,success</em>)</samp>. The
+                  <samp class="codeph"><em>iterator</em></samp> points to the inserted item or an existing item with the same key.
+                  The value of <samp class="codeph"><em>success</em></samp> is true if the item was inserted; false otherwise.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  <p>
+                    This and other methods always succeed for <samp class="codeph">concurrent_unordered_multiset</samp>,
+                    and the value of <samp class="codeph"><em>success</em></samp> is always true.
+                  </p>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">iterator insert(const_iterator hint, const value_type&amp; x)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Same as <samp class="codeph">insert(x)</samp>, except for the returned value.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  <p>
+                    In this and other methods, the <samp class="codeph"><em>hint</em></samp> argument exists for
+                    similarity with <samp class="codeph">std::unordered_set</samp>/<samp class="codeph">std::unordered_multiset</samp>,
+                    and is ignored by the current implementation.
+                  </p>
+
+                </div>
+
+                <p>
+                  <strong>Returns</strong>: Iterator pointing to the inserted item or an existing item with the same key.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">std::pair&lt;iterator, bool&gt; insert(value_type&amp;&amp; x)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Supported since C++11. Moves <samp class="codeph"><em>x</em></samp> into new instance of <samp class="codeph">value_type</samp> and attempts to insert it into the
+                  set. If the attempt fails because an item with the same key already exists, this instance is destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the same as <samp class="codeph">insert(const value_type&amp; x)</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">iterator insert(const_iterator hint, value_type&amp;&amp; x)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Same as <samp class="codeph">insert(x)</samp>, except for the returned value.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the same as <samp class="codeph">insert(const_iterator hint, const value_type&amp; x)</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">
+                  template&lt;class InputIterator&gt;
+                  void insert(InputIterator first, InputIterator last)
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Does <samp class="codeph">insert(*<em>i</em>)</samp> where <samp class="codeph">i</samp> is in the
+                  half-open interval [<samp class="codeph"><em>first,last</em></samp>).
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">void insert(std::initializer_list&lt;value_type&gt; il)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Supported since C++11. Inserts each element from the initializer list into the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">std::pair&lt;iterator, bool&gt; insert(node_type&amp;&amp; nh)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Supported since C++11. Attempts to insert the item owned by <samp class="codeph"><em>nh</em></samp>
+                  into the set. If the attempt fails because an item with the same key already exists,
+                  ownership of the item remains at <samp class="codeph"><em>nh</em></samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph">std::pair(<em>iterator,success</em>)</samp>. The
+                  <samp class="codeph"><em>iterator</em></samp> points to the inserted item or an existing item with the same key.
+                  The value of <samp class="codeph"><em>success</em></samp> is true if the item was inserted; false otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">iterator insert(const_iterator hint, node_type&amp;&amp; nh)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Same as <samp class="codeph">insert(nh)</samp>, except for the returned value.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: Iterator pointing to the inserted item or an existing item with the same key.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">
+                  template&lt;typename... Args&gt;
+                  std::pair&lt;iterator, bool&gt; emplace(Args&amp;&amp;... args);
+		        </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Supported since C++11. Constructs new instance of <samp class="codeph">value_type</samp>
+                  from <samp class="codeph"><em>args</em></samp> and attempts to insert it into the
+                  set. If the attempt fails because an item with the same key already exists, this instance is destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the same as <samp class="codeph">insert(const value_type&amp; x)</samp> version.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">
+                  template&lt;typename... Args&gt;
+                  iterator emplace_hint(const_iterator hint, Args&amp;&amp;... args);
+                </span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Same as <samp class="codeph">emplace(args)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: Iterator pointing to inserted item, or item already in the set
+                  with the same key.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <p>
+                  <span class="keyword">
+                    template&lt;typename SrcHash, typename SrcEquality&gt;
+                    void merge(concurrent_unordered_multiset&lt;Key, T, SrcHash, SrcEquality, Allocator&gt;&amp; source);
+                  </span>
+                </p>
+
+                <p>
+                  <span class="keyword">
+                    template&lt;typename SrcHash, typename SrcEquality&gt;
+                    void merge(concurrent_unordered_multiset&lt;Key, T, SrcHash, SrcEquality, Allocator&gt;&amp;&amp; source);
+                  </span>
+                </p>
+
+                <p>
+                  <span class="keyword">
+                    template&lt;typename SrcHash, typename SrcEquality&gt;
+                    void merge(concurrent_unordered_set&lt;Key, T, SrcHash, SrcEquality, Allocator&gt;&amp; source);
+                  </span>
+                </p>
+
+                <p>
+                  <span class="keyword">
+                    template&lt;typename SrcHash, typename SrcEquality&gt;
+                    void merge(concurrent_unordered_set&lt;Key, T, SrcHash, SrcEquality, Allocator&gt;&amp;&amp; source);
+                  </span>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Supported since C++11. Transfers those items from <samp class="codeph"><em>source</em></samp>
+                  which keys do not exist in <samp class="codeph">*this</samp>.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  <p>
+                    The <samp class="codeph">merge</samp> method is concurrency-safe for the target container
+                    (i.e. the instance for which the method is called), but not for the source container.
+                    The behavior is undefined if <samp class="codeph"><em>source</em></samp> is concurrently
+                    modified or merged into more than one target container.
+                  </p>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">iterator unsafe_erase(const_iterator position)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Removes the item pointed to by <samp class="codeph"><em>position</em></samp> from the set.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: Iterator pointing to item that was immediately after the erased
+                  item, or <samp class="codeph">end()</samp> if erased item was the last item in the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">size_type unsafe_erase(const key_type&amp; k)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Removes item with key <samp class="codeph"><em>k</em></samp> if such an item exists.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: 1 if an item was removed; 0 otherwise.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">iterator unsafe_erase(const_iterator first, const_iterator last)</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Removes <samp class="codeph"><em>*i</em></samp> where <samp class="codeph"><em>i</em></samp> is in the
+                  half-open interval <samp class="codeph">[<em>first,last</em>)</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: <samp class="codeph"><em>last</em></samp>
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <samp class="codeph">node_type unsafe_extract(const_iterator position)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Transfers ownership of the item pointed to by <samp class="codeph">position</samp> from the set
+                  to a node handle.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the node handle that owns the extracted item.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <samp class="codeph">node_type unsafe_extract(const key_type&amp; k)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  If an item with the key equal to <samp class="codeph"><em>k</em></samp> exists in the set,
+                  the method transfers ownership of the item to a node handle.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: the node handle that owns the extracted item,
+                  or an empty node handle if a matching item was not found.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e47 ">
+                <span class="keyword">void clear()</span>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e50 ">
+                <p>
+                  Removes all items from the set.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the
+          <samp class="codeph">concurrent_unordered_set</samp> template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d59342e610">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d59342e613">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e610 ">
+                <samp class="codeph">void swap(concurrent_unordered_set&amp; m)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e613 ">
+                <p>
+                  Swaps contents of <samp class="codeph">*this</samp> and <samp class="codeph">m</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the
+          <samp class="codeph">concurrent_unordered_multiset</samp> template class.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d59342e665">Member</th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d59342e668">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d59342e665 ">
+                <samp class="codeph">void swap(concurrent_unordered_multiset&amp; m)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d59342e668 ">
+                <p>
+                  Swaps contents of <samp class="codeph">*this</samp> and <samp class="codeph">m</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/containers_overview/concurrent_unordered_set_cls.html">concurrent_unordered_set and concurrent_unordered_multiset Template Classes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../node_handles_cls.html">Node handles</a></div></div></div>
+
+</body>
+</html>

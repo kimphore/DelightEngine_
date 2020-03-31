@@ -1,0 +1,174 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Floating-point Settings" />
+<meta name="DC.subject" content="Floating-point Settings, FP Settings" />
+<meta name="keywords" content="Floating-point Settings, FP Settings" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/task_scheduler.html" />
+<meta name="DC.Relation" scheme="URI" content="task_group_context.html" />
+<meta name="DC.Relation" scheme="URI" content="task_arena_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="priorities" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Floating-point Settings</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="priorities">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Floating-point Settings</h1>
+
+  
+  <div>
+    <div class="section">
+      <p>
+        For applications that need to control CPU-specific settings for floating-point computations,
+        there are two ways to propagate desired settings to tasks executed by Intel&reg; Threading 
+        Building Blocks (Intel&reg; TBB) task scheduler:
+      </p>
+
+      <p>
+        <ul>
+          <li>
+            When a task_arena or the task scheduler for a given application thread are initialized,
+            they capture the current floating-point settings of the thread;
+          </li>
+
+          <li>
+            The class task_group_context has a method to capture the current floating-point
+            settings.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <p>
+        By default, worker threads use the floating-point settings captured during initialization of
+        an application thread's implicit arena or explicit task_arena. These settings are applied to
+        all parallel computations within the task_arena or started by the application thread, until
+        that thread terminates its task scheduler instance. If the thread later re-initializes the
+        task scheduler, new settings are captured.
+      </p>
+
+      <p>
+        For finer control over floating point behavior, a thread may capture the current settings in
+        a task group context. It can be done at context creation if a special flag is passed to the 
+        constructor:
+      </p>
+
+      <p>
+        <pre>
+task_group_context ctx( task_group_context::isolated,
+                        task_group_context::default_traits | task_group_context::fp_settings );
+        </pre>
+      </p>
+
+      <p>
+        or by a call to the method <samp class="codeph">capture_fp_settings</samp>:
+      </p>
+
+      <p>
+        <pre>
+task_group_context ctx;
+ctx.capture_fp_settings();
+        </pre>
+      </p>
+
+      <p>
+        The task group context can then be passed to most Intel TBB parallel algorithms (including
+        <samp class="codeph">flow::graph</samp>) to ensure that all tasks related to this algorithm use the
+        specified floating-point settings. It is possible to execute parallel algorithms with
+        different floating-point settings captured to separate contexts, even at the same time.
+      </p>
+
+      <p>
+        Floating-point settings captured to a task group context prevail over the settings captured
+        during task scheduler initialization. Thus if a context is passed to a parallel algorithm
+        then floating-point settings captured to the context are used. Otherwise, if floating-point
+        settings are not captured to the context, or a context is not explicitly specified, then the
+        settings captured during task scheduler initialization are used.
+      </p>
+
+      <p>
+        In a nested call to a parallel algorithm not using a task group context with explicitly
+        captured floating-point settings, the settings from the outer level are used. If neither of
+        the outer level contexts captured floating-point settings then the settings captured during
+        task scheduler initialization are used.
+      </p>
+
+      <p>
+        It is guaranteed that:
+      </p>
+
+      <p>
+        <ul>
+          <li>
+            Floating-point settings captured to a task group context or at the moment of task
+            scheduler initialization are applied to all tasks executed by the task scheduler.
+          </li>
+
+          <li>
+            An invocation of an Intel TBB parallel algorithm does not visibly modify the
+            floating-point settings of the calling thread, even if the algorithm is executed with
+            different settings.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <p>
+        <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+          The above guarantees only apply in the following conditions:
+          <ul>
+            <li>
+              The user code inside a task either does not change floating-point settings, or reverts
+              any modifications and restores previous settings before the end of the task.
+            </li>
+
+            <li>
+              Intel TBB task scheduler observers are not used to set or modify floating point
+              settings.
+            </li>
+
+          </ul>
+
+          Otherwise, the stated guarantees are not valid and the behavior related to floating-point
+          settings is undefined.
+        </div>
+
+      </p>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/task_scheduler.html">Task Scheduler</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="task_group_context.html">
+          task_group_context Class
+        </a></div>
+<div><a href="task_arena_cls.html">
+          task_arena Class
+        </a></div></div></div>
+
+</body>
+</html>

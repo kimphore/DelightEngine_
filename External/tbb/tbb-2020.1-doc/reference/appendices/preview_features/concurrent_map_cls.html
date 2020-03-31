@@ -1,0 +1,418 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="concurrent_map and concurrent_multimap Template Classes" />
+<meta name="DC.subject" content="concurrent_map, concurrent_multimap" />
+<meta name="keywords" content="concurrent_map, concurrent_multimap" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/construct_destroy_copy_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/size_and_capacity_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/iterators_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/modifiers_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/observers_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/lookup_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/concurrent_map_cls/parallel_iteration_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../containers_overview/node_handles_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="concurrent_set_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../containers_overview/concurrent_unordered_map_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../../containers_overview/concurrent_hash_map_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="concurrent_map_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>concurrent_map and concurrent_multimap Template Classes</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="concurrent_map_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">
+    <samp class="codeph">concurrent_map</samp> and <samp class="codeph">concurrent_multimap</samp>
+    Template Classes
+  </h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        Template classes for ordered associative containers which support concurrent insertion and
+        traversal (supported since C++11).
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt;typename Key,
+          typename Element,
+          typename Compare = std::less&lt;Key&gt;,
+          typename Allocator = tbb::tbb_allocator&lt;std::pair&lt;const Key, Element&gt; &gt; &gt;
+class concurrent_map;
+</pre>
+<pre>
+template &lt;typename Key,
+          typename Element,
+          typename Compare = std::less&lt;Key&gt;,
+          typename Allocator = tbb::tbb_allocator&lt;std::pair&lt;const Key, Element&gt; &gt; &gt;
+class concurrent_multimap;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+<pre>
+#define TBB_PREVIEW_CONCURRENT_ORDERED_CONTAINERS 1
+#include "tbb/concurrent_map.h"
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        <samp class="codeph">concurrent_map</samp> and <samp class="codeph">concurrent_multimap</samp>
+        support concurrent insertion and traversal, but not concurrent erasure.
+        They have semantics similar to the <samp class="codeph">std::map</samp> and
+        <samp class="codeph">std::multimap</samp> respectively, except as follows:
+      </p>
+
+      <ul>
+        <li>
+          <p>
+            The <samp class="codeph">erase</samp> and <samp class="codeph">extract</samp> methods are prefixed with
+            <samp class="codeph">unsafe_</samp>, to indicate that they are not concurrency safe.
+          </p>
+
+        </li>
+
+        <li>
+          <p>
+            Return values of the <samp class="codeph">insert</samp> and <samp class="codeph">emplace</samp> methods might differ
+            from the C++ standard. In particular the methods of <samp class="codeph">concurrent_multimap</samp>
+            may return <samp class="codeph">std::pair&lt;iterator,bool&gt;</samp>, with the Boolean value in the pair
+            being always <samp class="codeph">true</samp>.
+          </p>
+
+        </li>
+
+        <li>
+          <p>
+            For <samp class="codeph">concurrent_map</samp>, <samp class="codeph">insert</samp> and
+            <samp class="codeph">emplace</samp> methods may create a temporary item that is destroyed
+            if another thread inserts an item with the same key concurrently.
+          </p>
+
+        </li>
+
+        <li>
+          <p>
+            Like <samp class="codeph">std::list</samp>, insertion of new items does <em>not</em> invalidate any
+            iterators, nor does it change the order of items already in the map. Insertion and traversal may
+            be concurrent.
+          </p>
+
+        </li>
+
+        <li>
+          <p>
+            Reverse iterators are not supported: <samp class="codeph">reverse_iterator</samp>
+            and <samp class="codeph">const_reverse_iterator</samp> member types, <samp class="codeph">rbegin()</samp> and <samp class="codeph">rend()</samp>
+            methods are not available.
+          </p>
+
+        </li>
+
+      </ul>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">
+        Members of both concurrent_map and concurrent_multimap
+      </h2>
+      
+      <p>
+        In the following synopsis, methods shown in
+        <samp class="codeph">
+          <span class="color(blue)" style="color:blue">
+            <strong>bold fond</strong>
+          </span>
+        </samp>
+        may be concurrently invoked.
+      </p>
+
+<pre>
+public:
+    <em>// types</em>
+    using key_type = Key;
+    using mapped_type = Element;
+    using value_type = std::pair&lt;const Key, Element&gt;;
+    using key_compare = Compare;
+    using allocator_type = Allocator;
+    using reference = value_type&amp;
+    using const_reference = const value_type&amp;
+    using pointer = std::allocator_traits&lt;Allocator&gt;::pointer;
+    using const_pointer = std::allocator_traits&lt;Allocator&gt;::const_pointer;
+    using size_type = <em>implementation-defined</em>;
+    using difference_type = <em>implementation-defined</em>;
+    using iterator = <em>implementation-defined</em>;
+    using const_iterator = <em>implementation-defined</em>;
+    using node_type = <em>implementation-defined</em>;
+
+    class value_compare {
+    public:
+        bool operator()(const value_type&amp; lhs, const value_type&amp; rhs) const;
+
+        protected:
+            value_compare(key_compare c);
+            key_compare comp;
+    };
+
+    allocator_type get_allocator() const;
+
+    <em>// size and capacity</em>
+    bool <span class="color(blue)" style="color:blue"><strong>empty</strong></span> const;
+    size_type <span class="color(blue)" style="color:blue"><strong>size()</strong></span> const;
+    size_type <span class="color(blue)" style="color:blue"><strong>max_size()</strong></span> const;
+
+    <em>// iterators</em>
+    iterator <span class="color(blue)" style="color:blue"><strong>begin()</strong></span>;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>begin()</strong></span> const;
+    iterator <span class="color(blue)" style="color:blue"><strong>end()</strong></span>;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>end()</strong></span> const;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>cbegin()</strong></span> const;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>cend()</strong></span> const;
+
+    <em>// modifiers</em>
+    std::pair&lt;iterator, bool&gt; <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(const value_type&amp; x);
+    template&lt;typename P&gt;
+    std::pair&lt;iterator, bool&gt; <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(P&amp;&amp; x);
+    std::pair&lt;iterator, bool&gt; <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(value_type&amp;&amp; x);
+
+    iterator <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(const_iterator hint, const value_type&amp; x);
+    template&lt;typename P&gt;
+    iterator <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(const_iterator hint, P&amp;&amp; x);
+    iterator <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(const_iterator hint, value_type&amp;&amp; x);
+
+    template&lt;typename InputIterator&gt;
+    void <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(InputIterator first, InputIterator last);
+    void <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(std::initializer_list&lt;value_type&gt; il);
+
+    std::pair&lt;iterator, bool&gt; <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(node_type&amp;&amp; nh);
+    iterator <span class="color(blue)" style="color:blue"><strong>insert</strong></span>(const_iterator hint, node_type&amp;&amp; nh);
+
+    template&lt;typename... Args&gt;
+    std::pair&lt;iterator, bool&gt; <span class="color(blue)" style="color:blue"><strong>emplace</strong></span>(Args&amp;&amp;... args);
+    template&lt;typename... Args&gt;
+    iterator <span class="color(blue)" style="color:blue"><strong>emplace_hint</strong></span>(const_iterator hint, Args&amp;&amp;... args);
+
+    template&lt;typename SrcCompare&gt;
+    void <span class="color(blue)" style="color:blue"><strong>merge</strong></span>(concurrent_map&lt;Key, Element, SrcCompare, Allocator&gt;&amp; source);
+    void <span class="color(blue)" style="color:blue"><strong>merge</strong></span>(concurrent_map&lt;Key, Element, SrcCompare, Allocator&gt;&amp;&amp; source);
+    void <span class="color(blue)" style="color:blue"><strong>merge</strong></span>(concurrent_multimap&lt;Key, Element, SrcCompare, Allocator&gt;&amp; source);
+    void <span class="color(blue)" style="color:blue"><strong>merge</strong></span>(concurrent_multimap&lt;Key, Element, SrcCompare, Allocator&gt;&amp;&amp; source);
+
+    iterator unsafe_erase(const_iterator position);
+    iterator unsafe_erase(iterator position);
+    iterator unsafe_erase(const_iterator first, const_iterator last);
+
+    size_type unsafe_erase(const key_type&amp; k);
+
+    template&lt;typename K&gt;
+    size_type unsafe_erase(const K&amp; k);
+
+    node_type unsafe_extract(const_iterator position);
+    node_type unsafe_extract(const key_type&amp; k);
+
+    void clear();
+
+    <em>// observers</em>
+    key_compare key_comp() const;
+    value_compare value_comp() const;
+
+    <em>// lookup</em>
+    iterator <span class="color(blue)" style="color:blue"><strong>find</strong></span>(const key_type&amp; k);
+    const_iterator <span class="color(blue)" style="color:blue"><strong>find</strong></span>(const key_type&amp; k) const;
+    template&lt;typename K&gt;
+    iterator <span class="color(blue)" style="color:blue"><strong>find</strong></span>(const K&amp; k);
+    template&lt;typename K&gt;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>find</strong></span>(const K&amp; k);
+
+    bool <span class="color(blue)" style="color:blue"><strong>contains</strong></span>(const key_type&amp; k);
+    template&lt;typename K&gt;
+    bool <span class="color(blue)" style="color:blue"><strong>contains</strong></span>(const K&amp; k);
+
+    size_type <span class="color(blue)" style="color:blue"><strong>count</strong></span>(const key_type&amp; k) const;
+    template&lt;typename K&gt;
+    size_type <span class="color(blue)" style="color:blue"><strong>count</strong></span>(const K&amp; k);
+
+    std::pair&lt;iterator, iterator&gt; <span class="color(blue)" style="color:blue"><strong>equal_range</strong></span>(const key_type&amp; k);
+    std::pair&lt;const_iterator, const_iterator&gt; <span class="color(blue)" style="color:blue"><strong>equal_range</strong></span>(const key_type&amp; k) const;
+
+    template&lt;typename K&gt;
+    std::pair&lt;iterator, iterator&gt; <span class="color(blue)" style="color:blue"><strong>equal_range</strong></span>(const K&amp; k);
+    template&lt;typename K&gt;
+    std::pair&lt;const_iterator, const_iterator&gt; <span class="color(blue)" style="color:blue"><strong>equal_range</strong></span>(const K&amp; k);
+
+    iterator <span class="color(blue)" style="color:blue"><strong>lower_bound</strong></span>(const key_type&amp; k);
+    const_iterator <span class="color(blue)" style="color:blue"><strong>lower_bound</strong></span>(const key_type&amp; k) const;
+
+    template&lt;typename K&gt;
+    iterator <span class="color(blue)" style="color:blue"><strong>lower_bound</strong></span>(const K&amp; k);
+    template&lt;typename K&gt;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>lower_bound</strong></span>(const K&amp; k);
+
+    iterator <span class="color(blue)" style="color:blue"><strong>upper_bound</strong></span>(const key_type&amp; k);
+    const_iterator <span class="color(blue)" style="color:blue"><strong>upper_bound</strong></span>(const key_type&amp; k) const;
+
+    template&lt;typename K&gt;
+    iterator <span class="color(blue)" style="color:blue"><strong>upper_bound</strong></span>(const K&amp; k);
+    template&lt;typename K&gt;
+    const_iterator <span class="color(blue)" style="color:blue"><strong>upper_bound</strong></span>(const K&amp; k) const;
+
+    <em>// parallel iteration</em>
+    using range_type = <em>implementation-defined</em>;
+    using const_range_type = <em>implementation-defined</em>;
+    range_type range();
+    const_range_type range() const;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members of concurrent_map</h2>
+      
+      <p>
+        In the following synopsis, methods shown in
+        <samp class="codeph">
+          <span class="color(blue)" style="color:blue">
+            <strong>bold fond</strong>
+          </span>
+        </samp>
+        may be concurrently invoked.
+      </p>
+
+<pre>
+public:
+    <em>// construct/destroy/copy</em>
+    concurrent_map();
+    explicit concurrent_map(const key_compare&amp; comp, const allocator_type&amp; a = allocator_type());
+    explicit concurrent_map(const allocator_type&amp; a);
+
+    template&lt;typename InputIterator&gt;
+    concurrent_map(InputIterator first, InputIterator last, const key_compare&amp; comp = key_compare(),
+                   const allocator_type&amp; a = allocator_type());
+    template&lt;typename InputIterator&gt;
+    concurrent_map(InputIterator first, InputIterator last, const allocator_type&amp; a);
+
+    concurrent_map(const concurrent_map&amp; other);
+    concurrent_map(const concurrent_map&amp; other, const allocator_type&amp; a);
+    concurrent_map(concurrent_map&amp;&amp; other);
+    concurrent_map(concurrent_map&amp;&amp; other, const allocator_type&amp; a);
+
+    concurrent_map(std::initializer_list&lt;value_type&gt; il, const key_compare&amp; comp = key_compare(),
+                   const allocator_type&amp; a = allocator_type());
+    concurrent_map(std::initializer_list&lt;value_type&gt; il, const allocator_type&amp; a);
+
+    ~concurrent_map();
+
+    concurrent_map&amp; operator=(const concurrent_map&amp; other);
+    concurrent_map&amp; operator=(concurrent_map&amp;&amp; other);
+    concurrent_map&amp; operator=(std::initializer_list&lt;value_type&gt; il);
+
+    void swap(concurrent_map&amp; other);
+
+    mapped_type&amp; <span class="color(blue)" style="color:blue"><strong>operator[]</strong></span>(const key_type&amp; k);
+    mapped_type&amp; <span class="color(blue)" style="color:blue"><strong>operator[]</strong></span>(key_type&amp;&amp; k);
+    mapped_type&amp; <span class="color(blue)" style="color:blue"><strong>at</strong></span>(const key_type&amp; k);
+    const mapped_type&amp; <span class="color(blue)" style="color:blue"><strong>at</strong></span>(const key_type&amp; k) const;
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">
+        Members of concurrent_multimap
+      </h2>
+      
+<pre>
+public:
+    <em>// construct/destroy/copy</em>
+    concurrent_multimap();
+    explicit concurrent_multimap(const key_compare&amp; comp, const allocator_type&amp; a = allocator_type());
+    explicit concurrent_multimap(const allocator_type&amp; a);
+
+    template&lt;typename InputIterator&gt;
+    concurrent_multimap(InputIterator first, InputIterator last, const key_compare&amp; comp = key_compare(),
+                        const allocator_type&amp; a = allocator_type());
+    template&lt;typename InputIterator&gt;
+    concurrent_multimap(InputIterator first, InputIterator last, const allocator_type&amp; a);
+
+    concurrent_multimap(const concurrent_multimap&amp; other);
+    concurrent_multimap(const concurrent_multimap&amp; other, const allocator_type&amp; a);
+    concurrent_multimap(concurrent_multimap&amp;&amp; other);
+    concurrent_multimap(concurrent_multimap&amp;&amp; other, const allocator_type&amp; a);
+
+    concurrent_multimap(std::initializer_list&lt;value_type&gt; il, const key_compare&amp; comp = key_compare(),
+                        const allocator_type&amp; a = allocator_type());
+    concurrent_multimap(std::initializer_list&lt;value_type&gt; il, const allocator_type&amp; a);
+
+    ~concurrent_multimap();
+
+    void swap(concurrent_multimap&amp; other);
+</pre>
+      <p>
+        Where possible, constructors of <samp class="codeph">concurrent_map</samp> and <samp class="codeph">concurrent_multimap</samp>
+        support class template argument deduction for C++17. For example:
+      </p>
+
+<pre>
+std::vector&lt;std::pair&lt;int, std::string&gt;&gt; v {{1, "one"}, {2, "two"}};
+tbb::concurrent_map m{v.begin(), v.end()};
+</pre>
+      <p>
+        declares <samp class="codeph">m</samp> as <samp class="codeph">tbb::concurrent_map&lt;int, std::string, std::less&lt;int&gt;, tbb::tbb_allocator&lt;std::pair&lt;const int, std::string&gt;&gt;&gt;</samp>.
+      </p>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/preview_features.html">Preview Features</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/construct_destroy_copy_map_cls.html">Construct, Destroy, Copy</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/size_and_capacity_map_cls.html">Size and capacity</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/iterators_map_cls.html">Iterators</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/modifiers_map_cls.html">Modifiers</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/observers_map_cls.html">Observers</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/lookup_map_cls.html">Lookup</a><br />
+</li>
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/concurrent_map_cls/parallel_iteration_map_cls.html">Parallel Iteration</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../containers_overview/node_handles_cls.html">Node handles</a></div>
+<div><a href="concurrent_set_cls.html">concurrent_set</a></div>
+<div><a href="../../containers_overview/concurrent_unordered_map_cls.html">concurrent_unordered_map</a></div>
+<div><a href="../../containers_overview/concurrent_hash_map_cls.html">concurrent_hash_map</a></div></div></div>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Lightweight policy for functional nodes" />
+<meta name="DC.subject" content="lightweight policy" />
+<meta name="keywords" content="lightweight policy" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/overview.html" />
+<meta name="DC.Relation" scheme="URI" content="functional_nodes.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="lightweight_policy" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Lightweight policy for functional nodes</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="lightweight_policy">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Lightweight policy for functional nodes</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        Policy for functional nodes that helps to reduce the overhead associated with the execution scheduling of the node.
+        This policy should only be applied on a per-node basis after careful evaluation.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        The <samp class="codeph">lightweight</samp> policy indicates that the body of the node contains a small
+        amount of work and should, if possible, be executed without the overhead of scheduling a
+        task. All Flow Graph functional nodes, except for <samp class="codeph">source_node</samp>, support the
+        <samp class="codeph">lightweight</samp> policy as a possible value of the <samp class="codeph">Policy</samp>
+        template parameter. To use the <samp class="codeph">lightweight</samp> policy, specify the
+        <samp class="codeph">Policy</samp> template parameter of the node to
+        <samp class="codeph">queueing_lightweight</samp>, <samp class="codeph">rejecting_lightweight</samp>, or
+        <samp class="codeph">lightweight</samp>. For functional nodes that have a default value for the
+        <samp class="codeph">Policy</samp> template parameter, specifying the <samp class="codeph">lightweight</samp>
+        policy results in extending the behavior of the default value of <samp class="codeph">Policy</samp>
+        with the behavior defined by the <samp class="codeph">lightweight</samp> policy. For example, if the
+        default value of <samp class="codeph">Policy</samp> is <samp class="codeph">queueing</samp>, specifying
+        <samp class="codeph">lightweight</samp> as the <samp class="codeph">Policy</samp> value is equivalent to
+        specifying <samp class="codeph">queueing_lightweight</samp>.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          Having multiple successors with <samp class="codeph">lightweight</samp> policy for a particular node can significantly reduce the parallelism
+          available in the graph.
+        </p>
+
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          Cycles in a flow graph consisting only of nodes with lightweight policies might lead to
+          deadlock.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        The example below shows the application of the <samp class="codeph">lightweight</samp> policy to a
+        graph with a pipeline topology. It is reasonable to apply the <samp class="codeph">lightweight</samp>
+        policy to the second and third nodes because the bodies of these nodes are small. This
+        allows the second and third nodes to execute without task scheduling overhead. The
+        <samp class="codeph">lightweight</samp> policy is not specified for the first node in order to permit
+        concurrent invocations of the graph.
+      </p>
+
+      <pre>#include "tbb/flow_graph.h"
+
+int main() {
+    using namespace tbb::flow;
+
+    graph g;
+
+    function_node&lt; int, int &gt; add( g, unlimited, [](const int &amp;v) {
+        return v+1;
+    } );
+    function_node&lt; int, int, lightweight &gt; multiply( g, unlimited, [](const int &amp;v) {
+        return v*2;
+    } );
+    function_node&lt; int, int, lightweight &gt; cube( g, unlimited, [](const int &amp;v) {
+        return v*v*v;
+    } );
+
+    make_edge(add, multiply);
+    make_edge(multiply, cube);
+
+    for(int i = 1; i &lt;= 10; ++i)
+        add.try_put(i);
+    g.wait_for_all();
+
+    return 0;
+}</pre>
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/overview.html">Overview</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="functional_nodes.html">Flow Graph functional nodes</a></div></div></div>
+
+</body>
+</html>

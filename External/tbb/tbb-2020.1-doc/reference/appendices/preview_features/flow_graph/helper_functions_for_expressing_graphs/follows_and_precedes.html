@@ -1,0 +1,413 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="follows and precedes helper functions" />
+<meta name="DC.Relation" scheme="URI" content="../../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html" />
+<meta name="DC.Relation" scheme="URI" content="make_node_set.html" />
+<meta name="DC.Relation" scheme="URI" content="make_edges.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="follows_and_precedes" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../../intel_css_styles.css" />
+<title>follows and precedes helper functions</title>
+<script src="../../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="follows_and_precedes">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(5);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">follows and precedes helper functions</h1>
+
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        Helper functions <samp class="codeph">follows</samp> and <samp class="codeph">precedes</samp>
+        aid in exressing dependencies between nodes when building TBB flow graphs.
+        The helper functions can be used only while constructing the node.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>
+          The feature requires C++11.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+<pre>
+template &lt;typename NodeType, typename... NodeTypes&gt;
+<em>implementation-defined-type</em> follows(node_set&amp; set); // node_set is an object returned from make_node_set function.
+template &lt;typename NodeType, typename... NodeTypes&gt;
+<em>implementation-defined-type</em> follows(NodeType&amp; node, NodeTypes&amp;... nodes);
+
+template &lt;typename NodeType, typename... NodeTypes&gt;
+<em>implementation-defined-type</em> precedes(node_set&amp; set); // node_set is an object returned from make_node_set function.
+template &lt;typename NodeType, typename... NodeTypes&gt;
+<em>implementation-defined-type</em> precedes(NodeType&amp; node, NodeTypes&amp;... nodes);
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <p>
+<pre>
+#define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
+#include "tbb/flow_graph.h"
+</pre>
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        Helper function <samp class="codeph">follows</samp> specifies that the node being constructed is following,
+        i.e. the successor of the set of nodes passed as its arguments.
+      </p>
+
+      <p>
+        Helper function <samp class="codeph">precedes</samp> specifies that the node being constructed is preceding,
+        i.e. the predecessor of the set of nodes passed as its arguments.
+      </p>
+
+      <p>
+        Functions <samp class="codeph">follows</samp> or <samp class="codeph">precedes</samp> are meant to replace
+        the graph argument, which is passed as the first argument to constructor of the nodes.
+        The graph argument for the node being constructed is obtained from the specified
+        node set or sequence of nodes passed to <samp class="codeph">follows</samp> or <samp class="codeph">precedes</samp>.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        <p>
+          Behavior is undefined if the nodes, passed to <samp class="codeph">follows</samp> or <samp class="codeph">precedes</samp>
+          directly or via node set, belong to different graphs.
+        </p>
+
+      </div>
+
+      <p>
+        Either <samp class="codeph">node_set</samp> or a sequence of nodes
+        may be used as an argument for <samp class="codeph">precedes</samp> or <samp class="codeph">follows</samp>,
+        so expressions:
+      </p>
+
+<pre>
+auto handlers = make_node_set(doubler, squarer, cuber);
+broadcast_node&lt;int&gt; input(precedes(handlers));
+</pre>
+      <p>and</p>
+
+<pre>
+broadcast_node&lt;int&gt; input(precedes(doubler, squarer, cuber));
+</pre>
+      <p>are equivalent.</p>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        Template parameters may be omitted for constructor with
+        <samp class="codeph">precedes</samp> or <samp class="codeph">follows</samp> arguments
+        if a compiler supports class template argument deduction (C++17).
+        In this case, node policy argument can be passed as the last parameter of the constructor.
+        Exceptions are <samp class="codeph">multifunction_node</samp> and <samp class="codeph">async_node</samp> nodes,
+        template parameters have to be specified for them.
+      </div>
+
+      <p>
+        The nodes which support <samp class="codeph">follows</samp> and <samp class="codeph">precedes</samp>
+        are listed in the table below.
+      </p>
+
+      <p>
+        
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl27" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">Constructors which support <samp class="codeph">precedes</samp> or <samp class="codeph">follows</samp></span></caption>
+            
+            <thead align="left">
+              <tr>
+                <th class="cellrowborder" align="center" valign="top" width="100%" id="d36910e180"><p>Constructor</p>
+</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    continue_node( follows(...), Body body, Policy = Policy() )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    continue_node( precedes(...), Body body, Policy = Policy() )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    continue_node( follows(...), int number_of_predecessors, Body body, Policy = Policy() )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    continue_node( precedes(...), int number_of_predecessors, Body body, Policy = Policy() )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    function_node( follows(...), size_t concurrency, Body body, Policy policy = queueing() )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    function_node( precedes(...), size_t concurrency, Body body, Policy policy = queueing() )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    source_node( precedes(...), Body body, bool is_active=true )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    template &lt;typename Body&gt;
+                    multifunction_node( follows(...), size_t concurrency, Body body )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    template &lt;typename Body&gt;
+                    multifunction_node( precedes(...), size_t concurrency, Body body )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><samp class="codeph">
+                    template&lt;typename Body&gt;
+                    async_node( follows(...), size_t concurrency, Body body)
+                  </samp></p>
+
+                  <p><samp class="codeph">
+                    template&lt;typename Body&gt;
+                    async_node( precedes(...), size_t concurrency, Body body)
+                  </samp></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit overwrite_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit overwrite_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit write_once_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit write_once_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit buffer_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit buffer_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit queue_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit queue_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit priority_queue_node( follows(...), const Compare&amp; comp = Compare())
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit priority_queue_node( precedes(...) const Compare&amp; comp = Compare())
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    sequencer_node( follows(...), const Sequencer &amp;s )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    sequencer_node( precedes(...), const Sequencer &amp;s )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                <p><span class="keyword">
+                  limiter_node( follows(...), size_t threshold )
+                </span></p>
+
+                <p><span class="keyword">
+                  limiter_node( precedes(...), size_t threshold )
+                </span></p>
+
+              </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit broadcast_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit broadcast_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit join_node( follows(...), Policy = queueing())
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit join_node( precedes(...), Policy = queueing())
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    explicit split_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    explicit split_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="100%" headers="d36910e180 ">
+                  <p><span class="keyword">
+                    indexer_node( follows(...) )
+                  </span></p>
+
+                  <p><span class="keyword">
+                    indexer_node( precedes(...) )
+                  </span></p>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+</div>
+
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        See usage of <samp class="codeph">follows</samp> and <samp class="codeph">precedes</samp> on the example section of
+        <a href="../helper_functions_for_expressing_graphs.html">
+          Helper Functions for Expressing Graphs
+        </a>
+        .
+      </p>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../../reference/appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html">Helper Functions for Expressing Graphs</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="make_node_set.html"><samp class="codeph">make_node_set</samp> helper function</a></div>
+<div><a href="make_edges.html"><samp class="codeph">make_edges</samp> helper function</a></div></div></div>
+
+</body>
+</html>

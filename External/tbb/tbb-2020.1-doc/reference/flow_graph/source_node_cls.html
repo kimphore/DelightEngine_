@@ -1,0 +1,514 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="source_node Class" />
+<meta name="DC.subject" content="source_node Class" />
+<meta name="keywords" content="source_node Class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/functional_nodes.html" />
+<meta name="DC.Relation" scheme="URI" content="make_edge_func.html" />
+<meta name="DC.Relation" scheme="URI" content="remove_edge_func.html" />
+<meta name="DC.Relation" scheme="URI" content="copy_body_func.html" />
+<meta name="DC.Relation" scheme="URI" content="message_passing_protocol.html" />
+<meta name="DC.Relation" scheme="URI" content="sender_and_buffer_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="../task_scheduler/task_group_context.html" />
+<meta name="DC.Relation" scheme="URI" content="../exceptions.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="source_node_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>source_node Class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="source_node_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">source_node Class</h1>
+
+  
+  <div>
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		
+		<p>A template class that is both a
+		  <span class="keyword">graph_node</span> and a
+		  <span class="keyword">sender&lt;Output&gt;</span>. This node can have no
+		  predecessors. It executes a user-provided
+		<span class="option">body</span> function object to generate messages that are
+		broadcast to all successors. It is a serial node and will never call its
+		<span class="keyword">body</span> concurrently. It is able to buffer a single item.
+		If no successor accepts an item that it has generated, the message is buffered
+		and will be provided to successors before a new item is generated.
+		</p>
+
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		
+		<pre>template &lt; typename Output &gt; class source_node;</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		
+		<pre>#include "tbb/flow_graph.h"</pre>
+	 </div>
+
+	 <div class="section"><h2 class="sectiontitle">Description</h2>
+		
+		<p>This type of node generates messages of type
+		  <span class="keyword">Output</span> by invoking the user-provided
+		  <span class="keyword">body</span> and broadcasts the result to all of its
+		  successors.
+		</p>
+
+		<p>A
+		  <span class="keyword">source_node</span> is a serial node. Calls to
+		  <span class="keyword">body</span> will never be made concurrently.
+		</p>
+
+		<p>A
+		  <span class="keyword">source_node</span> will continue to invoke
+		  <span class="keyword">body</span> and broadcast messages until the
+		  <span class="keyword">body</span> returns
+		  <span class="keyword">false</span> or it has no valid successors. A message may
+		  be generated and then rejected by all successors. In that case, the message is
+		  buffered and will be the next message sent once a successor is added to the
+		  node or
+		  <span class="keyword">try_get</span> is called. Calls to
+		  <span class="keyword">try_get</span> will return a buffer message if available or
+		  will invoke
+		  <span class="keyword">body</span> to attempt to generate a new message. A call to
+
+		  <span class="keyword">body</span> is made only when the internal buffer is empty.
+
+		</p>
+
+		<p>Rejection of messages by successors is handled using the protocol described in
+		  the Message Passing Protocol.
+		</p>
+
+		<p><span class="keyword">Output</span> must be copy-constructible and assignable.
+		</p>
+
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl25" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">source_node&lt;Output&gt; Body Concept</span></caption>
+		  <thead align="left">
+			 <tr>
+				<th class="cellrowborder" align="center" valign="top" width="50%" id="d84592e133">
+				  <p>Pseudo-Signature
+				  </p>
+
+				</th>
+
+				<th class="cellrowborder" align="center" valign="top" width="50%" id="d84592e139">
+				  <p>Semantics
+				  </p>
+
+				</th>
+
+			 </tr>
+</thead>
+
+		  <tbody>
+			 <tr>
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e133 ">
+				  <p>
+					 <span class="keyword">B::B( const B&amp; )</span>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e139 ">
+				  <p>Copy constructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e133 ">
+				  <p>
+					 <span class="keyword">B::~B()</span>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e139 ">
+				  <p>Destructor.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e133 ">
+				  <p>
+					 <span class="keyword">void operator=( const B&amp; )</span>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e139 ">
+				  <p>Assignment. The return type
+					 <samp class="codeph">void</samp> in the pseudo-signature denotes that
+					 <samp class="codeph">operator=</samp> is not required to return a value.
+					 The actual
+					 <samp class="codeph">operator=</samp> can return a value, which will be
+					 ignored.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+			 <tr>
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e133 ">
+				  <p>
+					 <span class="keyword">bool B::operator() (Output &amp;v)</span>
+				  </p>
+
+				</td>
+
+				<td class="cellrowborder" valign="top" width="50%" headers="d84592e139 ">
+				  <p>Returns
+					 <span class="keyword">true</span> when it has assigned a new value to
+					 <span class="keyword">v</span>. Returns
+					 <span class="keyword">false</span> when no new values may be generated.
+				  </p>
+
+				</td>
+
+			 </tr>
+
+		  </tbody>
+
+		</table>
+</div>
+
+		<div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+		  <p> The body object passed to a
+			 <span class="keyword">source_node</span> is copied. Therefore updates to member
+			 variables will not affect the original object used to construct the node. If
+			 the state held within a body object must be inspected from outside of the node,
+			 the
+			 <span class="keyword">copy_body</span> function can be used to obtain an
+			 updated copy.
+		  </p>
+
+		</div>
+
+		<div class="Note"><h3 class="NoteTipHead">Note</h3> 
+		  <p> The body object may throw or cancel its enclosing graph. See
+			 task_group_context and Exceptions sections for a description.
+		  </p>
+
+		</div>
+
+	 </div>
+
+	<div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <p>
+        An example from
+        <a href="../../tbb_userguide/use_source_node.html">
+            "Using source_node"
+        </a>
+        section shows usage specifics for this node type.
+      </p>
+
+    </div>
+
+	 <div class="section"><h2 class="sectiontitle">Members</h2>
+		
+		<pre>namespace tbb {
+namespace flow {
+
+template &lt; typename Output &gt;
+class source_node : public graph_node, public sender&lt; Output &gt; {
+public:
+    typedef Output output_type;
+    typedef receiver&lt; output_type &gt; successor_type;
+
+    template&lt; typename Body &gt;
+    source_node( graph &amp;g, Body body, bool is_active = true );
+    source_node( const source_node &amp;src );
+    ~source_node();
+
+    void activate();
+    bool register_successor( successor_type &amp;r );
+    bool remove_successor( successor_type &amp;r );
+    bool try_get( output_type &amp;v );
+    bool try_reserve( output_type &amp;v );
+    bool try_release( );
+    bool try_consume( );
+};
+
+}
+}</pre>
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of this class.
+		  </span><thead align="left">
+				<tr>
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d84592e294">Member
+				  </th>
+
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d84592e297">Description
+				  </th>
+
+				</tr>
+</thead>
+
+			 <tbody>
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">template&lt; typename Body
+						&gt;source_node( graph &amp;g, Body body, bool is_active=true )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Constructs a
+						<span class="keyword">source_node</span> that will invoke
+						<span class="keyword">body</span>. By default the node is created in
+						the active state, that is, it will begin generating messages immediately. If
+						<span class="keyword">is_active</span> is
+						<span class="keyword">false</span>, messages will not be generated
+						until a call to
+						<span class="keyword">activate</span> is made.
+						</p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">source_node( const source_node
+						&amp;src )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Constructs a
+						<span class="keyword">source_node</span> that has the same initial
+						state that
+						<span class="keyword">src</span> had when it was constructed. The
+						<span class="keyword">source_node</span> that is constructed will have
+						a reference to the same
+						<span class="keyword">graph</span> object as
+						<span class="keyword">src</span>, will have a copy of the initial body
+						used by
+						<span class="keyword">src,</span> and have the same initial active
+						state as
+						<span class="keyword">src</span>. The predecessors and successors of
+						<span class="keyword">src</span> will not be copied.
+					 </p>
+
+					 <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+						<p> The new body object is copy-constructed from a copy of
+						  the original body provided to
+						  <span class="keyword">src</span> at its construction. Therefore
+						  changes made to member variables in
+						  <span class="keyword">src</span>'s body after the construction of
+						  <span class="keyword">src</span> will not affect the body of the new
+						  <span class="keyword">source_node.</span>
+						</p>
+
+					 </div>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">void activate()</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Sets the
+						<span class="keyword">source_node</span> to the active state, allowing
+						it to begin generating messages.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">bool register_successor(
+						successor_type &amp;r )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Adds
+						<span class="keyword">r</span> to the set of successors.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<span class="keyword">true</span>
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">bool remove_successor(
+						successor_type &amp;r )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Removes
+						<span class="keyword">r</span> from the set of successors.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<span class="keyword">true</span>
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">bool try_get( output_type &amp;v
+						)</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Will copy the buffered message into
+						<span class="keyword">v</span> if available or will invoke
+						<span class="keyword">body</span> to attempt to generate a new message
+						that will be copied into
+						<span class="keyword">v</span>.
+					 </p>
+
+					 <p><strong>Returns</strong>:<span class="keyword">true</span> if a message is
+						copied to v.
+						<span class="keyword">false</span> otherwise.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">bool try_reserve( output_type
+						&amp;v )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Reserves the
+						<span class="keyword">source_node</span> if possible. If a message can
+						be buffered and the node is not already reserved, the node is reserved for the
+						caller, and the value is copied into
+						<span class="keyword">v</span>.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<span class="keyword">true</span> if the node is reserved for the
+						caller.
+						<span class="keyword">false</span> otherwise.
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">bool try_release( )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Releases any reservation held on the
+						<span class="keyword">source_node</span>. The message held in the
+						internal buffer is retained.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<span class="keyword">true</span>
+					 </p>
+
+				  </td>
+
+				</tr>
+
+				<tr>
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d84592e294 "><span class="keyword">bool try_consume( )</span>
+				  </td>
+
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d84592e297 ">
+					 <p>Releases any reservation held on the
+						<span class="keyword">source_node</span> and clears the internal
+						buffer.
+					 </p>
+
+					 <p><strong>Returns</strong>:
+						<span class="keyword">true</span>
+					 </p>
+
+				  </td>
+
+				</tr>
+
+			 </tbody>
+
+		  </table>
+</div>
+
+	 </div>
+
+	<div class="section">
+		<p>
+			If the compiler supports class template argument deduction (C++17) then template arguments can
+			be deduced automatically where possible. For example, the type of the node
+		</p>
+
+<pre>
+source_node sn(g, [](<span class="color(blue)" style="color:blue"><strong>int</strong></span> &amp;val) { /* body implementation */ });
+</pre>
+		<p>
+			is deduced as
+		</p>
+
+<pre>
+source_node&lt;<span class="color(blue)" style="color:blue"><strong>int</strong></span>&gt;;
+</pre>
+	</div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/functional_nodes.html">Functional Nodes</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="make_edge_func.html">make_edge Template Function
+		  </a></div>
+<div><a href="remove_edge_func.html">remove_edge Template Function
+		  </a></div>
+<div><a href="copy_body_func.html">copy_body Template Function
+		  </a></div>
+<div><a href="message_passing_protocol.html">Message Passing Protocol
+		  </a></div>
+<div><a href="sender_and_buffer_policy.html">Sender and Buffer Policy
+		  </a></div>
+<div><a href="../task_scheduler/task_group_context.html">task_group_context
+		  </a></div>
+<div><a href="../exceptions.html">Exceptions
+		  </a></div>
+<div><a href="../appendices/preview_features/flow_graph/helper_functions_for_expressing_graphs.html">Helper Functions for Expressing Graphs</a></div></div></div>
+
+</body>
+</html>

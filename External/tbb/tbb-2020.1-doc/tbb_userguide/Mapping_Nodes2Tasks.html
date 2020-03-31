@@ -1,0 +1,113 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Mapping Nodes to Tasks" />
+<meta name="DC.subject" content="Flow Graph Concepts, Mapping Nodes to Tasks, Mapping Nodes to Tasks" />
+<meta name="keywords" content="Flow Graph Concepts, Mapping Nodes to Tasks, Mapping Nodes to Tasks" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Relation" scheme="URI" content="Edges.html#Edges" />
+<meta name="DC.Relation" scheme="URI" content="Graph_Object.html#Graph_Object" />
+<meta name="DC.Relation" scheme="URI" content="Nodes.html#Nodes" />
+<meta name="DC.Relation" scheme="URI" content="../reference/task_scheduler.html#task_scheduler" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="Mapping_Nodes2Tasks" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Mapping Nodes to Tasks</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="Mapping_Nodes2Tasks">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Mapping Nodes to Tasks</h1>
+ 
+   
+  <div> 
+	 <p>The following figure shows the timeline for one possible execution of
+		the two node graph example in the previous section. The bodies of 
+		<span class="keyword">n</span> and 
+		<span class="keyword">m</span> will be referred to as λ<sub>n</sub> and
+		λ<sub>m</sub>, respectively. The three calls to 
+		<span class="keyword">try_put</span> spawn three tasks; each one applies the lambda
+		expression, λ<sub>n</sub>, on one of the three input messages. Because 
+		<span class="keyword">n</span> has unlimited concurrency, these tasks can execute
+		concurrently if there are enough threads available. The call to 
+		<span class="keyword">g.wait_for_all()</span> blocks until there are no tasks
+		executing in the graph. As with other 
+		<span class="keyword">wait_for_all</span> functions in Intel TBB, the thread that
+		calls 
+		<span class="keyword">wait_for_all</span> is not spinning idly during this time,
+		but instead can join in executing other tasks from the work pool. 
+	 </p>
+ 
+	 <div class="fignone"><span class="figcap">Execution Timeline of a Two Node Graph</span> 
+		<br /><div class="imagecenter"><img src="Images/execution_timeline2node.jpg" align="center" /></div><br /> 
+	 </div>
+ 
+	 <p>As each task from n finishes, it puts its output to 
+		<span class="keyword">m</span>, since 
+		<span class="keyword">m</span> is a successor of 
+		<span class="keyword">n</span>. Unlike node 
+		<span class="keyword">n</span>, 
+		<span class="keyword">m</span> has been constructed with a concurrency limit of 1
+		and therefore does not spawn all tasks immediately. Instead, it sequentially
+		spawns tasks to execute its body, λ<sub>m</sub>, on the messages in the order
+		that they arrive. When all tasks are complete, the call to 
+		<span class="keyword">wait_for_all</span> returns. 
+	 </p>
+ 
+	 <div class="Note"><h3 class="NoteTipHead">Note</h3>  
+		<p>All execution in the flow graph happens asynchronously. The calls to 
+		  <span class="keyword">try_put</span> return control to the calling thread
+		  quickly, after either immediately spawning a task or buffering the message
+		  being passed. Likewise, the body tasks execute the lambda expressions and then
+		  put the result to any successor nodes. Only the call to 
+		  <span class="keyword">wait_for_all</span> blocks, as it should, and even in this
+		  case the calling thread may be used to execute tasks from the Intel TBB work
+		  pool while it is waiting. 
+		</p>
+ 
+	 </div>
+ 
+	 <p>The above timeline shows the sequence when there are enough threads to
+		execute all of the tasks that can be executed in parallel. If there are fewer
+		threads, some spawned tasks will need to wait until a thread is available to
+		execute them. 
+	 </p>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="Edges.html#Edges">Edges 
+		  </a></div>
+<div><a href="Graph_Object.html#Graph_Object">Graph Object 
+		  </a></div>
+<div><a href="Nodes.html#Nodes">Nodes 
+		  </a></div>
+<div><a href="../reference/task_scheduler.html#task_scheduler">Task Scheduler 
+		  </a></div></div></div> 
+
+</body>
+</html>

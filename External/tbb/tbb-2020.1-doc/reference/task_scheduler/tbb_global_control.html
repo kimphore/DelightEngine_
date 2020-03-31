@@ -1,0 +1,316 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="global_control class" />
+<meta name="DC.subject" content="global_control class" />
+<meta name="keywords" content="global_control class" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/task_scheduler.html" />
+<meta name="DC.Relation" scheme="URI" content="task_arena_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/deprecated_features/redundant/task_scheduler_init_cls.html#task_scheduler_init_cls" />
+<meta name="DC.Relation" scheme="URI" content="synchronization_task.html" />
+<meta name="DC.Relation" scheme="URI" content="../appendices/deprecated_features/cpp_obsolete/threads.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tbb_global_control" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>global_control class</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tbb_global_control">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">global_control class</h1>
+
+ 
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>Use this class to control certain settings or behavior of the Intel&reg;
+        Threading Building Blocks (Intel&reg; TBB) dynamic library.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>
+#include "tbb/global_control.h"
+   </pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>
+class global_control;
+   </pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>An object of class
+        <samp class="codeph">global_control</samp>, or a "control variable", affects one
+        of several behavioral aspects, or parameters, of Intel TBB. Class
+        <samp class="codeph">global_control</samp> is primarily intended for use at the
+        application level, to control the whole application behavior.
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        <p>You should avoid using this class in libraries
+          and plugins, as it could result in broad impact on composability and
+          performance.
+        </p>
+
+      </div>
+
+      <p>The current set of parameters that you can modify is defined by
+        <samp class="codeph">global_control::parameter</samp> enumeration. The parameter
+        and the value it should take are specified as arguments to the constructor of a
+        control variable. The impact of the
+        control variable ends when its lifetime is complete.
+      </p>
+
+      <p>Control variables can be created in different threads, and may have
+        nested or overlapping scopes. However, at any point in time each controlled
+        parameter has a single active value that applies to the whole process. This
+        value is selected from all currently existing control variables by applying a
+        parameter-specific selection rule.
+      </p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="tbl52" frame="border" border="1" cellspacing="0" rules="rows"><caption><span class="tablecap">Global control parameters</span></caption>
+        
+        
+        
+        <thead align="left">
+          <tr>
+            <th class="cellrowborder" align="center" valign="top" width="25%" id="d104156e104">
+              <p>Parameter
+              </p>
+
+            </th>
+
+            <th class="cellrowborder" align="center" valign="top" width="25%" id="d104156e110">
+              <p>Selection rule
+              </p>
+
+            </th>
+
+            <th class="cellrowborder" align="center" valign="top" width="50%" id="d104156e116">
+              <p>Description
+              </p>
+
+            </th>
+
+          </tr>
+</thead>
+
+        <tbody>
+          <tr>
+            <td class="cellrowborder" align="left" valign="top" width="25%" headers="d104156e104 ">
+              <p>
+                <samp class="codeph">max_allowed_parallelism</samp>
+              </p>
+
+            </td>
+
+            <td class="cellrowborder" align="left" valign="top" width="25%" headers="d104156e110 ">
+              <p>minimum
+              </p>
+
+            </td>
+
+            <td class="cellrowborder" align="left" valign="top" width="50%" headers="d104156e116 ">
+              <p>Limit total number of worker threads that
+                can be active in the task scheduler to
+                <samp class="codeph">parameter value - 1</samp>.
+              </p>
+
+              <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                <p>With <samp class="codeph">max_allowed_parallelism</samp> set to
+                  <samp class="codeph">1</samp>, <samp class="codeph">global_control</samp> enforces serial execution
+                  of all tasks by the application thread(s), i.e. the task scheduler does not
+                  allow worker threads to run. There is one exception: if some work is submitted
+                  for execution via <samp class="codeph">task::enqueue</samp> or <samp class="codeph">task_arena::enqueue</samp>,
+                  a single worker thread will still run ignoring the <samp class="codeph">max_allowed_parallelism</samp>
+                  restriction.
+                </p>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="cellrowborder" align="left" valign="top" width="25%" headers="d104156e104 ">
+              <p>
+                <samp class="codeph">thread_stack_size</samp>
+              </p>
+
+            </td>
+
+            <td class="cellrowborder" align="left" valign="top" width="25%" headers="d104156e110 ">
+              <p>maximum
+              </p>
+
+            </td>
+
+            <td class="cellrowborder" align="left" valign="top" width="50%" headers="d104156e116 ">
+              <p>Set stack size for threads created by the
+                library, including working threads in the task scheduler and threads controlled
+                by thread wrapper classes.
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  <ul>
+                      <li>For Windows 8 Store* applications stack size cannot be set.
+                          For Universal Windows Platform*, setting the stack size is supported since TBB 2019 Update 5.
+                    </li>
+
+                    <li>For Windows* OS, valid stack size values are limited to 4 GB.
+                    </li>
+
+                  </ul>
+
+                </div>
+
+              </p>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+</div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Example</h2>
+      
+      <pre>
+#include "tbb/parallel_for.h"
+#include "tbb/task_scheduler_init.h"
+#include "tbb/global_control.h"
+
+using namespace tbb;
+
+void foo()
+{
+    // The following code could use up to 16 threads.
+    task_scheduler_init tsi(16);
+    parallel_for( . . . );
+}
+
+void bar()
+{
+    // The following code could use up to 8 threads.
+    task_scheduler_init tsi(8);
+    parallel_for( . . . );
+}
+
+int main()
+{
+    {
+        const size_t parallelism = task_scheduler_init::default_num_threads();
+        // total parallelism that TBB can utilize is cut in half for the dynamic extension
+        // of the given scope, including calls to foo() and bar()
+        global_control c(global_control::max_allowed_parallelism, parallelism/2);
+        foo();
+        bar();
+    } // restore previous parallelism limitation, if one existed
+}
+</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+      <pre>
+namespace tbb {
+    class global_control {
+  public:
+        enum parameter {
+            max_allowed_parallelism,
+            thread_stack_size
+        };
+
+        global_control(parameter p, size_t value);
+       ~global_control();
+        static size_t active_value(parameter param);
+    };
+} // namespace tbb
+</pre>
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members of the class.</span>
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d104156e251">Member
+              </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d104156e254">Description
+              </th>
+
+            </tr>
+</thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d104156e251 "><samp class="codeph">static size_t active_value(parameter param);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d104156e254 ">
+                <p>Returns the currently active value of the
+                  setting defined by
+                  <samp class="codeph">param</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/task_scheduler.html">Task Scheduler</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="task_arena_cls.html">task_arena Class
+        </a></div>
+<div><a href="../appendices/deprecated_features/redundant/task_scheduler_init_cls.html#task_scheduler_init_cls">task_scheduler_init Class (deprecated)
+        </a></div>
+<div><a href="synchronization_task.html">task Class Synchronization (see task::enqueue() description)
+        </a></div>
+<div><a href="../appendices/deprecated_features/cpp_obsolete/threads.html">Threads (deprecated)
+        </a></div></div></div>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Memory Resource Interface" />
+<meta name="DC.subject" content="memory resource" />
+<meta name="keywords" content="memory resource" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/memory_allocation.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/memory_allocation/scalable_memory_resource_func.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/memory_allocation/cache_aligned_resource_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="memory_resource_interface" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Memory Resource Interface</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="memory_resource_interface">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+    <h1 class="topictitle1">Memory Resource Interface</h1>
+
+    
+    <div>
+    <div class="section">
+        <p>
+            Starting from C++17, the standard library provides <samp class="codeph">std::pmr::polymorphic_allocator</samp> class
+            that allocates memory from a supplied memory resource. Class <samp class="codeph">std::pmr::memory_resource</samp>
+            is an abstract interface for user-side implementation of different allocation strategies.
+        </p>
+
+        <p>
+            To provide a custom memory resource, inherit <samp class="codeph">std::pmr::memory_resource</samp>
+            class and override its pure virtual functions.
+            For details, see [mem.res.class] "Class memory_resource" C++17 standard section.
+        </p>
+
+    </div>
+
+    <div class="section">
+        
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap"><samp class="codeph">std::pmr::memory_resource</samp> class members</span></caption>
+                
+                <thead align="left">
+                    <tr>
+                        <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d90870e60">Member
+                        </th>
+
+                        <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d90870e63">Description
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90870e60 ">
+                            <p>
+                                <samp class="codeph">void* allocate(std::size_t bytes, std::size_t alignment)</samp>
+                            </p>
+
+                        </td>
+
+                        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90870e63 ">
+                            <p>Allocates storage of at least <samp class="codeph">size</samp> bytes aligned on the specified alignment.</p>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90870e60 ">
+                            <p>
+                                <samp class="codeph">void deallocate(void* p, std::size_t bytes, std::size_t alignment)</samp>
+                            </p>
+
+                        </td>
+
+                        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90870e63 ">
+                            <p>Deallocates the storage pointed to by <samp class="codeph">p</samp>.</p>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90870e60 ">
+                            <p>
+                                <samp class="codeph">bool is_equal(const memory_resource&amp; other) const noexcept</samp>
+                            </p>
+
+                        </td>
+
+                        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90870e63 ">
+                            <p>Checks if the current instance is equal to <samp class="codeph">other</samp>.</p>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d90870e60 ">
+                            <p>
+                                <samp class="codeph">virtual void* do_allocate(size_t bytes, std::size_t alignment) = 0</samp>
+                            </p>
+
+                            <p>
+                                <samp class="codeph">virtual void do_deallocate(void* p, std::size_t bytes, std::size_t alignment) = 0</samp>
+                            </p>
+
+                            <p>
+                                <samp class="codeph">virtual bool do_is_equal(const std::pmr::memory_resource&amp; other) const noexcept = 0</samp>
+                            </p>
+
+                        </td>
+
+                        <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d90870e63 ">
+                            <p>
+                                Pure virtual member functions that need to be overridden by custom memory resource implementations.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+</div>
+
+        <p>
+            Intel TBB provides a set of <samp class="codeph">std::pmr::memory_resource</samp> implementations:
+            <ul>
+                <li>
+                    <p><samp class="codeph">tbb::cache_aligned_resource</samp> class which ensures allocation on cache line boundaries.</p>
+
+                </li>
+
+                <li>
+                    <p>
+                        <samp class="codeph">tbb::scalable_memory_resource()</samp> function that provides the memory resource
+                        managed by the TBB scalable memory allocator.
+                    </p>
+
+                </li>
+
+            </ul>
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/memory_allocation.html">Memory Allocation</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/memory_allocation/scalable_memory_resource_func.html">scalable_memory_resource Function</a><br />
+</li>
+<li class="ulchildlink"><a href="../../reference/memory_allocation/cache_aligned_resource_cls.html">cache_aligned_resource Class</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

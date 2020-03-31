@@ -1,0 +1,175 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="proportional_split Class" />
+<meta name="DC.subject" content="proportional_split Class" />
+<meta name="keywords" content="proportional_split Class" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/algorithms/splittable_concept.html" />
+<meta name="DC.Relation" scheme="URI" content="split_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../range_concept.html#range_concept" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="proportional_split_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>proportional_split Class</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="proportional_split_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">proportional_split Class</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>Type of an argument for a proportional splitting constructor of Range.</p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <p><pre>#include "tbb/tbb_stddef.h"</pre></p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Syntax</h2>
+      
+      <pre>class proportional_split;</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        An argument of type <samp class="codeph">proportional_split</samp> may be used by classes that implement Range concept to distinguish a proportional
+        splitting constructor from a basic splitting constructor and from a copy constructor, and to suggest a ratio in which a particular instance of
+        the class should be split.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">
+        Members
+      </h2>
+      
+      <pre>
+namespace tbb {
+        class proportional_split {
+        public:
+            proportional_split(size_t _left = 1, size_t _right = 1);
+
+            size_t left() const;
+            size_t right() const;
+
+            operator split() const;
+        };
+}
+      </pre>
+      <p>
+	
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members of this class.</span>
+            
+            
+            <thead align="left">
+              <tr>
+                <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d10162e100">Member</th>
+
+                <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d10162e103">Description</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+              <tr>
+                <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d10162e100 ">
+                  <span class="keyword">proportional_split( size_t _left = 1, size_t _right = 1 )</span>
+                </td>
+
+                <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d10162e103 ">
+                  <p>Constructs a proportion with the ratio specified by coefficients <em>_left</em> and <em>_right</em>.</p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d10162e100 ">
+                  <span class="keyword">size_t left() const</span>
+                </td>
+
+                <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d10162e103 ">
+                  <p>Returns size of the left part of the proportion.</p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d10162e100 ">
+                  <span class="keyword">size_t right() const</span>
+                </td>
+
+                <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d10162e103 ">
+                  <p>Returns size of the right part of the proportion.</p>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d10162e100 ">
+                  <span class="keyword">operator split() const</span>
+                </td>
+
+                <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d10162e103 ">
+                  <p>
+                    Makes <samp class="codeph">proportional_split</samp> implicitly convertible to <samp class="codeph">split</samp> type to use with
+                    ranges that do not support proportional splitting.
+                  </p>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+</div>
+
+      </p>
+
+      <p>See "Range Concept" for an example of proportional splitting constructor implementation.</p>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/algorithms/splittable_concept.html">Splittable Concept</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="split_cls.html">split</a></div>
+<div><a href="../range_concept.html#range_concept">Range Concept</a></div></div></div>
+
+</body>
+</html>

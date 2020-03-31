@@ -1,0 +1,158 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Single-push vs. Broadcast-push" />
+<meta name="DC.subject" content="Flow Graph Basics, Single vs. Broadcast Policy" />
+<meta name="keywords" content="Flow Graph Basics, Single vs. Broadcast Policy" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/flow_graph/sender_and_buffer_policy.html" />
+<meta name="DC.Relation" scheme="URI" content="broadcast_or_send.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="flow_graph_single_vs_broadcast" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Single-push vs. Broadcast-push</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="flow_graph_single_vs_broadcast">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Single-push vs. Broadcast-push</h1>
+ 
+   
+  <div> 
+	 <p>
+             Nodes in an Intel&reg; Threading Building Blocks (Intel&reg; TBB) flow graph
+             communicate by pushing and pulling messages.  Two policies for pushing messages are used,
+             depending on the type of the node:
+             <ul>
+             <li><strong>single-push</strong>: No matter how many successors to the node exist and are able
+             to accept a message, each message will be only sent to one successor.</li>
+
+             <li><strong>broadcast-push</strong>: A message will be pushed to every successor which is connected
+             to the node by an edge in push mode, and which accepts the message.</li>
+
+             </ul>
+
+	 </p>
+
+	 <p>
+             The following code demonstrates this difference:
+         </p>
+
+<pre>
+using namespace tbb::flow;
+
+tbb::atomic&lt;size_t&gt; g_cnt;
+
+struct fn_body1 {
+    tbb::atomic&lt;size_t&gt; &amp;body_cnt;
+    fn_body1(tbb::atomic&lt;size_t&gt; &amp;b_cnt) : body_cnt(b_cnt) {}
+    continue_msg operator()( continue_msg /*dont_care*/) {
+        ++g_cnt;
+        ++body_cnt;
+        return continue_msg();
+    }
+};
+
+void run_example1() {  // example for Flow_Graph_Single_Vs_Broadcast.xml
+    graph g;
+    tbb::atomic&lt;size_t&gt; b1;  // local counts
+    tbb::atomic&lt;size_t&gt; b2;  // for each function _node body
+    tbb::atomic&lt;size_t&gt; b3;  //
+    function_node&lt;continue_msg&gt; f1(g,serial,fn_body1(b1));
+    function_node&lt;continue_msg&gt; f2(g,serial,fn_body1(b2));
+    function_node&lt;continue_msg&gt; f3(g,serial,fn_body1(b3));
+    buffer_node&lt;continue_msg&gt; buf1(g);
+    //
+    // single-push policy
+    //
+    g_cnt = b1 = b2 = b3 = 0;
+    make_edge(buf1,f1);
+    make_edge(buf1,f2);
+    make_edge(buf1,f3);
+    buf1.try_put(continue_msg());
+    buf1.try_put(continue_msg());
+    buf1.try_put(continue_msg());
+    g.wait_for_all();
+    printf( "after single-push test, g_cnt == %d, b1==%d, b2==%d, b3==%d\n", (int)g_cnt, (int)b1, (int)b2, (int)b3);
+    remove_edge(buf1,f1);
+    remove_edge(buf1,f2);
+    remove_edge(buf1,f3);
+    //
+    // broadcast-push policy
+    //
+    broadcast_node&lt;continue_msg&gt; bn(g);
+    g_cnt = b1 = b2 = b3 = 0;
+    make_edge(bn,f1);
+    make_edge(bn,f2);
+    make_edge(bn,f3);
+    bn.try_put(continue_msg());
+    bn.try_put(continue_msg());
+    bn.try_put(continue_msg());
+    g.wait_for_all();
+    printf( "after broadcast-push test, g_cnt == %d, b1==%d, b2==%d, b3==%d\n", (int)g_cnt, (int)b1, (int)b2, (int)b3);
+}
+</pre>
+         <p>
+             The output of this code is
+	 </p>
+
+<pre>
+after single-push test, g_cnt == 3, b1==3, b2==0, b3==0
+after broadcast-push test, g_cnt == 9, b1==3, b2==3, b3==3
+</pre>
+         <p>
+             The single-push test uses a <samp class="codeph">buffer_node</samp>, which has a "single-push" policy for
+             forwarding messages.  Putting three messages to the <samp class="codeph">buffer_node</samp> results in three
+             messages being pushed.  Notice also only the first <samp class="codeph">function_node</samp> is sent to;
+             in general there is no policy for which node is pushed to if more than one successor can accept.
+         </p>
+
+         <p>
+             The broadcast-push test uses a <samp class="codeph">broadcast_node</samp>, which will push any message it
+             receives to all accepting successors.  Putting three messages to the <samp class="codeph">broadcast_node</samp>
+             results in a total of nine messages pushed to the <samp class="codeph">function_nodes</samp>.
+         </p>
+
+         <p>
+             Only nodes designed to buffer (hold and forward received messages) have a "single-push"
+             policy; all other nodes have a "broadcast-push" policy.  Please see the <strong>Sending to One or Multiple Successors</strong> section of <strong>Flow Graph Tips and Tricks</strong>, and <strong>Fowarding,
+             Buffering and Reception Policy</strong> in the Flow Graph section of the Reference for more
+             information.
+         </p>
+
+         <p>
+         </p>
+
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../reference/flow_graph/sender_and_buffer_policy.html">Fowarding, Buffering and Reception Policy (Reference)
+		  </a></div>
+<div><a href="broadcast_or_send.html">Sending to One or Multiple Successors
+		  </a></div></div></div>
+
+</body>
+</html>

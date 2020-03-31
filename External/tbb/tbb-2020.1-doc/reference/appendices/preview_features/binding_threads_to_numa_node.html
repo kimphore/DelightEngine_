@@ -1,0 +1,263 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Automatic binding of threads to NUMA node" />
+<meta name="DC.subject" content="Automatic binding of threads to NUMA node, task_arena NUMA support, NUMA" />
+<meta name="keywords" content="Automatic binding of threads to NUMA node, task_arena NUMA support, NUMA" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features.html" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/appendices/preview_features/binding_threads_to_numa_node/info.html" />
+<meta name="DC.Relation" scheme="URI" content="../../task_scheduler/task_arena_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="sender_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Automatic binding of threads to NUMA node</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="sender_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Automatic binding of threads to NUMA node</h1>
+ 
+   
+  <div> 
+	 <div class="section"><h2 class="sectiontitle">Summary</h2> 
+		 
+		<p>Interfaces for respecting NUMA topology.
+		</p>
+ 
+	 </div>
+ 
+	 <div class="section"><h2 class="sectiontitle">Header</h2> 
+		 
+		<pre>#define TBB_PREVIEW_NUMA_SUPPORT 1
+#include "tbb/task_arena.h"</pre> 
+    <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+      <p>The feature requires linkage with TBB preview binaries.</p>
+
+    </div>
+
+   </div>
+ 
+   <div class="section"><h2 class="sectiontitle">Description</h2> 
+     
+    <p>This preview feature allows threads, which join <samp class="codeph">task_arena</samp> for work processing, 
+    to be bound to specified NUMA node.
+    Information about NUMA topology can be traversed with <samp class="codeph">namespace tbb::info</samp> API.
+    </p>
+
+   </div>
+ 
+   <div class="section"><h2 class="sectiontitle">Members</h2> 
+     
+    <p>
+<pre>
+namespace tbb {
+    class task_arena {
+    public:
+        struct constraints {
+            numa_node_id numa_node;
+            int max_concurrency;
+
+            constraints(numa_node_id numa_node_       = task_arena::automatic,
+                        int          max_concurrency_ = task_arena::automatic);
+        };
+
+        task_arena(constraints constraints_, unsigned reserved_for_masters = 1);
+        void initialize(constraints constraints_, unsigned reserved_for_masters = 1);
+    };
+}
+</pre> 
+    </p>
+
+	 </div>
+ 
+	 <div class="section"> 
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of these interfaces. 
+		  </span><thead align="left"> 
+				<tr> 
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d24138e95">Member 
+				  </th>
+ 
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d24138e98">Description 
+				  </th>
+ 
+				</tr>
+</thead>
+ 
+			 <tbody> 
+				<tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24138e95 ">
+                <samp class="codeph">
+                  struct task_arena::constraints
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24138e98 ">
+                <p>
+                  Represents limitations applied to threads within <samp class="codeph">task_arena</samp>.
+                  <ul>
+                    <li>
+                      <samp class="codeph">numa_node</samp> - An integral logical index uniquely identifying 
+                      a NUMA node. All threads joining the <samp class="codeph">task_arena</samp>
+                      are bound to this NUMA node.
+                      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                        NUMA node ID is considered valid if it was obtained through 
+                        <samp class="codeph">tbb::info::numa_nodes()</samp> located in <samp class="codeph">tbb/info.h</samp>
+                      </div>
+
+                    </li>
+
+                    <li>
+                      <samp class="codeph">max_concurrency</samp> - The maximum number of threads that can 
+                      participate in work processing within the <samp class="codeph">task_arena</samp> at the same time.
+                    </li>
+
+                  </ul>
+
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24138e95 ">
+                <samp class="codeph">
+                  task_arena(constraints constraints_, unsigned reserved_for_masters = 1)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24138e98 ">
+                <p>
+                  Creates a <samp class="codeph">task_arena</samp> with specified constraints. Some portion of 
+                  the maximum concurrency limit can be reserved for application threads with 
+                  <samp class="codeph">reserved_for_masters</samp>. The amount for reservation cannot exceed 
+                  the maximum concurrency limit.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+                  If <samp class="codeph">max_concurrency</samp> and <samp class="codeph">reserved_for_masters</samp> are
+                  explicitly set to be equal and greater than 1, Intel TBB worker threads will never
+                  join the arena. As a result, the execution guarantee for enqueued tasks is not valid
+                  in such arena. Do not use <samp class="codeph">task_arena::enqueue()</samp> and
+                  <samp class="codeph">task::enqueue()</samp> with an arena set to have no worker threads.
+                </div>
+
+                <p>
+                  If <samp class="codeph">constraints.numa_node</samp> is specified, then all threads that
+                  enter the arena are automatically pinned to corresponding NUMA node.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24138e95 ">
+                <p>
+                  <samp class="codeph">
+                    void initialize(constraints constraints_, unsigned reserved_for_masters = 1)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24138e98 ">
+                <p>
+                  Performs actual initialization of internal arena representation. If arguments are
+                  specified, they override previous arena parameters. The method has no effect when 
+                  called for an already initialized arena.
+                </p>
+
+                <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                  After the call to <samp class="codeph">initialize</samp>, the <samp class="codeph">task_arena</samp> parameters
+                  are fixed and cannot be changed.
+                </div>
+
+              </td>
+
+            </tr>
+
+			 </tbody>
+ 
+		  </table>
+</div>
+ 
+	 </div>
+ 
+   <div class="section"><h2 class="sectiontitle"> Example</h2>
+        
+          <p>
+            The example demonstrates <samp class="codeph">task_arena</samp> NUMA support extensions.
+            Each constructed <samp class="codeph">task_arena</samp> is pinned to the corresponding node.
+            If the platform does not have NUMA capabilities, the example will create only one 
+            <samp class="codeph">task_arena</samp> and threads entering this <samp class="codeph">task_arena</samp> will
+            not be bound to any hardware resources.
+          </p>
+
+          <pre>#define TBB_PREVIEW_NUMA_SUPPORT 1
+
+#include "tbb/task_group.h"
+#include "tbb/task_arena.h"
+
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;tbb::numa_node_id&gt; numa_nodes = tbb::info::numa_nodes();
+    std::vector&lt;tbb::task_arena&gt; arenas(numa_nodes.size());
+    std::vector&lt;tbb::task_group&gt; task_groups(numa_nodes.size());
+
+    for (int i = 0; i &lt; numa_nodes.size(); i++) {
+        arenas[i].initialize(tbb::task_arena::constraints(numa_nodes[i]));
+    }
+
+    for (int i = 0; i &lt; numa_nodes.size(); i++) {
+        arenas[i].execute([&amp;task_groups, i] {
+            task_groups[i].run([] {
+                /* executed by the thread pinned to specified NUMA node */
+            });
+        });
+    }
+
+    for (int i = 0; i &lt; numa_nodes.size(); i++) {
+        arenas[i].execute([&amp;task_groups, i] {
+            task_groups[i].wait();
+        });
+    }
+
+    return 0;
+}</pre>
+   </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/appendices/preview_features.html">Preview Features</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../../reference/appendices/preview_features/binding_threads_to_numa_node/info.html">info Namespace</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="../../task_scheduler/task_arena_cls.html">task_arena Class</a></div></div></div>
+
+</body>
+</html>

@@ -1,0 +1,709 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Construct, Destroy, Copy" />
+<meta name="DC.subject" content="Construct, Destroy, Copy" />
+<meta name="keywords" content="Construct, Destroy, Copy" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/containers_overview/concurrent_unordered_map_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="construct_destroy_copy_map_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Construct, Destroy, Copy</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="construct_destroy_copy_map_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Construct, Destroy, Copy</h1>
+
+  
+  <div>
+    <div class="section">
+      The following tables provide information on the members of the
+      <samp class="codeph">concurrent_unordered_map</samp> and <samp class="codeph">concurrent_unordered_multimap</samp>
+      template classes.
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">
+        <samp class="codeph">concurrent_unordered_map</samp>
+      </h2>
+      
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all">
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="50.632911392405056%" id="d51533e53">Member</th>
+
+              <th class="cellrowborder" valign="top" width="49.36708860759494%" id="d51533e56">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <p>
+                  <samp class="codeph">
+                    explicit concurrent_unordered_map(size_type
+                    n = <em>&lt;implementation-defined&gt;</em>,
+                    const hasher&amp; hf = hasher(),
+                    const key_equal&amp; eql = key_equal(),
+                    const allocator_type&amp; a = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_map(size_type n, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_map(size_type n, const hasher&amp; hf, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Constructs a table with <samp class="codeph">n</samp> buckets using hasher <samp class="codeph">hf</samp>,
+                  key equality <samp class="codeph">eql</samp> and allocator <samp class="codeph">a</samp>.
+                  In the absence of arguments, their default values are used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <p>
+                  <samp class="codeph">
+                    template &lt;typename InputIterator&gt;
+                    concurrent_unordered_map (InputIterator first, InputIterator last,
+                    size_type n = <em>&lt;implementation-defined&gt;</em>,
+                    const hasher&amp; hf = hasher(),
+                    const key_equal&amp; eql = key_equal(),
+                    const allocator_type&amp; a = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    template &lt;typename InputIterator&gt;
+                    concurrent_unordered_map (InputIterator first, InputIterator last,
+                    size_type n, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    template &lt;typename InputIterator&gt;
+                    concurrent_unordered_map (InputIterator first, InputIterator last,
+                    size_type n, const hasher&amp; hf. const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Constructs a table with <samp class="codeph">n</samp> buckets initialized with
+                  <samp class="codeph">value_type(*<em>i</em>)</samp> where <samp class="codeph"><em>i</em></samp> is in the
+                  half open interval <samp class="codeph">[first,last)</samp> using hasher <samp class="codeph">hf</samp>,
+                  key equality <samp class="codeph">eql</samp> and allocator <samp class="codeph">a</samp>.
+                  In the absence of arguments, their default values are used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">concurrent_unordered_map(const concurrent_unordered_map&amp; m)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Constructs a copy of the map <samp class="codeph">m</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">explicit concurrent_unordered_map(const allocator_type&amp; a)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Constructs an empty map using allocator <samp class="codeph">a</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">
+                  concurrent_unordered_map(const concurrent_unordered_map&amp; m,
+                  const allocator_type&amp; a)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Constructs a copy of the map <samp class="codeph">m</samp> using allocator
+                  <samp class="codeph">a</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_map(std::initializer_list&lt;value_type&gt; il,
+                    size_type n = <em>&lt;implementation-defined&gt;</em>,
+                    const hasher&amp; hf = hasher(),
+                    const key_equal&amp; eql = key_equal(),
+                    const allocator_type&amp; a = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_map(std::initializer_list&lt;value_type&gt; il,
+                    size_type n, const allocator&amp; a)
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_map(std::initializer_list&lt;value_type&gt; il,
+                    size_type n, const hasher&amp; hf, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Supported since C++11. Equivalent to
+                  <samp class="codeph">
+                    concurrent_unordered_map(<em>il</em>.begin(), <em>il</em>.end(), <em>n</em>,
+                    <em>hf</em>, <em>eql</em>, <em>a</em>)
+                  </samp>,
+                  <samp class="codeph">
+                    concurrent_unordered_map(<em>il</em>.begin(), <em>il</em>.end(), <em>n</em>, <em>a</em>)
+                  </samp> and
+                  <samp class="codeph">
+                    concurrent_unordered_map(<em>il</em>.begin(), <em>il</em>.end(), <em>n</em>, <em>hf</em>, a)
+                  </samp> respectively.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">
+                  concurrent_unordered_map(concurrent_unordered_map&amp;&amp; m)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Supported since C++11. Constructs a new table by moving content from <em>m</em>. <em>m</em>
+                  is left in an unspecified state, but can be safely destroyed.
+              </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">
+                  concurrent_unordered_map(concurrent_unordered_map&amp;&amp; m,
+                  const allocator_type&amp; a)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Supported since C++11. Constructs a new table by moving content from <em>m</em> using
+                  specifed allocator. <em>m</em> is left in an unspecified state, but can be safely
+                  destroyed.
+              </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">~concurrent_unordered_map()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Destroys the map.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">
+                  concurrent_unordered_map&amp; operator=(const concurrent_unordered_map&amp; m);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Assigns contents of <samp class="codeph">m</samp> to <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">
+                  concurrent_unordered_map&amp; operator=(concurrent_unordered_map&amp;&amp; m);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Supported since C++11. Moves data from <samp class="codeph">m</samp> to
+                  <samp class="codeph">*<em>this</em></samp>. <em>m</em> is left in an unspecified state, but can
+                  be safely destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">
+                  concurrent_unordered_map&amp;
+                  operator=(std::initializer_list&lt;value_type&gt; il);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Supported since C++11. Assigns contents of <samp class="codeph">il</samp> to <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e53 ">
+                <samp class="codeph">allocator_type get_allocator() const;
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e56 ">
+                <p>
+                  Returns a copy of the allocator associated with <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">
+        <samp class="codeph">concurrent_unordered_multimap</samp>
+      </h2>
+      
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all">
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="50.632911392405056%" id="d51533e505">Member</th>
+
+              <th class="cellrowborder" valign="top" width="49.36708860759494%" id="d51533e508">Description</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <p>
+                  <samp class="codeph">
+                    explicit concurrent_unordered_multimap(size_type
+                    n = <em>&lt;implementation-defined&gt;</em>,
+                    const hasher&amp; hf = hasher(),
+                    const key_equal&amp; eql = key_equal(),
+                    const allocator_type&amp; a = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(size_type n, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(size_type n, const hasher&amp; hf, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Constructs a table with <samp class="codeph">n</samp> buckets using hasher <samp class="codeph">hf</samp>,
+                  key equality <samp class="codeph">eql</samp> and allocator <samp class="codeph">a</samp>.
+                  In the absence of arguments, their default values are used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <p>
+                  <samp class="codeph">
+                    template &lt;typename InputIterator&gt;
+                    concurrent_unordered_multimap(InputIterator first, InputIterator last,
+                    size_type n = <em>&lt;implementation-defined&gt;</em>,
+                    const hasher&amp; hf = hasher(),
+                    const key_equal&amp; eql = key_equal(),
+                    const allocator_type&amp; a = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    template &lt;typename InputIterator&gt;
+                    concurrent_unordered_multimap(InputIterator first, InputIterator last,
+                    size_type n, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    template &lt;typename InputIterator&gt;
+                    concurrent_unordered_multimap(InputIterator first, InputIterator last,
+                    size_type n, const hasher&amp; hf, const allocator_type&amp; hf)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Constructs a table with <samp class="codeph">n</samp> buckets initialized with
+                  <samp class="codeph">value_type(*<em>i</em>)</samp> where <samp class="codeph"><em>i</em></samp> is in the
+                  half open interval <samp class="codeph">[first,last)</samp> using hasher <samp class="codeph">hf</samp>,
+                  key equality <samp class="codeph">eql</samp> and allocator <samp class="codeph">a</samp>.
+                  In the absence of arguments, their default values are used.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap(const concurrent_unordered_multimap&amp; m)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Constructs a copy of the multimap <samp class="codeph">m</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">explicit concurrent_unordered_multimap(const allocator_type&amp; a)</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Constructs empty multimap using allocator <samp class="codeph">a</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap(const concurrent_unordered_multimap&amp;,
+                  const allocator_type&amp; a)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Constructs a copy of the multimap <samp class="codeph">m</samp> using allocator
+                  <samp class="codeph">a</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(std::initializer_list&lt;value_type&gt; il,
+                    size_type n = <em>&lt;implementation-defined&gt;</em>,
+                    const hasher&amp; hf = hasher(),
+                    const key_equal&amp; eql = key_equal(),
+                    const allocator_type&amp; a = allocator_type())
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(std::initializer_list&lt;value_type&gt; il,
+                    size_type n, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+                <p>
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(std::initializer_list&lt;value_type&gt; il,
+                    size_type n, const hasher&amp; hf, const allocator_type&amp; a)
+                  </samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Supported since C++11. Equivalent to
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(<em>il</em>.begin(), <em>il</em>.end(), <em>n</em>,
+                    <em>hf</em>, <em>eql</em>, <em>a</em>)
+                  </samp>,
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(<em>il</em>.begin(), <em>il</em>.end(), <em>n</em>,
+                    <em>a</em>)
+                  </samp> and
+                  <samp class="codeph">
+                    concurrent_unordered_multimap(<em>il</em>.begin(), <em>il</em>.end(), <em>n</em>,
+                    <em>hf</em>, <em>a</em>)
+                  </samp> respectively.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap(concurrent_unordered_multimap&amp;&amp; m)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Supported since C++11. Constructs a new table by moving content from <em>m</em>. <em>m</em>
+                  is left in an unspecified state, but can be safely destroyed.
+              </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap(concurrent_unordered_multimap&amp;&amp; m,
+                  const allocator_type&amp; a)
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Supported since C++11. Constructs a new table by moving content from <em>m</em> using
+                  specifed allocator. <em>m</em> is left in an unspecified state, but can be safely
+                  destroyed.
+              </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">~concurrent_unordered_multimap()</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Destroys the multimap.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap&amp; operator=(const
+                  concurrent_unordered_multimap&amp; m);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Assigns contents of <samp class="codeph">m</samp> to <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap&amp;
+                  operator=(concurrent_unordered_multimap&amp;&amp; m);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Supported since C++11. Moves data from <samp class="codeph">m</samp> to
+                  <samp class="codeph">*<em>this</em></samp>. <em>m</em> is left in an unspecified state, but can
+                  be safely destroyed.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">
+                  concurrent_unordered_multimap&amp; operator=(
+                  std::initializer_list&lt;value_type&gt; il);
+                </samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Supported since C++11. Assigns contents of <samp class="codeph">il</samp> to <samp class="codeph">*this</samp>.
+                </p>
+
+                <p>
+                  <strong>Returns</strong>: a reference to <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="50.632911392405056%" headers="d51533e505 ">
+                <samp class="codeph">allocator_type get_allocator() const;</samp>
+              </td>
+
+              <td class="cellrowborder" valign="top" width="49.36708860759494%" headers="d51533e508 ">
+                <p>
+                  Returns a copy of the allocator associated with <samp class="codeph">*this</samp>.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/containers_overview/concurrent_unordered_map_cls.html">concurrent_unordered_map and concurrent_unordered_multimap Template Classes</a></div>
+</div>
+<div></div>
+</body>
+</html>

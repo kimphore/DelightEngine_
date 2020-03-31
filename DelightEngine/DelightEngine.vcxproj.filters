@@ -73,6 +73,54 @@
     <Filter Include="SystemStat">
       <UniqueIdentifier>{daf6b1cc-7945-422e-af2d-969011df5d58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{c36888c4-8326-457f-b801-912998f9f7cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Renderer">
+      <UniqueIdentifier>{9119fbc9-86e1-4f65-9d6c-aa73519f812e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\SceneView">
+      <UniqueIdentifier>{f89edff8-47ef-442a-8c43-3bddb52f3cd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shader">
+      <UniqueIdentifier>{78beb782-5616-43c3-88ad-0da8d6d4a977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shader\Manager">
+      <UniqueIdentifier>{b99a40c4-c00f-4728-bc55-57d1d0997b5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shader\ShaderObject">
+      <UniqueIdentifier>{e6fc4572-0ab8-40e5-9fb1-07324da24687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Package">
+      <UniqueIdentifier>{1286fed1-e932-41ad-9cba-6dd58f49d739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\PSO">
+      <UniqueIdentifier>{61ba01fd-a9ba-468f-94d1-58ee1ec372a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory">
+      <UniqueIdentifier>{8ac0ca48-d8f4-49d2-bfc0-441891899645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory\Allocator">
+      <UniqueIdentifier>{6b2e79e4-30ff-4664-98d6-bfa0c3c096f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory\MemoryPool">
+      <UniqueIdentifier>{0feeac26-dd65-4820-835b-1a610342cb51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory\MemoryPool\HeapPool">
+      <UniqueIdentifier>{026da5af-a473-4c5f-b6de-c67a4984a8d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory\MemoryPool\StackPool">
+      <UniqueIdentifier>{b15344a5-9776-46b0-8065-9caa1dba1495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shader\ShaderObject\PixelShader">
+      <UniqueIdentifier>{6df5a164-1fbe-4905-8ae6-a5320af5cd31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shader\ShaderObject\VertexShader">
+      <UniqueIdentifier>{335d1ef7-eea5-401f-ac3b-3cf10c1078b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shader\ShaderObject\ComputeShader">
+      <UniqueIdentifier>{58cdc28c-21c7-48f5-835a-990fcc426b14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -105,11 +153,56 @@
     <ClInclude Include="Code\tinyxml2.h">
       <Filter>Parser\XML\TinyXML</Filter>
     </ClInclude>
-    <ClInclude Include="Code\comptr.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Logger.h">
       <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SceneRenderer.h">
+      <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SceneView.h">
+      <Filter>Rendering\SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ShaderBase.h">
+      <Filter>Rendering\Shader\ShaderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Struct.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Function.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ShaderManager.h">
+      <Filter>Rendering\Shader\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\crcchecksum.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\DefineFlag.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\syncObject.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\allocator.h">
+      <Filter>Cores\Memory\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\md5hashing.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\comptr.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\StackMemoryPool.h">
+      <Filter>Cores\Memory\MemoryPool\StackPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\MemoryPoolInterface.h">
+      <Filter>Cores\Memory\MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PixelShader.h">
+      <Filter>Rendering\Shader\ShaderObject\PixelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\VertexShader.h">
+      <Filter>Rendering\Shader\ShaderObject\VertexShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +220,24 @@
     </ClCompile>
     <ClCompile Include="Code\Logger.cpp">
       <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SceneRenderer.cpp">
+      <Filter>Rendering\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SceneView.cpp">
+      <Filter>Rendering\SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\allocator.cpp">
+      <Filter>Cores\Memory\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\StackMemoryPool.cpp">
+      <Filter>Cores\Memory\MemoryPool\StackPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PixelShader.cpp">
+      <Filter>Rendering\Shader\ShaderObject\PixelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\VertexShader.cpp">
+      <Filter>Rendering\Shader\ShaderObject\VertexShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

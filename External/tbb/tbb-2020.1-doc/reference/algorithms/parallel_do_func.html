@@ -1,0 +1,289 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="parallel_do Template Function" />
+<meta name="DC.subject" content="parallel_do Template Function" />
+<meta name="keywords" content="parallel_do Template Function" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/algorithms.html" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/algorithms/parallel_do_func/parallel_do_feeder_cls.html" />
+<meta name="DC.Relation" scheme="URI" content="../task_scheduler/task_group_context.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="parallel_do_func" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>parallel_do Template Function</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="parallel_do_func">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">parallel_do Template Function</h1>
+ 
+   
+  <div> 
+	 <div class="section"><h2 class="sectiontitle">Summary</h2>
+		<p>Template function that processes work items in parallel.</p>
+
+	 </div>
+ 
+	 <div class="section"><h2 class="sectiontitle">Header</h2>
+		 
+		<p> 
+		  <pre> #include "tbb/parallel_do.h"</pre> 
+		</p>
+ 
+	 </div>
+ 
+	 <div class="section"><h2 class="sectiontitle">Syntax</h2>
+		 
+		<pre>template&lt;typename InputIterator, typename Body&gt; 
+void parallel_do( InputIterator first, InputIterator last,
+                  Body body[, task_group_context&amp; group] );
+
+template&lt;typename Container, typename Body&gt;
+void parallel_do( Container c, Body body[, task_group_context&amp; group] );
+                </pre>
+	 </div>
+ 
+	 <div class="section"><h2 class="sectiontitle">Description</h2>
+		 
+		<p>The <samp class="codeph">parallel_do</samp> template has two forms.
+		</p>
+
+		<p>The sequence form  
+		  <samp class="codeph">parallel_do(<em>first,last,body</em>)</samp> applies a function object
+		  <samp class="codeph"><em>body</em></samp> over a sequence [<samp class="codeph"><em>first,last</em></samp>). Items may be
+		  processed in parallel. Additional work items can be added by <samp class="codeph"><em>body</em></samp>
+		  if it has a second argument of type <samp class="codeph">parallel_do_feeder</samp>. The function
+		  terminates when <samp class="codeph">body(<em>x</em>)</samp> returns for all items <samp class="codeph"><em>x</em></samp>
+		  that were in the input sequence or added by method <samp class="codeph">parallel_do_feeder::add</samp>.
+		</p>
+
+		<p>The container form <samp class="codeph">parallel_do(<em>c,body</em>)</samp> is equivalent to
+		  <samp class="codeph">parallel_do(std::begin(<em>c</em>),std::end(<em>c</em>),<em>body</em>)</samp>.
+		</p>
+
+		<p>The requirements for input iterators are specified in Chapter 24 of the ISO C++ standard.
+		   The table below shows the requirements on type <samp class="codeph"><em>Body</em></samp>. 
+		</p>
+
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" width="100%" frame="hsides" border="1" rules="all"><caption><span class="tablecap">Requirements for parallel_do Body and its
+		  argument type T</span></caption> 
+		  <thead align="left"> 
+			 <tr> 
+				<th class="cellrowborder" valign="top" width="50%" id="d1508e151"> 
+				  <p>Pseudo-Signature 
+				  </p>
+ 
+				</th>
+ 
+				<th class="row-nocellborder" valign="top" width="50%" id="d1508e157"> 
+				  <p>Semantics 
+				  </p>
+ 
+				</th>
+ 
+			 </tr>
+</thead>
+ 
+		  <tbody> 
+			 <tr valign="top"> 
+				<td class="cellrowborder" valign="top" width="50%" headers="d1508e151 ">
+				  <pre> Body::operator()(
+   <em>cv-qualifiers<sub>opt</sub></em> T <em>reference<sub>opt</sub></em> item,
+   parallel_do_feeder&lt;T&gt;&amp; feeder
+ ) const
+<strong>OR</strong>
+ Body::operator()(
+   <em>cv-qualifiers<sub>opt</sub></em> T <em>reference<sub>opt</sub></em> item
+ ) const
+				  </pre>
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="50%" headers="d1508e157 "> 
+				  <p>Process a work item. <samp class="codeph">parallel_do</samp> may
+					 concurrently invoke <samp class="codeph">operator()</samp> for the same 
+					 body object but different items.
+				  </p>
+
+				  <p>The operator may accept <samp class="codeph"><em>item</em></samp> by value or by reference,
+				     including rvalue reference.
+				  </p>
+
+				  <p>The signature with <samp class="codeph"><em>feeder</em></samp> permits additional work items to be added.
+				  </p>
+ 
+				  <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+				    <p>Defining both the one-argument and two-argument forms of 
+				      <samp class="codeph">operator()</samp> is not permitted.
+				    </p>
+
+				  </div>
+
+				</td>
+ 
+			 </tr>
+ 
+			 <tr valign="top"> 
+				<td class="cellrowborder" valign="top" width="50%" headers="d1508e151 "> 
+				  <p><samp class="codeph"> T( const T&amp; ) </samp> 
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="50%" headers="d1508e157 "> 
+				  <p> Optional since C++11. Copy a work item.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr valign="top"> 
+				<td class="cellrowborder" valign="top" width="50%" headers="d1508e151 "> 
+				  <p><samp class="codeph"> T( T&amp;&amp; ) </samp> 
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="50%" headers="d1508e157 "> 
+				  <p> Supported since C++11; optional. Move a work item.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr valign="top"> 
+				<td class="cellrowborder" valign="top" width="50%" headers="d1508e151 "> 
+				  <p><samp class="codeph"> ~T::T() </samp> 
+				  </p>
+ 
+				</td>
+ 
+				<td class="row-nocellborder" valign="top" width="50%" headers="d1508e157 "> 
+				  <p> Destroy a work item.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+		  </tbody>
+ 
+		</table>
+</div>
+ 
+		<div class="Note"><h3 class="NoteTipHead">Note</h3> 
+		  <p>The argument type <samp class="codeph"><em>T</em></samp> should be either copy constructible,
+		     move constructible, or both. If the type is not copy constructible, there are
+		     additional usage restrictions:
+		  </p>
+
+		  <ul>
+			 <li>
+				<p>If <samp class="codeph">Body::operator()</samp> accepts its argument by value, or if the
+				   <samp class="codeph"><em>InputIterator</em></samp> type does not also satisfy the requirements
+				   of a forward iterator, then derefencing an <samp class="codeph"><em>InputIterator</em></samp>
+				   must produce an rvalue reference.</p>
+
+			 </li>
+
+			 <li>
+				<p>Additional work items should be passed to the feeder as rvalues,
+				   for example via the <samp class="codeph">std::move</samp> function.</p>
+
+			 </li>
+
+		  </ul>
+
+		</div>
+
+		<p>The algorithm can be passed a <samp class="codeph">task_group_context</samp> object
+		  so that its tasks are executed in this group. By default the algorithm
+		  is executed in a bound group of its own.
+		</p>
+
+		<div class="Note"><h3 class="NoteTipHead">Tip</h3> 
+		  <p>For good performance, execution of <samp class="codeph">Body::operator()</samp>
+			 should take at least ~100,000 clock cycles. If it is less,
+			 overhead of <samp class="codeph">parallel_do</samp> may outweigh performance benefits.
+		  </p>
+
+		  <p>The parallelism in <samp class="codeph">parallel_do</samp> is not scalable if all of the items
+			 come from an input stream that does not have random access.
+			 To achieve scaling, do one of the following:
+		  </p>
+
+		  <ul>
+			 <li>
+				<p>Use random access iterators to specify the input stream. 
+				   Also, consider using <samp class="codeph">parallel_for</samp> in this case.</p>
+
+			 </li>
+
+			 <li>
+				<p>Design your algorithm such that the body often adds more than
+				   one piece of work.</p>
+
+			 </li>
+
+		  </ul>
+
+		</div>
+
+	 </div>
+ 
+	 <div class="section"><h2 class="sectiontitle">Example</h2>
+		
+		<p>The following code sketches a body with the
+		  two-argument form of <samp class="codeph">operator()</samp>.
+		</p>
+
+		<pre>struct MyBody {
+    void operator()(item_t item, 
+                    parallel_do_feeder&lt;item_t&gt;&amp; feeder ) {
+        for each new piece of work implied by item do {
+            item_t new_item = initializer;
+            feeder.add(new_item);
+        }
+    } 
+};
+		</pre>
+	 </div>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/algorithms.html">Algorithms</a></div>
+</div>
+<div class="See Also">
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../../reference/algorithms/parallel_do_func/parallel_do_feeder_cls.html">parallel_do_feeder&lt;item&gt; class</a><br />
+</li>
+</ul>
+<h2>See Also</h2>
+<div class="linklist">
+<div><a href="../task_scheduler/task_group_context.html">Bound groups (task_group_context Class)</a></div></div></div>
+
+</body>
+</html>

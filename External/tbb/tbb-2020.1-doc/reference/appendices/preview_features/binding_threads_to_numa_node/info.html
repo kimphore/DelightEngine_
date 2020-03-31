@@ -1,0 +1,152 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="info Namespace" />
+<meta name="DC.subject" content="info namespace, NUMA" />
+<meta name="keywords" content="info namespace, NUMA" />
+<meta name="DC.Relation" scheme="URI" content="../../../../reference/appendices/preview_features/binding_threads_to_numa_node.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="hardware_info" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../intel_css_styles.css" />
+<title>info Namespace</title>
+<script src="../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="hardware_info">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(4);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">info Namespace</h1>
+
+  
+  <div>
+    <div class="section"><h2 class="sectiontitle">Summary</h2>
+      
+      <p>
+        Interfaces to query information about execution environment.
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Header</h2>
+      
+      <pre>#define TBB_PREVIEW_NUMA_SUPPORT 1
+#include "tbb/info.h"</pre>
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Description</h2>
+      
+      <p>
+        A <samp class="codeph">tbb::info</samp> namespace contains interfaces for getting library configuration 
+        information. This API loads the tbbbind library (if available) which uses hwloc
+        (1.11.x version required) for traversing additional environment information (e.g. NUMA topology).
+      </p>
+
+    </div>
+
+    <div class="section"><h2 class="sectiontitle">Members</h2>
+      
+<pre>
+namespace tbb {
+    typedef /*unspecified*/ numa_node_id;
+    namespace info {
+        std::vector&lt;numa_node_id&gt; numa_nodes();
+        int default_concurrency(numa_node_id id = tbb::task_arena::automatic);
+    }
+}
+</pre>
+    </div>
+
+    <div class="section">
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">
+          The following table provides additional information on the members of 
+          the <samp class="codeph">tbb::info</samp> namespace.
+        </span>
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d24470e86">
+                Member
+              </th>
+
+              <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d24470e89">
+                Description
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24470e86 ">
+                <p>
+                  <samp class="codeph">std::vector&lt;numa_node_id&gt; numa_nodes()</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24470e89 ">
+                <p>
+                  Returns the vector of integral indexes that indicate available NUMA nodes.
+                </p>
+
+                <p>
+                  <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+                    If error occurs during system topology parsing (e.g. hwloc is not available), 
+                    returns vector containing single element that equals to <samp class="codeph">task_arena::automatic</samp>.
+                  </div>
+
+                </p>
+
+              </td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d24470e86 ">
+                <p>
+                  <samp class="codeph">int default_concurrency(numa_node_id id = task_arena::automatic)</samp>
+                </p>
+
+              </td>
+
+              <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d24470e89 ">
+                <p>
+                  Returns concurrency level of the given NUMA node. If argument is not specified,
+                  returns default concurrency level for current library configuration.
+                </p>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../reference/appendices/preview_features/binding_threads_to_numa_node.html">Automatic binding of threads to NUMA node</a></div>
+</div>
+<div></div>
+</body>
+</html>

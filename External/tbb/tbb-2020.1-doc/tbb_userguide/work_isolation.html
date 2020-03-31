@@ -1,0 +1,171 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Work Isolation" />
+<meta name="DC.subject" content="work isolation" />
+<meta name="keywords" content="work isolation" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/title.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/task_scheduler.html" />
+<meta name="DC.Relation" scheme="URI" content="../reference/task_scheduler/task_arena_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="work_isolation" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Work Isolation</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="work_isolation">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Work Isolation</h1>
+
+  
+  <div>
+    <div class="section">
+      <p>
+        In Intel&reg; Threading Building Blocks (Intel&reg; TBB), a thread waiting
+        for a group of tasks to complete might execute other available tasks. In particular,
+        when a parallel construct calls another parallel construct, a thread can obtain a task
+        from the outer-level construct while waiting for completion of the inner-level one.
+      </p>
+
+      <p>
+        In the following example with two <samp class="codeph">parallel_for</samp> calls,
+        the call to the second (nested) parallel loop blocks execution of the first (outer)
+        loop iteration:
+      </p>
+
+<pre>
+// The first parallel loop.
+tbb::parallel_for( 0, N1, []( int i ) { 
+    // The second parallel loop.
+    tbb::parallel_for( 0, N2, []( int j ) { /* Some work */ } );
+} );
+</pre>
+      <p>
+        The blocked thread is allowed to take tasks belonging to the first parallel loop.
+        As a result, two or more iterations of the outer loop might be simultaneously
+        assigned to the same thread. In other words, in Intel TBB execution of functions
+        constituting a parallel construct is <em>unsequenced</em> even within a single thread.
+        In most cases, this behavior is harmless or even beneficial because it does not
+        restrict parallelism available for the thread.
+      </p>
+
+      <p>
+        However, in some cases such unsequenced execution may result in errors. For example,
+        a thread-local variable might unexpectedly change its value after a nested
+        parallel construct:
+      </p>
+
+<pre>
+tbb::enumerable_thread_specific&lt;int&gt; ets;
+tbb::parallel_for( 0, N1, [&amp;ets]( int i ) {
+    // Set a thread specific value
+    ets.local() = i;
+    tbb::parallel_for( 0, N2, []( int j ) { /* Some work */ } );
+    // While executing the above parallel_for, the thread might have run iterations
+    // of the outer parallel_for, and so might have changed the thread specific value.
+    assert( ets.local()==i ); // The assertion may fail!
+} );
+</pre>
+      <p>
+        In other scenarios, the described behavior might lead to deadlocks and other issues.
+        In these cases, a stronger guarantee of execution being sequenced within a thread is
+        desired. For that, Intel TBB provides ways to <em>isolate</em> execution of a parallel
+        construct, for its tasks to not interfere with other simultaneously running tasks.
+      </p>
+
+      <p>
+        One of these ways is to execute the inner level loop in a separate <samp class="codeph">task_arena</samp>:
+      </p>
+
+<pre>
+tbb::enumerable_thread_specific&lt;int&gt; ets;
+tbb::task_arena nested;
+tbb::parallel_for( 0, N1, [&amp;]( int i ) {
+    // Set a thread specific value
+    ets.local() = i;
+    nested.execute( []{
+        // Run the inner parallel_for in a separate arena to prevent the thread
+        // from taking tasks of the outer parallel_for.
+        tbb::parallel_for( 0, N2, []( int j ) { /* Some work */ } );
+    } );
+    assert( ets.local()==i ); // Valid assertion
+} );
+</pre>
+      <p>
+        However, using a separate arena for work isolation is not always convenient,
+        and might have noticeable overheads. To address these shortcomings, Intel TBB
+        provides <samp class="codeph">this_task_arena::isolate</samp> function which runs
+        a user-provided functor in isolation by restricting the calling thread to process
+        only tasks scheduled in the scope of the functor (also called the isolation region).
+      </p>
+
+      <p>
+        When entered a task waiting call or a blocking parallel construct inside
+        an isolated region, a thread can only execute tasks spawned within the region
+        and their child tasks spawned by other threads. The thread is prohibited from
+        executing any outer level tasks or tasks belonging to other isolated regions.
+      </p>
+
+      <p>
+        The isolation region imposes restrictions only upon the thread that called it.
+        Other threads running in the same task arena have no restrictions on task selection
+        unless isolated by a distinct call to <samp class="codeph">this_task_arena::isolate</samp>.
+      </p>
+
+      <p>
+        The following example demonstrates the use of <samp class="codeph">this_task_arena::isolate</samp>
+        to ensure that a thread-local variable is not changed unexpectedly
+        during the call to a nested parallel construct.
+      </p>
+
+<pre>
+#include "tbb/task_arena.h"
+#include "tbb/parallel_for.h"
+#include "tbb/enumerable_thread_specific.h"
+#include &lt;cassert&gt;
+
+int main() {
+    const int N1 = 1000, N2 = 1000;
+    tbb::enumerable_thread_specific&lt;int&gt; ets;
+    tbb::parallel_for( 0, N1, [&amp;ets]( int i ) {
+        // Set a thread specific value
+        ets.local() = i;
+        // Run the second parallel loop in an isolated region to prevent the current thread
+        // from taking tasks related to the outer parallel loop.
+        tbb::this_task_arena::isolate( []{
+            tbb::parallel_for( 0, N2, []( int j ) { /* Some work */ } );
+        } );
+        assert( ets.local()==i ); // Valid assertion
+    } );
+    return 0;
+}
+</pre>
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/title.html">Intel&reg; Threading Building Blocks Developer Guide</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="../reference/task_scheduler.html">Task Scheduler (Developer Reference)</a></div>
+<div><a href="../reference/task_scheduler/task_arena_cls.html">task_arena Class and this_task_arena Namespace</a></div></div></div>
+
+</body>
+</html>

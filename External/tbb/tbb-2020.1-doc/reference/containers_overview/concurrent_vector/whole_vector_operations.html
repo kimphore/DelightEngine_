@@ -1,0 +1,157 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Whole Vector Operations" />
+<meta name="DC.subject" content="Whole Vector Operations" />
+<meta name="keywords" content="Whole Vector Operations" />
+<meta name="DC.Relation" scheme="URI" content="../../../reference/containers_overview/concurrent_vector.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="whole_vector_operations" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../intel_css_styles.css" />
+<title>Whole Vector Operations</title>
+<script src="../../../resources/prism/prism.js"><!----></script>
+<link href="../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="whole_vector_operations">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(3);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Whole Vector Operations</h1>
+ 
+   
+  <div> 
+	 <div class="section">
+		<div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+		  <p>Concurrent invocation of these operations on the
+			 same instance is not safe. 
+		  </p>
+ 
+		</div>
+ 
+		
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the
+			 members of this template class. 
+		  </span><thead align="left"> 
+				<tr> 
+				  <th class="cellrowborder" valign="top" width="33.89830508474576%" id="d63879e39">Member 
+				  </th>
+ 
+				  <th class="cellrowborder" valign="top" width="66.10169491525423%" id="d63879e42">Description 
+				  </th>
+ 
+				</tr>
+</thead>
+ 
+			 <tbody> 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d63879e39 "><span class="keyword">void reserve( size_type n
+						)</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d63879e42 "> 
+					 <p>Reserves space for at least 
+						<samp class="codeph"><em>n</em></samp> elements. 
+					 </p>
+ 
+					 <p><strong>Throws</strong> 
+						<samp class="codeph">std::length_error</samp> if 
+						<samp class="codeph"><em>n</em>&gt;max_size()</samp>. It can also throw an
+						exception if the allocator throws an exception. 
+					 </p>
+ 
+					 <p><strong>Safety</strong>: If an exception is thrown,
+						the instance remains in a valid state. 
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d63879e39 "><span class="keyword">void shrink_to_fit()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d63879e42 "> 
+					 <p>Compacts the internal representation to
+						reduce fragmentation. 
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d63879e39 "><span class="keyword">void swap( concurrent_vector&amp;
+						x )</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d63879e42 "> 
+					 <p>Swap contents of two vectors. Takes O(1)
+						time. 
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d63879e39 "><span class="keyword">void clear()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d63879e42 "> 
+					 <p>Erases all elements. Afterwards, 
+						<samp class="codeph">size()==0</samp>. Does not free internal arrays. 
+					 </p>
+ 
+					 <div class="Note"><h3 class="NoteTipHead">Tip</h3>  
+						<p>To free internal arrays, call 
+						  <samp class="codeph">shrink_to_fit()</samp> after 
+						  <samp class="codeph">clear()</samp>. 
+						</p>
+ 
+					 </div>
+ 
+				  </td>
+ 
+				</tr>
+ 
+				<tr> 
+				  <td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d63879e39 "><span class="keyword"> ~concurrent_vector()</span> 
+				  </td>
+ 
+				  <td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d63879e42 "> 
+					 <p>Erases all elements and destroys the
+						vector. 
+					 </p>
+ 
+				  </td>
+ 
+				</tr>
+ 
+			 </tbody>
+ 
+		  </table>
+</div>
+ 
+	 </div>
+ 
+  </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../reference/containers_overview/concurrent_vector.html">concurrent_vector</a></div>
+</div>
+<div></div>
+</body>
+</html>

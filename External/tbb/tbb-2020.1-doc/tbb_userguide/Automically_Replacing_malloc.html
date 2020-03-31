@@ -1,0 +1,74 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation" />
+<meta name="DC.subject" content="Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation, malloc replacement" />
+<meta name="keywords" content="Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation, malloc replacement" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Memory_Allocation.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Windows_C_Dynamic_Memory_Interface_Replacement.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Linux_C_Dynamic_Memory_Interface_Replacement.html" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/OS_X_C_Dynamic_Memory_Interface_Replacement.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Automically_Replacing_malloc" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Automatically Replacing malloc and Other C/C++ Functions for Dynamic Memory Allocation</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Automically_Replacing_malloc">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Automatically Replacing 
+	 <samp class="codeph">malloc</samp> and Other C/C++ Functions for Dynamic Memory
+	 Allocation</h1>
+ 
+  
+  <div> 
+	 <p>On Windows*, Linux*, and macOS* operating systems, it is possible to
+		automatically replace all calls to standard functions for dynamic memory
+		allocation (such as 
+		<samp class="codeph">malloc</samp>) with the Intel&reg; Threading Building Blocks
+		(Intel&reg; TBB) scalable equivalents. Doing so can sometimes improve application
+		performance. 
+	 </p>
+
+         <p>Replacements are provided by the proxy library (the library names can be found in
+         platform-specific sections below). A proxy library and a scalable memory allocator library
+         should be taken from the same release of Intel TBB, otherwise the libraries may be
+         mutually incompatible.
+         </p>
+
+  </div>
+
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Memory_Allocation.html">Memory Allocation</a></div>
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><a href="../tbb_userguide/Windows_C_Dynamic_Memory_Interface_Replacement.html">Windows* OS C/C++ Dynamic Memory Interface Replacement</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/Linux_C_Dynamic_Memory_Interface_Replacement.html">Linux* OS C/C++ Dynamic Memory Interface Replacement</a><br />
+</li>
+<li class="ulchildlink"><a href="../tbb_userguide/OS_X_C_Dynamic_Memory_Interface_Replacement.html">macOS* C/C++ Dynamic Memory Interface Replacement</a><br />
+</li>
+</ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="thread Class Members" />
+<meta name="DC.subject" content="thread Class Members" />
+<meta name="keywords" content="thread Class Members" />
+<meta name="DC.Relation" scheme="URI" content="../../../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/thread_cls.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="thread_cls" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../../../../../intel_css_styles.css" />
+<title>thread Class Members</title>
+<script src="../../../../../../resources/prism/prism.js"><!----></script>
+<link href="../../../../../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="thread_cls">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\..\..\..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(6);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">thread Class Members</h1>
+ 
+   
+  <div>
+	<div class="section"> 
+		<div class="Note"><h3 class="NoteTipHead">CAUTION</h3> <p>
+        This feature is deprecated and will be removed in the future.
+		</p>
+</div>
+
+	</div>
+
+	 
+<div class="tablenoborder"><table cellpadding="4" summary="" frame="border" border="1" cellspacing="0" rules="all"><span class="tabledesc">The following table provides additional information on the members
+		  of this template class. 
+		</span><thead align="left"> 
+			 <tr> 
+				<th class="cellrowborder" valign="top" width="33.89830508474576%" id="d16650e38">Member 
+				</th>
+ 
+				<th class="cellrowborder" valign="top" width="66.10169491525423%" id="d16650e41">Description 
+				</th>
+ 
+			 </tr>
+</thead>
+ 
+		  <tbody> 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">thread()</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>Constructs a thread that does not represent
+					 a thread of execution, with get_id()==id(). 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">template&lt;typename F&gt; thread(F
+					 f)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>Construct a thread that evaluates f() 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">template&lt;typename F, typename
+					 X&gt; thread(F f, X x)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>Constructs a thread that evaluates f(x). 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">template&lt;typename F, typename X,
+					 typename Y&gt; thread(F f, X x, Y y)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>Constructs thread that evaluates f(x,y). 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">thread(thread&amp;&amp; x)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>Constructs *this to have the state of x and
+                                  sets x to default-constructed state.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">thread&amp; operator=(thread&amp;&amp;
+					 x)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>If joinable(), calls detach(). Then assigns the state of x to
+					 *this and sets x to default-constructed state. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">thread&amp; operator=(thread&amp;
+					 x)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>If joinable(), calls detach(). Then assigns the state of x to
+					 *this and sets x to default-constructed state. 
+				  </p>
+ 
+				  <div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+					 <p> It's a limited emulation of a C++11 move assignment.
+                                         Not provided for C++11 and beyond.
+					 </p>
+ 
+				  </div>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">~thread</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p>if( joinable() ) detach(). 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">void swap(thread&amp; x)</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Effects</strong>: Swaps *this and x.
+                                  </p>
+
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">bool joinable() const</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Returns</strong>: get_id()!=id() 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">void join()</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Requirements</strong>: joinable()==true 
+				  </p>
+ 
+				  <p><strong>Effects</strong>: Wait for thread to complete. Afterwards,
+					 joinable()==false. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">void detach()</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Requirements</strong>: joinable()==true 
+				  </p>
+ 
+				  <p><strong>Effects</strong>: Sets *this to default-constructed state and
+					 returns without blocking. The thread represented by *this continues execution. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">id get_id() const</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Returns</strong>: id of the thread, or a default-constructed id
+					 if *this does not represent a thread. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">native_handle_type
+					 native_handle()</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Returns</strong>: Native thread handle. The handle is a HANDLE
+					 on Windows* operating systems and a pthread_t on Linux* and macOS* operating
+					 systems. For these systems, native_handle() returns 0 if joinable()==false. 
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+			 <tr> 
+				<td class="cellrowborder" valign="top" width="33.89830508474576%" headers="d16650e38 "><span class="keyword">static unsigned
+					 hardware_concurrency()</span> 
+				</td>
+ 
+				<td class="cellrowborder" valign="top" width="66.10169491525423%" headers="d16650e41 "> 
+				  <p><strong>Returns</strong>: The number of hardware
+					 threads. For example, 8 on a system with an Intel&reg; Core&#8482;
+					 i7-6700K Processor with 4 cores and 8 hardware threads.
+				  </p>
+ 
+				</td>
+ 
+			 </tr>
+ 
+		  </tbody>
+ 
+		</table>
+</div>
+ 
+  </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../../../../../reference/appendices/deprecated_features/cpp_obsolete/threads/thread_cls.html">thread Class</a></div>
+</div>
+<div></div>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
 namespace Delight
 {
-	inline void FailedReturnString(HRESULT hr, TCHAR* retStr)
+	inline void FailedReturnString(HRESULT hr, Tchar* retStr)
 	{
 		// hresult exception control..?
 	}

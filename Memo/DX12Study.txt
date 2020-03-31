@@ -1,0 +1,7 @@
+DX12 관련 공부하거나 참고할만한 내용들..
+
+DX12 MSDN
+https://docs.microsoft.com/ko-kr/windows/win32/direct3d12/direct3d-12-graphics
+
+1. rootSignature
+랜더링 파이프라인에 묶여야 하는 자원들, 이 자원이 쉐이더 입력 레지스터에 어떻게 대응되는지...

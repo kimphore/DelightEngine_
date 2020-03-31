@@ -1,0 +1,92 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Flow Graph Basics: Buffering and Forwarding" />
+<meta name="DC.subject" content="Flow Graph Basics, Buffering and Forwarding" />
+<meta name="keywords" content="Flow Graph Basics, Buffering and Forwarding" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Basic_Flow_Graph_concepts.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="flow_graph_buffering_in_nodes" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Flow Graph Basics: Buffering and Forwarding</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="flow_graph_buffering_in_nodes">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Flow Graph Basics: Buffering and Forwarding</h1>
+ 
+   
+  <div> 
+	 <p>
+             Intel&reg; Threading Building Blocks (Intel&reg; TBB) flow graph nodes
+             use messages to communicate data and to enforce dependencies.
+             If a node passes a message successfully to any successor, no further
+             action is taken with the message by that node.
+             As noted in the section on Single-push vs.
+             Broadcast-push, a message may be passed to one or to multiple successors,
+             depending on the type of the node, how many successors are connected to
+             the node, and whether the message is pushed or pulled.
+         </p>
+
+         <p>
+             There are times when a node cannot successfully push a message to any successor.
+             In this case what happens to the message depends on the type of the node.
+             The two possibilities are:
+             <ul>
+                 <li>The node stores the message to be forwarded later.</li>
+
+                 <li>The node discards the message.</li>
+
+             </ul>
+
+	 </p>
+
+         <p>
+             If a node discards messages that are not forwarded, and this behavior
+             is not desired, the node should be connected to a buffering node that does store
+             messages that cannot be pushed.
+         </p>
+
+	 <p>
+             If a message has been stored by a node, there are two ways it can be passed
+             to another node:
+             <ul>
+                 <li>A successor to the node can pull the message using <samp class="codeph">try_get()</samp> or
+                 <samp class="codeph">try_reserve()</samp>.</li>
+
+                 <li>A successor can be connected using <samp class="codeph">make_edge()</samp>.</li>
+
+             </ul>
+
+             If a <samp class="codeph">try_get()</samp> successfully forwards a message, it is removed
+             from the node that stored it. If a node is connected using <samp class="codeph">make_edge</samp>
+             the node will attempt to push a stored message to the new successor.
+	 </p>
+
+  </div>
+ 
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Basic_Flow_Graph_concepts.html">Basic Flow Graph Concepts</a></div>
+</div>
+<div></div>
+</body>
+</html>

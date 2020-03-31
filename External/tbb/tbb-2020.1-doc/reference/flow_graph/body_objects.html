@@ -1,0 +1,76 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Body Objects" />
+<meta name="DC.subject" content="Body Objects" />
+<meta name="keywords" content="Body Objects" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/overview.html" />
+<meta name="DC.Relation" scheme="URI" content="copy_body_func.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="body_objects" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Body Objects</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="body_objects">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+ 
+  <h1 class="topictitle1">Body Objects</h1>
+ 
+   
+  <div> 
+	 <p>Some nodes execute user-provided body objects. These objects can be
+		created by instantiating function objects or lambda expressions. The nodes that
+		use body objects include 
+		<span class="keyword">continue_node</span>, 
+		<span class="keyword">function_node</span>,
+		<span class="keyword">source_node</span> and
+                <span class="keyword">multifunction_node</span>. 
+	 </p>
+ 
+	 <div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+		<p> The body objects passed to the flow graph nodes are copied. Therefore
+		  updates to member variables will not affect the original object used to
+		  construct the node. If the state held within a body object must be inspected
+		  from outside of the node, the 
+		<span class="option">copy_body</span> function can be used to obtain an updated
+		copy. 
+		</p>
+ 
+	 </div>
+ 
+	 <div class="Note"><h3 class="NoteTipHead">CAUTION</h3>  
+		<p> The source_node has a one-item buffer which may contain a value
+                obtained from executing the node's body.  If the source_node has
+                emitted <samp class="codeph">N</samp> items, the state of the body returned by
+                <span class="option">copy_body</span> may indicate it has been called <samp class="codeph">N + 1</samp> times. 
+		</p>
+ 
+	 </div>
+ 
+  </div>
+ 
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/overview.html">Overview</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="copy_body_func.html">copy_body Template Function
+		  </a></div></div></div> 
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="topic" />
+<meta name="DC.Title" content="Iterating Over a Concurrent Queue for Debugging" />
+<meta name="DC.subject" content="Iterating Over a Concurrent Queue for Debugging" />
+<meta name="keywords" content="Iterating Over a Concurrent Queue for Debugging" />
+<meta name="DC.Relation" scheme="URI" content="../tbb_userguide/Concurrent_Queue_Classes.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="tutorial_Iterating_Over_a_Concurrent_Queue_for_Debugging" />
+<link rel="stylesheet" type="text/css" href="../intel_css_styles.css" />
+<title>Iterating Over a Concurrent Queue for Debugging</title>
+<script src="../resources/prism/prism.js"><!----></script>
+<xml>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="DocSet" Value="Intel"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="Locale" Value="kbEnglish"></MSHelp:Attr>
+<MSHelp:Attr xmlns:MSHelp="http://www.microsoft.com/MSHelp/" Name="TopicType" Value="kbReference"></MSHelp:Attr>
+</xml>
+<link href="../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="tutorial_Iterating_Over_a_Concurrent_Queue_for_Debugging">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(1);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+<h1 class="topictitle1">Iterating Over a Concurrent Queue for Debugging</h1>
+
+<div><p>The template classes <samp class="codeph">concurrent_queue</samp> and <samp class="codeph">concurrent_bounded_queue</samp> support STL-style iteration. This support is intended only for debugging, when you need to dump a queue. The iterators go forwards only, and are too slow to be very useful in production code. If a queue is modified, all iterators pointing to it become invalid and unsafe to use. The following snippet dumps a queue. The <samp class="codeph">operator&lt;&lt;</samp> is defined for a <samp class="codeph">Foo</samp>.</p>
+
+<pre>concurrent_queue&lt;Foo&gt; q;
+...
+typedef concurrent_queue&lt;Foo&gt;::const_iterator iter;
+for(iter i(q.unsafe_begin()); i!=q.unsafe_end(); ++i ) {
+    cout &lt;&lt; *i;
+}</pre>
+<p>The prefix <samp class="codeph">unsafe_</samp> on the methods is a reminder that they are not concurrency safe.</p>
+</div>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../tbb_userguide/Concurrent_Queue_Classes.html">Concurrent Queue Classes</a></div>
+</div>
+<div></div>
+</body>
+</html>

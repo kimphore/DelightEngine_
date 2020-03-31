@@ -1,0 +1,519 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0016)http://localhost -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="DC.Type" content="reference" />
+<meta name="DC.Title" content="Fowarding, Buffering and Reception Policy" />
+<meta name="DC.Relation" scheme="URI" content="../../reference/flow_graph/overview.html" />
+<meta name="DC.Relation" scheme="URI" content="message_passing_protocol.html" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="sender_and_buffer_policy" />
+<meta name="DC.Language" content="en-US" />
+<link rel="stylesheet" type="text/css" href="../../intel_css_styles.css" />
+<title>Fowarding, Buffering and Reception Policy</title>
+<script src="../../resources/prism/prism.js"><!----></script>
+<link href="../../resources/prism/prism.css" rel="stylesheet" />
+</head>
+<body id="sender_and_buffer_policy">
+ <!-- ==============(Start:NavScript)================= -->
+ <script src="..\..\NavScript.js" language="JavaScript1.2" type="text/javascript"></script>
+ <script language="JavaScript1.2" type="text/javascript">WriteNavLink(2);</script>
+ <!-- ==============(End:NavScript)================= -->
+
+
+
+  <h1 class="topictitle1">Fowarding, Buffering and Reception Policy</h1>
+
+  
+  <div>
+    <div class="section">
+      <p>
+        In an Intel&reg; Threading Building Blocks (Intel&reg; TBB) flow::graph, nodes which
+        forward messages to successors have one of two possible forwarding policies, which are a
+        property of the node:
+        <ul>
+          <li>
+            <strong>broadcast-push</strong> - the message will be pushed to as many successors as will accept
+            the message. If no successor accepts the message, the fate of the message depends on the
+            output buffering policy of the node.
+          </li>
+
+          <li>
+            <strong>single-push</strong> - if the message is accepted by a successor, no further push of that
+            message will occur. This policy is unique to <samp class="codeph">buffer_node</samp>,
+            <samp class="codeph">queue_node</samp>, <samp class="codeph">priority_queue_node</samp> and
+            <samp class="codeph">sequencer_node</samp>. If no successor accepts the message, it will be
+            retained for a possible future push or pull.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <p>
+        There are two policies for handling a message which cannot be pushed to any successor:
+        <ul>
+          <li>
+            <strong>buffering</strong> - if no successor accepts a message, it is stored so subsequent node
+            processing can use it. Nodes that buffer outputs have "yes" in the column "try_get()?"
+            below.
+          </li>
+
+          <li>
+            <strong>discarding</strong> - if no successor accepts a message, it is discarded and has no
+            further effect on graph execution. Nodes that discard outputs have "no" in the column
+            "try_get()?" below.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <p>
+        There are two policies for handling the reception of a message by a node:
+        <ul>
+          <li><strong>accept</strong> - the node will deal with as many messages as are pushed to it.</li>
+
+          <li>
+            <strong>switch</strong> - the message is not accepted, and the the state of the edge will change
+            from push to pull mode.
+          </li>
+
+        </ul>
+
+      </p>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        Some successor nodes will accept or switch depending on whether the parallelism in the node
+        is sufficient to accept, or based on the policy of the node. For example, an edge to a
+        <samp class="codeph">function_node</samp> with a &lt;rejecting&gt; policy but with unlimited
+        parallelism will never switch from push to pull mode, because any message pushed to the node
+        will result in a task being created to run the body of the node. If the node has limited
+        parallelism and that limit is reached, then the node will switch an incoming edge from push
+        to pull when the predecessor attempts to push a message.
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">Note</h3> 
+        Nodes that may attempt to pull from a predecessor have the Reception Policy "switch" in the
+        table below.  If message loss is not desired, these nodes should have a predecessor that has
+        "yes" in the column "try_get()?".
+      </div>
+
+      <div class="Note"><h3 class="NoteTipHead">CAUTION</h3> 
+        The reserving <samp class="codeph">join_node</samp> always reserves messages on its inputs.  The inputs
+        to the reserving <samp class="codeph">join_node</samp> should all support reservation ("yes" in the
+        column "try_reserve()?" below.)
+      </div>
+
+      <p>The following table lists the policies of each node:</p>
+
+      
+<div class="tablenoborder"><table cellpadding="4" summary="" id="buffer_forward_tbl" frame="border" border="1" cellspacing="0" rules="all"><caption><span class="tablecap">Input buffering, output buffering, reserving and forwarding policy</span></caption>
+          
+          
+          
+          
+          
+          <thead align="left">
+            <tr>
+              <th class="cellrowborder" align="center" valign="top" width="40%" id="d81123e166"><p>Node</p>
+</th>
+
+              <th class="cellrowborder" align="center" valign="top" width="15%" id="d81123e170"><p>Reception Policy</p>
+</th>
+
+              <th class="cellrowborder" align="center" valign="top" width="15%" id="d81123e174"><p>try_get()?</p>
+</th>
+
+              <th class="cellrowborder" align="center" valign="top" width="15%" id="d81123e178"><p>try_reserve()?</p>
+</th>
+
+              <th class="cellrowborder" align="center" valign="top" width="15%" id="d81123e182"><p>Forwarding</p>
+</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr><td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><strong>Functional Nodes</strong></p>
+</td>
+</tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">source_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>--</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">function_node&lt;rejecting&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept/switch</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">function_node&lt;queueing&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">continue_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">multifunction_node&lt;rejecting&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept/switch</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">multifunction_node&lt;queueing&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr><td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><strong>Buffering Nodes</strong></p>
+</td>
+</tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">buffer_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>single-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">priority_queue_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>single-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">queue_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>single-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">sequencer_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>single-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">overwrite_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">write_once_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept once</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr><td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><strong>Split/Join Nodes</strong></p>
+</td>
+</tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">join_node&lt;queueing&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">join_node&lt;reserving&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>switch</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">join_node&lt;tag_matching&gt;</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>yes</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">split_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">indexer_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr><td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><strong>Other Nodes</strong></p>
+</td>
+</tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">broadcast_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+            <tr>
+              <td class="cellrowborder" valign="top" width="40%" headers="d81123e166 "><p><span class="keyword">limiter_node</span></p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e170 "><p>accept/switch</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e174 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e178 "><p>no</p>
+</td>
+
+              <td class="cellrowborder" valign="top" width="15%" headers="d81123e182 "><p>broadcast-push</p>
+</td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+  </div>
+
+  
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="../../reference/flow_graph/overview.html">Overview</a></div>
+</div>
+<div class="See Also"><h2>See Also</h2>
+<div class="linklist">
+<div><a href="message_passing_protocol.html">Message Passing Protocol</a></div></div></div>
+
+</body>
+</html>
