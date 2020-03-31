@@ -19,3 +19,6 @@ STL 대체용.. std STL을 사용하면 DLL내부에서 사용이 불가능하�
 
 3. imgui(https://github.com/ocornut/imgui)
 플로팅 ui용 라이브러리.
+
+4. Thrading Building Blocks(https://github.com/oneapi-src/oneTBB)
+병렬 처리(parallel_for..), 메모리 할당(scalable_malloc, realloc, etc) 라이브러리
