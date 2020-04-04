@@ -31,11 +31,12 @@ namespace Delight
 		virtual void reset();
 
 	private:
-		void allocateStack(size_t);
+		void allocateStack(size_t Size);
+		void updateStackState(size_t Size);
 
 	private:
-		Byte* CurrentStackPointer; // current unused stack pointer.(top)
-		Byte* StackBottomPointer; // stack start point.
+		Byte* StackCurrentPointer; // current unused stack pointer.(top)
+		Byte* StackStartPointer; // stack start point.
 		Int32 UsedSize;
 		Int32 TotalSize;
 		Bool8 DirtyFlag;

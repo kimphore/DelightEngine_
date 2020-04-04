@@ -60,4 +60,21 @@ namespace Delight
 
 		return newAllocatedPointer;
 	}
+
+	static size_t getAllocatedSize(void* allocatedPointer)
+	{
+		if (allocatedPointer == nullptr)
+			return 0;
+
+		// tbb, malloc 구분하지 않고 범용적으로 사용하기 위해.
+#if USE_TBB_ALLOCATION
+		size_t scalableSize = scalable_msize(allocatedPointer);
+		size_t mallocSize = _msize(allocatedPointer);
+#else
+		size_t scalableSize = 0;
+		size_t mallocSize = _msize(allocatedPointer);
+#endif
+
+		return max(scalableSize, mallocSize);
+	}
 }

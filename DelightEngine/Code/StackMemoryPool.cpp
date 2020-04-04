@@ -1,4 +1,7 @@
+#include "Include.h"
 #include "StackMemoryPool.h"
+#include "memoryFunctions.h"
+#include "logger.h"
 
 /*!
  * \file StackMemoryPool.cpp
@@ -16,8 +19,8 @@
 */
 
 Delight::CStackMemoryPool::CStackMemoryPool()
-	: CurrentStackPointer(nullptr),
-	StackBottomPointer(nullptr),
+	: StackCurrentPointer(nullptr),
+	StackStartPointer(nullptr),
 	UsedSize(0),
 	TotalSize(0),
 	DirtyFlag(false)
@@ -27,26 +30,84 @@ Delight::CStackMemoryPool::CStackMemoryPool()
 
 Delight::CStackMemoryPool::CStackMemoryPool(size_t _poolSize)
 {
-
+	allocate(_poolSize);
 }
 
-void* Delight::CStackMemoryPool::allocate(UInt64 Size)
+// return allocated or reallocated memory pointer(top)
+void* Delight::CStackMemoryPool::allocate(size_t Size)
 {
+	void* retPointer = StackCurrentPointer;
+
+	updateStackState(Size);
 	
-	return nullptr;
+	UsedSize += Size;
+	StackCurrentPointer += Size;	
+
+	return retPointer;
 }
 
-void* Delight::CStackMemoryPool::reallocate(void* pointer, UInt64 Size)
+// 사실 StackPool은 매프레임 초기화되므로.. 
+// 재 할당은 안하고 그냥 allocation이랑 같다.
+void* Delight::CStackMemoryPool::reallocate(void* pointer, size_t Size)
 {
-	return nullptr;
+	size_t currentSize = Delight::getAllocatedSize(pointer);
+	void* newAllocation = nullptr;
+
+	if (currentSize > 0)
+	{
+		// reallocation and copy data.
+		newAllocation = allocate(Size);
+
+		if (newAllocation != nullptr)
+		{
+			memcpy(newAllocation, pointer, currentSize);
+		}
+	}
+
+	return newAllocation;
 }
 
 void Delight::CStackMemoryPool::reset()
 {
-
+	if (DirtyFlag)
+	{
+		StackCurrentPointer = StackStartPointer;
+		UsedSize = 0;
+		DirtyFlag = false;
+	}
 }
 
-void Delight::CStackMemoryPool::allocateStack(size_t)
+// real memory allocation.
+void Delight::CStackMemoryPool::allocateStack(size_t Size)
 {
+	if (StackStartPointer == nullptr)
+	{
+		// first allocation.
+		StackStartPointer = (Byte*)Delight::malloc(Size);
+		reset();
+	}
+	else
+	{
+		// pool reallocation.
+		StackStartPointer = (Byte*)Delight::realloc(StackStartPointer, Size);
+	}
 
+	TotalSize = Size;
+	
+	Delight::ASSERT(
+		Delight::getAllocatedSize(StackStartPointer) != Size,
+		"Stack Allocation Failed!"
+	);
+}
+
+// check that need reallocation or allocation.
+void Delight::CStackMemoryPool::updateStackState(size_t Size)
+{
+	size_t afterSize = UsedSize + Size;
+
+	if (TotalSize < afterSize)
+	{
+		// alloc or realloc.
+		allocateStack(Size);
+	}
 }
