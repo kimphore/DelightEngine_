@@ -4,67 +4,27 @@
 
 namespace Delight
 {
-	static void memzero(void* ptr, UInt32 size)
+	static inline void memzero(void* ptr, UInt32 size)
 	{
 		memset(ptr, 0, size);
 	}
-
-	/*
-		Memory Allocation Functions
-	*/
-
-	static inline Bool8 isAllocatedFormTBB(void* allocatedPointer)
+	
+	static inline void assertImple(Bool8 functionResult, char* assertionText, char* fileName, char* funcName, int cppLine)
 	{
-		if (allocatedPointer == nullptr)
-			return false;
+		static char assertText[512];
 
-		return scalable_msize(allocatedPointer) != 0;
-	}
-
-	static void* malloc(size_t size)
-	{
-		void* allocatedPointer = nullptr;
-#if USE_TBB_ALLOCATION
-		allocatedPointer = scalable_malloc(size);
-#else
-		allocatedPointer = ::malloc(size);
-#endif
-
-		return allocatedPointer;
-	}
-
-	static void free(void* allocatedPointer)
-	{
-		if (allocatedPointer == nullptr)
-			return;
-
-#if USE_TBB_ALLOCATION
-		// if allocated from tbb library
-		if (isAllocatedFormTBB(allocatedPointer))
+		if (!functionResult)
 		{
-			scalable_free(allocatedPointer);
+			memzero(assertText, 512);
+
+			sprintf_s(assertText, 512,
+				"FileName : %s\n\rFunction:%s(%d line)\n\r\n\r%s",
+				fileName, funcName, cppLine, assertionText
+			);
+
+			__debugbreak();
 		}
-#else
-		free(allocatedPointer);
-#endif
 	}
 
-	static void* realloc(void* allocatedPointer, size_t newSize)
-	{
-		void* newAllocatedPointer = nullptr;
-
-		if (newSize == 0 || allocatedPointer == nullptr)
-			return newAllocatedPointer; // size_t unsigned.
-
-#if USE_TBB_ALLOCATION
-		if (isAllocatedFormTBB(allocatedPointer))
-		{
-			newAllocatedPointer = scalable_realloc(allocatedPointer, newSize);
-		}
-#else
-		newAllocatedPointer = ::realloc(allocatedPointer, newSize);
-#endif
-
-		return newAllocatedPointer;
-	}
+	#define ASSERT(result, caption) assertImple(result, caption, __FILE__, __FUNCTION__, __LINE__)
 }

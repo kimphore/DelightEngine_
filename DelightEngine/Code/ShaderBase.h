@@ -52,7 +52,7 @@ public:
 
 	virtual void CompileShader();
 protected:
-	FMD5Hash shaderHash; //
+	Delight::FMD5Hash shaderHash; //
 	FShaderDesc shaderDescription;
 	EShaderType ShaderType;
 	Delight::Comptr<ID3DBlob> ShaderObject;

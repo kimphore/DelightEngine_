@@ -23,7 +23,7 @@ namespace Delight
 		EMPC_DefaultPoolSize = 1024 * 1024, // 1MB.
 	};
 
-	class IMemoryPool
+	class ENGINE_DLL IMemoryPool
 	{
 	public:
 		IMemoryPool()

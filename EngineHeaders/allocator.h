@@ -20,7 +20,7 @@
 namespace Delight
 {
 	class IMemoryPool;
-	class CAllocator
+	class ENGINE_DLL CAllocator
 	{
 	public:
 		explicit CAllocator(const char* pName = "default_allocator");

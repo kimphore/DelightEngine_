@@ -1,3 +1,4 @@
+#include "Include.h"
 #include "allocator.h"
 #include "MemoryPoolInterface.h"
 #include "StackMemoryPool.h"
@@ -15,6 +16,11 @@
  *
  * \note
 */
+Delight::CAllocator::CAllocator(const char* pName /*= "default_allocator"*/)
+{
+
+}
+
 void* Delight::CAllocator::allocate(size_t n, int flags /*= 0*/)
 {
 	if (MemoryPool == nullptr)

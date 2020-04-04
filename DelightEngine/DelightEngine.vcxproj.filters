@@ -204,6 +204,9 @@
     <ClInclude Include="Code\VertexShader.h">
       <Filter>Rendering\Shader\ShaderObject\VertexShader</Filter>
     </ClInclude>
+    <ClInclude Include="Header\memoryFunctions.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">

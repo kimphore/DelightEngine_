@@ -19,7 +19,7 @@
 
 namespace Delight
 {
-	class CStackMemoryPool : public IMemoryPool
+	class ENGINE_DLL CStackMemoryPool : public IMemoryPool
 	{
 	public:
 		CStackMemoryPool();
@@ -31,13 +31,14 @@ namespace Delight
 		virtual void reset();
 
 	private:
-		void allocateStack(size_t);
+		void allocateStack(size_t Size);
+		void updateStackState(size_t Size);
 
 	private:
-		Byte* CurrentStackPointer; // current unused stack pointer.(top)
-		Byte* StackBottomPointer; // stack start point.
-		Int32 UsedSize;
-		Int32 TotalSize;
+		Byte* StackCurrentPointer; // current unused stack pointer.(top)
+		Byte* StackStartPointer; // stack start point.
+		size_t UsedSize;
+		size_t TotalSize;
 		Bool8 DirtyFlag;
 	};
 

@@ -22,10 +22,7 @@ namespace Delight
 				fileName, funcName, cppLine, assertionText
 			);
 
-			__asm
-			{
-				int 3
-			}
+			__debugbreak();
 		}
 	}
 
