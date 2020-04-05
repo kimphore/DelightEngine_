@@ -154,6 +154,7 @@
     <ClInclude Include="Code\EngineKernel.h" />
     <ClInclude Include="Code\Logger.h" />
     <ClInclude Include="Code\MemoryPoolInterface.h" />
+    <ClInclude Include="Code\MemoryTracer.h" />
     <ClInclude Include="Code\PixelShader.h" />
     <ClInclude Include="Code\RHI.h" />
     <ClInclude Include="Code\RHI_DX12Device.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="Code\allocator.cpp" />
     <ClCompile Include="Code\EngineKernel.cpp" />
     <ClCompile Include="Code\Logger.cpp" />
+    <ClCompile Include="Code\MemoryTracer.cpp" />
     <ClCompile Include="Code\PixelShader.cpp" />
     <ClCompile Include="Code\RHI_DX12Device.cpp" />
     <ClCompile Include="Code\SceneRenderer.cpp" />

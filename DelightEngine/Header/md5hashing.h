@@ -20,7 +20,7 @@
  * \note
 */
 
-Bool8 GetMD5Hash(Char* buffer, UInt32 bufferSize, FMD5Hash* hashOutput)
+Bool8 GetMD5Hash(Char* buffer, UInt32 bufferSize, Delight::FMD5Hash* hashOutput)
 {
 	UInt32 dwState = 0;
 	Bool8 bResult = false;

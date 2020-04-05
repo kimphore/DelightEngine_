@@ -17,8 +17,20 @@
  * \note
 */
 Delight::CAllocator::CAllocator(const char* pName /*= "default_allocator"*/)
+	:MemoryPool(nullptr),
+	AllocatorName(pName)
 {
 
+}
+
+Delight::CAllocator::CAllocator(const CAllocator& x)
+{
+	// ..?
+}
+
+Delight::CAllocator::CAllocator(const CAllocator& x, const char* pName)
+{
+	// ..?
 }
 
 void* Delight::CAllocator::allocate(size_t n, int flags /*= 0*/)
@@ -33,6 +45,7 @@ void Delight::CAllocator::deallocate(void* p, size_t n)
 {
 	if (MemoryPool == nullptr)
 		return;
+
 }
 
 void* Delight::CAllocator::allocate(size_t n, size_t alignment, size_t offset, int flags /*= 0*/)

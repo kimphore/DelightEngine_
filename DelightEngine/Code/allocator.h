@@ -24,13 +24,9 @@ namespace Delight
 	{
 	public:
 		explicit CAllocator(const char* pName = "default_allocator");
-		CAllocator(const CAllocator& x)
-		{}
-		CAllocator(const CAllocator& x, const char* pName)
-		{}
-
-		virtual ~CAllocator()
-		{};
+		CAllocator(const CAllocator& x);
+		CAllocator(const CAllocator& x, const char* pName);
+		virtual ~CAllocator();
 
 		void* allocate(size_t n, int flags = 0);
 		void* allocate(size_t n, size_t alignment, size_t offset, int flags = 0);

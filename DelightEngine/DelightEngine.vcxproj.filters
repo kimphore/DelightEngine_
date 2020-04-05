@@ -106,9 +106,6 @@
     <Filter Include="Cores\Memory\MemoryPool">
       <UniqueIdentifier>{0feeac26-dd65-4820-835b-1a610342cb51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cores\Memory\MemoryPool\HeapPool">
-      <UniqueIdentifier>{026da5af-a473-4c5f-b6de-c67a4984a8d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Cores\Memory\MemoryPool\StackPool">
       <UniqueIdentifier>{b15344a5-9776-46b0-8065-9caa1dba1495}</UniqueIdentifier>
     </Filter>
@@ -120,6 +117,12 @@
     </Filter>
     <Filter Include="Rendering\Shader\ShaderObject\ComputeShader">
       <UniqueIdentifier>{58cdc28c-21c7-48f5-835a-990fcc426b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory\MemoryTracer">
+      <UniqueIdentifier>{38f8e05d-788f-4418-807d-2e931f0f56d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\Memory\Allocator\HeapAllocator">
+      <UniqueIdentifier>{dbc7969c-bd2c-413d-a809-308262d8f248}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +210,9 @@
     <ClInclude Include="Header\memoryFunctions.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Code\MemoryTracer.h">
+      <Filter>Cores\Memory\MemoryTracer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -241,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="Code\VertexShader.cpp">
       <Filter>Rendering\Shader\ShaderObject\VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\MemoryTracer.cpp">
+      <Filter>Cores\Memory\MemoryTracer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

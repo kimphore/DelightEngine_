@@ -36,5 +36,7 @@ namespace Delight
 		virtual void* allocate(size_t Size) PURE_FUNCTION;
 		virtual void* reallocate(void* pointer, size_t Size) PURE_FUNCTION;
 		virtual void reset() PURE_FUNCTION;
+		virtual void release() PURE_FUNCTION;
+		virtual void deallocate() PURE_FUNCTION;
 	};
 }

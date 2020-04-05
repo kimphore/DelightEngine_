@@ -28,7 +28,17 @@ Delight::CStackMemoryPool::CStackMemoryPool()
 
 }
 
+Delight::CStackMemoryPool::~CStackMemoryPool()
+{
+	release();
+}
+
 Delight::CStackMemoryPool::CStackMemoryPool(size_t _poolSize)
+	: StackCurrentPointer(nullptr),
+	StackStartPointer(nullptr),
+	UsedSize(0),
+	TotalSize(0),
+	DirtyFlag(false)
 {
 	allocate(_poolSize);
 }
@@ -77,6 +87,24 @@ void Delight::CStackMemoryPool::reset()
 	}
 }
 
+void Delight::CStackMemoryPool::deallocate()
+{
+	//의미가 있을까..?
+}
+
+void Delight::CStackMemoryPool::release()
+{
+	if (StackStartPointer)
+	{
+		Delight::free(StackStartPointer);
+		StackStartPointer = nullptr;
+		StackCurrentPointer = nullptr;
+		UsedSize = 0;
+		TotalSize = 0;
+		DirtyFlag = false;
+	}
+}
+
 // real memory allocation.
 void Delight::CStackMemoryPool::allocateStack(size_t Size)
 {
@@ -84,6 +112,7 @@ void Delight::CStackMemoryPool::allocateStack(size_t Size)
 	{
 		// first allocation.
 		StackStartPointer = (Byte*)Delight::malloc(Size);
+		StackCurrentPointer = StackStartPointer;
 		reset();
 	}
 	else
@@ -95,7 +124,7 @@ void Delight::CStackMemoryPool::allocateStack(size_t Size)
 	TotalSize = Size;
 	
 	Delight::ASSERT(
-		Delight::getAllocatedSize(StackStartPointer) != Size,
+		Delight::getAllocatedSize(StackStartPointer) == Size,
 		"Stack Allocation Failed!"
 	);
 }

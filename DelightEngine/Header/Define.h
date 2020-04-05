@@ -28,7 +28,7 @@
 
 #define _count(array) (unsigned int)(sizeof(array) / sizeof(array[0]))
 
-#define FOR_RANGE(index, begin, end) for(_int index = begin; index < end; ++index)
+#define FOR_RANGE(index, begin, end) for(Int32 index = begin; index < end; ++index)
 
 #define SYSTEM_LOG_LEVEL 1000
 

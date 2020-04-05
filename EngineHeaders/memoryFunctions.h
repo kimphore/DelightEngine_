@@ -66,15 +66,13 @@ namespace Delight
 		if (allocatedPointer == nullptr)
 			return 0;
 
-		// tbb, malloc 구분하지 않고 범용적으로 사용하기 위해.
+		// 범용적으로 사용하려면 valid assert가 나므로.. 분리하자.
 #if USE_TBB_ALLOCATION
-		size_t scalableSize = scalable_msize(allocatedPointer);
-		size_t mallocSize = _msize(allocatedPointer);
+		size_t allocatedSize = scalable_msize(allocatedPointer);
 #else
-		size_t scalableSize = 0;
-		size_t mallocSize = _msize(allocatedPointer);
+		size_t allocatedSize = _msize(allocatedPointer);
 #endif
 
-		return max(scalableSize, mallocSize);
+		return allocatedSize;
 	}
 }
