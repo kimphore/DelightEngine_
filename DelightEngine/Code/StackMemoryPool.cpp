@@ -46,14 +46,7 @@ Delight::CStackMemoryPool::CStackMemoryPool(size_t _poolSize)
 // return allocated or reallocated memory pointer(top)
 void* Delight::CStackMemoryPool::allocate(size_t Size)
 {
-	void* retPointer = StackCurrentPointer;
-
-	updateStackState(Size);
-	
-	UsedSize += Size;
-	StackCurrentPointer += Size;	
-
-	return retPointer;
+	return allocateStack(Size);
 }
 
 // 사실 StackPool은 매프레임 초기화되므로.. 
@@ -106,7 +99,7 @@ void Delight::CStackMemoryPool::release()
 }
 
 // real memory allocation.
-void Delight::CStackMemoryPool::allocateStack(size_t Size)
+void* Delight::CStackMemoryPool::allocateStack(size_t Size)
 {
 	if (StackStartPointer == nullptr)
 	{
@@ -121,22 +114,8 @@ void Delight::CStackMemoryPool::allocateStack(size_t Size)
 		StackStartPointer = (Byte*)Delight::realloc(StackStartPointer, Size);
 	}
 
+	Delight::ASSERT(StackStartPointer == nullptr, "Stack Allocation Failed!");
 	TotalSize = Size;
-	
-	Delight::ASSERT(
-		Delight::getAllocatedSize(StackStartPointer) == Size,
-		"Stack Allocation Failed!"
-	);
-}
 
-// check that need reallocation or allocation.
-void Delight::CStackMemoryPool::updateStackState(size_t Size)
-{
-	size_t afterSize = UsedSize + Size;
-
-	if (TotalSize < afterSize)
-	{
-		// alloc or realloc.
-		allocateStack(Size);
-	}
+	return StackStartPointer
 }

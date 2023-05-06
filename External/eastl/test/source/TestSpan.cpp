@@ -80,6 +80,18 @@ void TestSpanCtor(int& nErrorCount)
 		VERIFY(s.size() == 5);
 		VERIFY(s.data()[2] == arr.data()[2]);
 	}
+
+	{
+		class foo {};
+
+		foo* pFoo = nullptr;
+
+		auto f = [](eastl::span<const foo*>) {};
+
+		eastl::array<const foo*, 1> foos = {{pFoo}};
+
+		f(foos);
+	}
 }
 
 void TestSpanSizeBytes(int& nErrorCount)
@@ -108,13 +120,16 @@ void TestSpanSizeBytes(int& nErrorCount)
 	}
 }
 
-void TestSpanSubscript(int& nErrorCount)
+void TestSpanElementAccess(int& nErrorCount)
 {
 	using namespace eastl;
 
 	{
 		int arr[5] = {0, 1, 2, 3, 4};
 		span<int> s(arr);
+
+		VERIFY(s.front() == 0);
+		VERIFY(s.back() == 4);
 
 		VERIFY(s[0] == 0);
 		VERIFY(s[1] == 1);
@@ -214,7 +229,9 @@ void TestSpanIterators(int& nErrorCount)
 			VERIFY(*p-- == 9);
 		};
 
+		testReverseIteratorBegin(s.rbegin());
 		testReverseIteratorBegin(s.crbegin());
+		testReverseIteratorEnd(s.rend());
 		testReverseIteratorEnd(s.crend());
 	}
 }
@@ -278,7 +295,7 @@ void TestSpanContainerConversion(int& nErrorCount)
 
 	{
 		vector<int> v = {0, 1, 2, 3, 4, 5};
-		span<const int, 3> s1(v);
+		span<const int, 6> s1(v);
 		span<const int> s2(s1);
 		
 		VERIFY(s2.size() == (span<const int>::index_type)v.size());
@@ -287,6 +304,25 @@ void TestSpanContainerConversion(int& nErrorCount)
 
 		VERIFY(s1.data() ==  v.data());
 		VERIFY(s1.data() == s2.data());
+	}
+
+	{ // user reported regression for calling non-const span overload with a vector.
+		auto f1 = [](span<int> s) { return s.size(); };
+		auto f2 = [](span<const int> s) { return s.size(); };
+
+		{
+			vector<int> v = {0, 1, 2, 3, 4, 5};
+
+			VERIFY(f1(v) == v.size());
+			VERIFY(f2(v) == v.size());
+		}
+
+		{
+			int a[] = {0, 1, 2, 3, 4, 5};
+
+			VERIFY(f1(a) == EAArrayCount(a));
+			VERIFY(f2(a) == EAArrayCount(a));
+		}
 	}
 }
 
@@ -354,6 +390,78 @@ void TestSpanSubViews(int& nErrorCount)
 		VERIFY(first_span[2] == 8);
 		VERIFY(first_span[3] == 9);
 	}
+
+	{ // empty range
+		span<int, 0> s{};
+
+		auto fixed_span = s.subspan<0, 0>();
+		VERIFY(fixed_span.empty());
+		fixed_span = s.first<0>();
+		VERIFY(fixed_span.empty());
+		fixed_span = s.last<0>();
+		VERIFY(fixed_span.empty());
+
+		span<int> dynamic_span;
+		VERIFY(dynamic_span.empty());
+		dynamic_span = s.first(0);
+		VERIFY(dynamic_span.empty());
+		dynamic_span = s.last(0);
+		VERIFY(dynamic_span.empty());
+	}
+
+	{ // subspan: full range
+		span<int, 10> s =  arr1;
+
+		auto fixed_span = s.subspan<0, 10>();
+		VERIFY(fixed_span.size() == 10);
+		VERIFY(fixed_span[0] == 0);
+		VERIFY(fixed_span[1] == 1);
+		VERIFY(fixed_span[8] == 8);
+		VERIFY(fixed_span[9] == 9);
+
+		auto dynamic_span = s.subspan(0, s.size());
+		VERIFY(dynamic_span.size() == 10);
+		VERIFY(dynamic_span[0] == 0);
+		VERIFY(dynamic_span[1] == 1);
+		VERIFY(dynamic_span[8] == 8);
+		VERIFY(dynamic_span[9] == 9);
+	}
+
+	{ // subspan: subrange
+		span<int, 10> s =  arr1;
+
+		auto fixed_span = s.subspan<3, 4>();
+		VERIFY(fixed_span.size() == 4);
+		VERIFY(fixed_span[0] == 3);
+		VERIFY(fixed_span[1] == 4);
+		VERIFY(fixed_span[2] == 5);
+		VERIFY(fixed_span[3] == 6);
+
+		auto dynamic_span = s.subspan(3, 4);
+		VERIFY(dynamic_span.size() == 4);
+		VERIFY(dynamic_span[0] == 3);
+		VERIFY(dynamic_span[1] == 4);
+		VERIFY(dynamic_span[2] == 5);
+		VERIFY(dynamic_span[3] == 6);
+	}
+
+	{ // subspan: default count
+		span<int, 10> s =  arr1;
+
+		auto fixed_span = s.subspan<3>();
+		VERIFY(fixed_span.size() == 7);
+		VERIFY(fixed_span[0] == 3);
+		VERIFY(fixed_span[1] == 4);
+		VERIFY(fixed_span[5] == 8);
+		VERIFY(fixed_span[6] == 9);
+
+		auto dynamic_span = s.subspan(3);
+		VERIFY(dynamic_span.size() == 7);
+		VERIFY(dynamic_span[0] == 3);
+		VERIFY(dynamic_span[1] == 4);
+		VERIFY(dynamic_span[5] == 8);
+		VERIFY(dynamic_span[6] == 9);
+	}
 }
 
 int TestSpan()
@@ -362,7 +470,7 @@ int TestSpan()
 
 	TestSpanCtor(nErrorCount);
 	TestSpanSizeBytes(nErrorCount);
-	TestSpanSubscript(nErrorCount);
+	TestSpanElementAccess(nErrorCount);
 	TestSpanIterators(nErrorCount);
 	TestSpanCopyAssignment(nErrorCount);
 	TestSpanContainerConversion(nErrorCount);

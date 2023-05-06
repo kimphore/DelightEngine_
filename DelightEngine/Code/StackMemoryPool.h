@@ -35,8 +35,7 @@ namespace Delight
 
 
 	private:
-		void allocateStack(size_t Size);
-		void updateStackState(size_t Size);
+		void* allocateStack(size_t Size);
 
 	private:
 		Byte* StackCurrentPointer; // current unused stack pointer.(top)

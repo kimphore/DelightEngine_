@@ -33,6 +33,11 @@ Delight::CAllocator::CAllocator(const CAllocator& x, const char* pName)
 	// ..?
 }
 
+Delight::CAllocator::~CAllocator()
+{
+	// ..?
+}
+
 void* Delight::CAllocator::allocate(size_t n, int flags /*= 0*/)
 {
 	if (MemoryPool == nullptr)

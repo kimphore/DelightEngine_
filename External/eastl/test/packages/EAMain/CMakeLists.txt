@@ -5,19 +5,46 @@ cmake_minimum_required(VERSION 3.1)
 project(EAMain CXX)
 
 #-------------------------------------------------------------------------------------------
-# Header only library 
+# Options
 #-------------------------------------------------------------------------------------------
-add_library(EAMain INTERFACE)
+option(EAMAIN_BUILD_TESTS "Enable generation of build files for tests" OFF)
 
 #-------------------------------------------------------------------------------------------
-# Source files
+# Compiler Flags
 #-------------------------------------------------------------------------------------------
-file(GLOB EAMAIN_SOURCES "include/EAMain/*.*")
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/test/packages/EASTL/scripts/CMake")
+include(CommonCppFlags)
 
 #-------------------------------------------------------------------------------------------
-# exported include directories
+# Library definition
 #-------------------------------------------------------------------------------------------
-target_include_directories(EAMain INTERFACE include)
+file(GLOB EAMAIN_SOURCES "source/*.cpp" "source/internal/*.cpp")
+add_library(EAMain ${EAMAIN_SOURCES})
 
-# Workaround to have header files show up in IDEs
-add_custom_target(EAMain_ide SOURCES ${EAMAIN_SOURCES})
+#-------------------------------------------------------------------------------------------
+# Package Tests
+#-------------------------------------------------------------------------------------------
+if(EAMAIN_BUILD_TESTS)
+    add_subdirectory(test)
+endif()
+
+#-------------------------------------------------------------------------------------------
+# Defines
+#-------------------------------------------------------------------------------------------
+add_definitions(-D_CHAR16T)
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+add_definitions(-DEAMAIN_NETWORK_CHANNEL_PORT=8080)
+
+#-------------------------------------------------------------------------------------------
+# Export Include Directories
+#-------------------------------------------------------------------------------------------
+target_include_directories(EAMain PUBLIC include)
+target_include_directories(EAMain PUBLIC source)
+
+#-------------------------------------------------------------------------------------------
+# Package Dependencies 
+#-------------------------------------------------------------------------------------------
+target_link_libraries(EAMain EABase)
+target_link_libraries(EAMain EAAssert)
+target_link_libraries(EAMain EAStdC)
+

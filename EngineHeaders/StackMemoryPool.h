@@ -24,11 +24,15 @@ namespace Delight
 	public:
 		CStackMemoryPool();
 		CStackMemoryPool(size_t _poolSize);
+		~CStackMemoryPool();
 
 	public:
 		virtual void* allocate(size_t Size);
 		virtual void* reallocate(void* pointer, size_t Size);
 		virtual void reset();
+		virtual void deallocate();
+		virtual void release();
+
 
 	private:
 		void allocateStack(size_t Size);

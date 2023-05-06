@@ -22,10 +22,7 @@
 #include <EASTL/algorithm.h>
 #include <EASTL/bitset.h>
 
-#ifdef _MSC_VER
-	#pragma warning(push)
-	#pragma warning(disable: 4480)  // nonstandard extension used: specifying underlying type for enum
-#endif
+EA_DISABLE_VC_WARNING(4480); // nonstandard extension used: specifying underlying type for enum
 
 #if defined(EA_PRAGMA_ONCE_SUPPORTED)
 	#pragma once // Some compilers (e.g. VC++) benefit significantly from using this. We've measured 3-4% build speed improvements in apps as a result.
@@ -243,12 +240,10 @@ namespace eastl
 		explicit bitvector(const allocator_type& allocator);
 		explicit bitvector(size_type n, const allocator_type& allocator = EASTL_BITVECTOR_DEFAULT_ALLOCATOR);
 		bitvector(size_type n, value_type value, const allocator_type& allocator = EASTL_BITVECTOR_DEFAULT_ALLOCATOR);
-		bitvector(const bitvector& copy);
 
 		template <typename InputIterator>
 		bitvector(InputIterator first, InputIterator last);
 
-		bitvector& operator=(const bitvector& x);
 		void swap(this_type& x);
 
 		template <typename InputIterator>
@@ -766,7 +761,7 @@ namespace eastl
 	typename bitvector<Allocator, Element, Container>::iterator
 	bitvector<Allocator, Element, Container>::begin() EA_NOEXCEPT
 	{
-		return iterator(&mContainer[0], 0);
+		return iterator(mContainer.begin(), 0);
 	}
 
 
@@ -774,7 +769,7 @@ namespace eastl
 	typename bitvector<Allocator, Element, Container>::const_iterator
 	bitvector<Allocator, Element, Container>::begin() const EA_NOEXCEPT
 	{
-		return const_iterator(&mContainer[0], 0);
+		return const_iterator(mContainer.begin(), 0);
 	}
 
 
@@ -782,7 +777,7 @@ namespace eastl
 	typename bitvector<Allocator, Element, Container>::const_iterator
 	bitvector<Allocator, Element, Container>::cbegin() const EA_NOEXCEPT
 	{
-		return const_iterator(&mContainer[0], 0);
+		return const_iterator(mContainer.begin(), 0);
 	}
 
 
@@ -1340,18 +1335,6 @@ namespace eastl
 
 
 	template <typename Allocator, typename Element, typename Container>
-	bitvector<Allocator, Element, Container>&
-	bitvector<Allocator, Element, Container>::operator=(const bitvector& rhs)
-	{
-		// The following is OK if (&rhs == this)
-		mContainer = rhs.mContainer;
-		mFreeBitCount = rhs.mFreeBitCount;
-
-		return *this;
-	}
-
-
-	template <typename Allocator, typename Element, typename Container>
 	bitvector<Allocator, Element, Container>::bitvector()
 	  : mContainer(), 
 		mFreeBitCount(0)
@@ -1390,14 +1373,6 @@ namespace eastl
 
 
 	template <typename Allocator, typename Element, typename Container>
-	bitvector<Allocator, Element, Container>::bitvector(const bitvector& copy)
-	  : mContainer(copy.mContainer), 
-		mFreeBitCount(copy.mFreeBitCount)
-	{
-	}
-
-
-	template <typename Allocator, typename Element, typename Container>
 	template <typename InputIterator>
 	bitvector<Allocator, Element, Container>::bitvector(InputIterator first, InputIterator last)
 	  : mContainer(), 
@@ -1417,7 +1392,7 @@ namespace eastl
 						   const bitvector<Allocator, Element, Container>& b)
 	{
 		// To do: Replace this with a smart compare implementation. This is much slower than it needs to be.
-		return ((a.size() == b.size()) && equal(a.begin(), a.end(), b.begin()));
+		return ((a.size() == b.size()) && eastl::equal(a.begin(), a.end(), b.begin()));
 	}
 
 
@@ -1434,7 +1409,7 @@ namespace eastl
 						  const bitvector<Allocator, Element, Container>& b)
 	{
 		// To do: Replace this with a smart compare implementation. This is much slower than it needs to be.
-		return lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
+		return eastl::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
 	}
 
 
@@ -1472,21 +1447,6 @@ namespace eastl
 } // namespace eastl
 
 
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
-
+EA_RESTORE_VC_WARNING();
 
 #endif // Header include guard
-
-
-
-
-
-
-
-
-
-
-
-

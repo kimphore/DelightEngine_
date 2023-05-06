@@ -39,6 +39,11 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_BUILD_TYPE MATCHES "MinSizeR
     message(FATAL_ERROR "FIXME: MinSizeRel on MingW-w64's Clang fails to link.")
 endif()
 
+# The benchmark suite fails to compile if char8_t is enabled, so disable it.
+if (EASTL_NO_CHAR8T_FLAG)
+    add_compile_options(${EASTL_NO_CHAR8T_FLAG})
+endif()
+
 #-------------------------------------------------------------------------------------------
 # Source files
 #-------------------------------------------------------------------------------------------
@@ -53,6 +58,17 @@ add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 add_definitions(-DEASTL_THREAD_SUPPORT_AVAILABLE=0)
 add_definitions(-DEASTL_OPENSOURCE=1)
 add_definitions(-D_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS)  # silence std::hash_map deprecation warnings
+if (EASTL_STD_ITERATOR_CATEGORY_ENABLED)
+  add_definitions(-DEASTL_STD_ITERATOR_CATEGORY_ENABLED=1)
+endif()
+
+if(NOT EASTL_BUILD_TESTS)
+    add_subdirectory(../test/packages/EAStdC ../test/EAStdC)
+    add_subdirectory(../test/packages/EAAssert ../test/EAAssert)
+    add_subdirectory(../test/packages/EAThread ../test/EAThread)
+    add_subdirectory(../test/packages/EATest ../test/EATest)
+    add_subdirectory(../test/packages/EAMain ../test/EAMain)
+endif()
 
 #-------------------------------------------------------------------------------------------
 # Executable definition
@@ -63,6 +79,11 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 set(EASTLBenchmark_Libraries
+    EABase
+    EAAssert
+    EAMain
+    EAThread
+    EAStdC
     EASTL
     EATest)
 target_link_libraries(EASTLBenchmarks ${EASTLBenchmark_Libraries} Threads::Threads)

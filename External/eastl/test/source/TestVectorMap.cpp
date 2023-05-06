@@ -111,6 +111,13 @@ int TestVectorMap()
 	}
 
 
+    {
+        // insert at the upper bound of a range
+        VMM1 vmm = {{0, 0}};
+        VERIFY(vmm.emplace(0, 0) != vmm.begin());
+    }
+
+
 	{ // Misc tests
 
 		// const key_compare& key_comp() const;
@@ -148,8 +155,8 @@ int TestVectorMap()
 
 	{
 		// Misc testing
-		typedef eastl::fixed_string<char8_t, 16>   KeyStringType;
-		typedef eastl::fixed_string<char8_t, 24>   ValueStringType;
+		typedef eastl::fixed_string<char, 16>   KeyStringType;
+		typedef eastl::fixed_string<char, 24>   ValueStringType;
 		typedef eastl::pair<ValueStringType, bool> StringMapValueType;
 
 		typedef eastl::vector_map<KeyStringType, StringMapValueType> StringMapType;

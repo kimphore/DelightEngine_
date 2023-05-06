@@ -8,6 +8,7 @@
 #include "GetTypeName.h"
 #include <EAStdC/EAString.h>
 #include <EAStdC/EAStopwatch.h>
+#include <EASTL/atomic.h>
 #include <EASTL/core_allocator_adapter.h>
 #include <EASTL/core_allocator.h>
 #include <EASTL/intrusive_ptr.h>
@@ -392,6 +393,33 @@ namespace SmartPtrTest
 		int mX;
 	};
 
+	struct CheckUPtrEmptyInDestructor
+	{
+		~CheckUPtrEmptyInDestructor()
+		{
+			if(mpUPtr)
+				mCheckUPtrEmpty = (*mpUPtr == nullptr);
+		}
+
+		eastl::unique_ptr<CheckUPtrEmptyInDestructor>* mpUPtr{};
+		static bool mCheckUPtrEmpty;
+	};
+
+	bool CheckUPtrEmptyInDestructor::mCheckUPtrEmpty = false;
+
+	struct CheckUPtrArrayEmptyInDestructor
+	{
+		~CheckUPtrArrayEmptyInDestructor()
+		{
+			if(mpUPtr)
+				mCheckUPtrEmpty = (*mpUPtr == nullptr);
+		}
+
+		eastl::unique_ptr<CheckUPtrArrayEmptyInDestructor[]>* mpUPtr{};
+		static bool mCheckUPtrEmpty;
+	};
+
+	bool CheckUPtrArrayEmptyInDestructor::mCheckUPtrEmpty = false;
 } // namespace SmartPtrTest
 
 
@@ -543,6 +571,26 @@ static int Test_unique_ptr()
 	}
 
 	{
+		// Test that unique_ptr internal pointer is reset before calling the destructor
+		CheckUPtrEmptyInDestructor::mCheckUPtrEmpty = false;
+
+		unique_ptr<CheckUPtrEmptyInDestructor> uptr(new CheckUPtrEmptyInDestructor);
+		uptr->mpUPtr = &uptr;
+		uptr.reset();
+		EATEST_VERIFY(CheckUPtrEmptyInDestructor::mCheckUPtrEmpty);
+	}
+
+	{
+		// Test that unique_ptr<[]> internal pointer is reset before calling the destructor
+		CheckUPtrArrayEmptyInDestructor::mCheckUPtrEmpty = false;
+
+		unique_ptr<CheckUPtrArrayEmptyInDestructor[]> uptr(new CheckUPtrArrayEmptyInDestructor[1]);
+		uptr[0].mpUPtr = &uptr;
+		uptr.reset();
+		EATEST_VERIFY(CheckUPtrArrayEmptyInDestructor::mCheckUPtrEmpty);
+	}
+
+	{
 		#if EASTL_CORE_ALLOCATOR_ENABLED
 			// Test EA::Allocator::EASTLICoreDeleter usage within eastl::shared_ptr.
 			// http://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr
@@ -554,19 +602,17 @@ static int Test_unique_ptr()
 
 			using namespace EA::Allocator;
 
-			EASTLCoreAllocatorAdapter ta;              
-
+			EASTLCoreAllocatorAdapter ta;
 			void* pMem = ta.allocate(sizeof(A));
+
 			EATEST_VERIFY(pMem != nullptr);     
 			EATEST_VERIFY(gEASTLTest_AllocationCount > cacheAllocationCount);
 			{            
 				A* pA = new (pMem) A();
 				eastl::shared_ptr<A> foo(pA, EASTLCoreDeleterAdapter());  // Not standards complaint code.  Update EASTL implementation to provide the type of the deleter.
-				pA->~A();
 			}
-			
 			EATEST_VERIFY(gEASTLTest_AllocationCount == cacheAllocationCount);
-			EATEST_VERIFY(A::mCount == 0);      
+			EATEST_VERIFY(A::mCount == 0);
 		#endif
 	}
 
@@ -752,6 +798,38 @@ static int Test_unique_ptr()
 				ptr = eastl::move(newPtr);  // Deletes int(3) and assigns mpValue to int(4)
 				EATEST_VERIFY(ptr.get() && ptr[0] == 3 && ptr[1] == 4 && ptr[2] == 5);
 				EATEST_VERIFY(newPtr.get() == nullptr);
+			}
+		#endif
+
+		#if defined(EA_COMPILER_HAS_THREE_WAY_COMPARISON)
+			{
+				unique_ptr<int> pT1(new int(5));
+				unique_ptr<int> pT2(new int(10));
+				unique_ptr<int> pT3(new int(0));
+
+				EATEST_VERIFY((pT1 <=> pT2) != 0);
+				EATEST_VERIFY((pT2 <=> pT1) != 0);
+
+				EATEST_VERIFY((pT1 <=> pT2) < 0);
+				EATEST_VERIFY((pT1 <=> pT2) <= 0);
+				EATEST_VERIFY((pT2 <=> pT1) > 0);
+				EATEST_VERIFY((pT2 <=> pT1) >= 0);
+
+				EATEST_VERIFY((pT3 <=> pT1) < 0);
+				EATEST_VERIFY((pT3 <=> pT2) < 0);
+				EATEST_VERIFY((pT1 <=> pT3) > 0);
+				EATEST_VERIFY((pT2 <=> pT3) > 0);
+
+				unique_ptr<A> pT4(new A(5));
+				unique_ptr<A> pT5(new A(10));
+
+				EATEST_VERIFY((pT4 <=> pT5) != 0);
+				EATEST_VERIFY((pT5 <=> pT4) != 0);
+
+				EATEST_VERIFY((pT4 <=> pT5) < 0);
+				EATEST_VERIFY((pT4 <=> pT5) <= 0);
+				EATEST_VERIFY((pT5 <=> pT4) > 0);
+				EATEST_VERIFY((pT5 <=> pT4) >= 0);
 			}
 		#endif
 
@@ -1134,6 +1212,15 @@ static int Test_shared_ptr()
 	}
 
 
+	{ // Test shared_ptr lambda deleter
+		auto deleter = [](int*) {}; 
+		eastl::shared_ptr<int> ptr(nullptr, deleter);
+
+		EATEST_VERIFY(!ptr);
+		EATEST_VERIFY(ptr.get() == nullptr);
+	}
+
+
 	{ // Test of shared_ptr<void const>
 		#if !defined(__GNUC__) ||  (__GNUC__ >= 3) // If not using old GCC (GCC 2.x is broken)...
 			shared_ptr<void const> voidPtr = shared_ptr<A1>(new A1);
@@ -1297,7 +1384,7 @@ static int Test_shared_ptr()
 	{
 		EA::Thread::ThreadParameters    mThreadParams;
 		EA::Thread::Thread              mThread;
-		volatile bool                   mbShouldContinue;
+		eastl::atomic<bool>             mbShouldContinue;
 		int                             mnErrorCount;
 		eastl::shared_ptr<TestObject>*  mpSPTO;
 		eastl::weak_ptr<TestObject>*    mpWPTO;
@@ -1310,7 +1397,7 @@ static int Test_shared_ptr()
 		{
 			int& nErrorCount = mnErrorCount; // declare nErrorCount so that EATEST_VERIFY can work, as it depends on it being declared.
 
-			while(mbShouldContinue)
+			while(mbShouldContinue.load(eastl::memory_order_relaxed))
 			{
 				EA::UnitTest::ThreadSleepRandom(1, 10);
 
@@ -1365,7 +1452,7 @@ static int Test_shared_ptr_thread()
 			EA::UnitTest::ThreadSleep(2000);
 
 			for(size_t i = 0; i < EAArrayCount(thread); i++)
-				thread[i].mbShouldContinue = false;
+				thread[i].mbShouldContinue.store(false, eastl::memory_order_relaxed);
 
 			for(size_t i = 0; i < EAArrayCount(thread); i++)
 			{
@@ -1407,6 +1494,10 @@ static int Test_shared_ptr_thread()
 			spTO = atomic_exchange(&spTO2, spTO);
 			EATEST_VERIFY(spTO->mX == 56);
 			EATEST_VERIFY(spTO2->mX == 77);
+			
+			spTO = atomic_exchange_explicit(&spTO2, spTO);
+			EATEST_VERIFY(spTO->mX == 77);
+			EATEST_VERIFY(spTO2->mX == 56);
 
 			// bool atomic_compare_exchange_strong(shared_ptr<T>* pSharedPtr, shared_ptr<T>* pSharedPtrCondition, shared_ptr<T> sharedPtrNew);
 			// bool atomic_compare_exchange_weak(shared_ptr<T>* pSharedPtr, shared_ptr<T>* pSharedPtrCondition, shared_ptr<T> sharedPtrNew);
@@ -1415,12 +1506,12 @@ static int Test_shared_ptr_thread()
 			shared_ptr<TestObject> spTO3 = atomic_load(&spTO2);
 			bool result = atomic_compare_exchange_strong(&spTO3, &spTO, make_shared<TestObject>(88));   // spTO3 != spTO, so this should do no exchange and return false.
 			EATEST_VERIFY(!result);
-			EATEST_VERIFY(spTO3->mX == 77);
-			EATEST_VERIFY(spTO->mX == 77);
+			EATEST_VERIFY(spTO3->mX == 56);
+			EATEST_VERIFY(spTO->mX == 56);
 
 			result = atomic_compare_exchange_strong(&spTO3, &spTO2, make_shared<TestObject>(88));       // spTO3 == spTO2, so this should succeed.
 			EATEST_VERIFY(result);
-			EATEST_VERIFY(spTO2->mX == 77);
+			EATEST_VERIFY(spTO2->mX == 56);
 			EATEST_VERIFY(spTO3->mX == 88);
 		}
 	#endif
@@ -1520,6 +1611,22 @@ static int Test_weak_ptr()
 		EATEST_VERIFY(!(pFoo < qFoo) && !(qFoo < pFoo)); // p and q share ownership
 	}
 
+	{   // weak_from_this const
+		shared_ptr<const foo> pFoo(new foo);
+		weak_ptr<const foo> qFoo = pFoo->weak_from_this();
+
+		EATEST_VERIFY(pFoo == qFoo.lock());
+		EATEST_VERIFY(!(pFoo < qFoo.lock()) && !(qFoo.lock() < pFoo)); // p and q share ownership
+	}
+
+	{   // weak_from_this
+		shared_ptr<foo> pFoo(new foo);
+		weak_ptr<foo> qFoo = pFoo->weak_from_this();
+
+		EATEST_VERIFY(pFoo == qFoo.lock());
+		EATEST_VERIFY(!(pFoo < qFoo.lock()) && !(qFoo.lock() < pFoo)); // p and q share ownership
+	}
+	
 	return nErrorCount;
 }
 

@@ -5,19 +5,39 @@ cmake_minimum_required(VERSION 3.1)
 project(EAThread CXX)
 
 #-------------------------------------------------------------------------------------------
+# Options
+#-------------------------------------------------------------------------------------------
+option(EATHREAD_BUILD_TESTS "Enable generation of build files for tests" OFF)
+
+#-------------------------------------------------------------------------------------------
+# Compiler Flags
+#-------------------------------------------------------------------------------------------
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/test/packages/EASTL/scripts/CMake")
+include(CommonCppFlags)
+
+#-------------------------------------------------------------------------------------------
 # Library definition
 #-------------------------------------------------------------------------------------------
-add_library(EAThread INTERFACE)
+file(GLOB EATHREAD_SOURCES "source/*.cpp")
+add_library(EAThread ${EATHREAD_SOURCES})
+
+if(EATHREAD_BUILD_TESTS)
+    add_subdirectory(test)
+endif()
 
 #-------------------------------------------------------------------------------------------
-# Source files
+# Defines
 #-------------------------------------------------------------------------------------------
-file(GLOB EATHREAD_SOURCES "include/eathread/*.h")
+add_definitions(-D_CHAR16T)
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 #-------------------------------------------------------------------------------------------
-# Include directories
+# Export Include Directories
 #-------------------------------------------------------------------------------------------
-target_include_directories(EAThread INTERFACE include)
+target_include_directories(EAThread PUBLIC include)
 
-# Workaround to have header files show up in IDEs
-add_custom_target(EAThread_ide SOURCES ${EATHREAD_SOURCES})
+#-------------------------------------------------------------------------------------------
+# Package Dependencies 
+#-------------------------------------------------------------------------------------------
+target_link_libraries(EAThread EABase)
+

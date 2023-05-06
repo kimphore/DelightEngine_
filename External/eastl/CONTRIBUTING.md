@@ -3,6 +3,13 @@
 Before you can contribute, EA must have a Contributor License Agreement (CLA) on file that has been signed by each contributor.
 You can sign here: [Go to CLA](https://electronicarts.na1.echosign.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhByHRvZqmltGtliuExmuV-WNzlaJGPhbSRg2ufuPsM3P0QmILZjLpkGslg24-UJtek*)
 
+If you want to be recognized for your contributions to EASTL or have a project using EASTL be recognized; you can submit a pull request to the appropriate sections in [README.md](README.md).
+Some examples of what the format and information will look like is as follows.
+* John Smith - jsmith@domain.com
+* John Smith
+* Frostbite - Electronic Arts
+* My Project - [link to said project]
+
 ### Pull Request Policy
 
 All code contributions to EASTL are submitted as [Github pull requests](https://help.github.com/articles/using-pull-requests/).  All pull requests will be reviewed by an EASTL maintainer according to the guidelines found in the next section.
@@ -18,6 +25,16 @@ Your pull request should:
 	* limit using clang format on new code
 	* do not deviate from style already established in the files
 
+### Getting the Repository
+
+EASTL uses git submodules for its dependencies as they are seperate git repositories.  Recursive clones will continue until HD space is exhausted unless they are manually limited.
+It is recommended to use the following to get the source:
+
+```bash
+git clone https://github.com/electronicarts/EASTL
+cd EASTL
+git submodule update --init
+```
 
 ### Running the Unit Tests
 

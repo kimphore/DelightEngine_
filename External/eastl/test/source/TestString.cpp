@@ -12,21 +12,31 @@
 
 using namespace eastl;
 
+// Verify char8_t support is present if the test build requested it.
+#if defined(EASTL_EXPECT_CHAR8T_SUPPORT) && !EA_CHAR8_UNIQUE
+static_assert(false, "Building with char8_t tests enabled, but EA_CHAR8_UNIQUE evaluates to false.");
+#endif
+
+
 // inject string literal string conversion macros into the unit tests
 #define TEST_STRING_NAME TestBasicString
 #define LITERAL(x) x
 #include "TestString.inl"
 
 #define TEST_STRING_NAME TestBasicStringW
-#define LITERAL(x) EA_WCHAR(x) 
+#define LITERAL(x) EA_WCHAR(x)
+#include "TestString.inl"
+
+#define TEST_STRING_NAME TestBasicString8
+#define LITERAL(x) EA_CHAR8(x)
 #include "TestString.inl"
 
 #define TEST_STRING_NAME TestBasicString16
-#define LITERAL(x) EA_CHAR16(x) 
+#define LITERAL(x) EA_CHAR16(x)
 #include "TestString.inl"
 
 #define TEST_STRING_NAME TestBasicString32
-#define LITERAL(x) EA_CHAR32(x) 
+#define LITERAL(x) EA_CHAR32(x)
 #include "TestString.inl"
 
 int TestString()
@@ -39,10 +49,15 @@ int TestString()
 	nErrorCount += TestBasicStringW<eastl::basic_string<wchar_t, StompDetectAllocator>>();
 	nErrorCount += TestBasicStringW<eastl::wstring>();
 
+#if defined(EA_CHAR8_UNIQUE) && EA_CHAR8_UNIQUE
+	nErrorCount += TestBasicString8<eastl::basic_string<char8_t, StompDetectAllocator>>();
+	nErrorCount += TestBasicString8<eastl::u8string>();
+#endif
+
 	nErrorCount += TestBasicString16<eastl::basic_string<char16_t, StompDetectAllocator>>();
 	nErrorCount += TestBasicString16<eastl::u16string>();
 
-#if EA_CHAR32_NATIVE
+#if defined(EA_CHAR32_NATIVE) && EA_CHAR32_NATIVE
 	nErrorCount += TestBasicString32<eastl::basic_string<char32_t, StompDetectAllocator>>();
 	nErrorCount += TestBasicString32<eastl::u32string>();
 #endif
@@ -55,10 +70,15 @@ int TestString()
 	nErrorCount += TestBasicStringW<eastl::basic_string<wchar_t, CountingAllocator>>();
 	VERIFY(CountingAllocator::getActiveAllocationCount() == 0); 
 
+#if defined(EA_CHAR8_UNIQUE) && EA_CHAR8_UNIQUE
+	nErrorCount += TestBasicString8<eastl::basic_string<char8_t, CountingAllocator>>();
+	VERIFY(CountingAllocator::getActiveAllocationCount() == 0);
+#endif
+
 	nErrorCount += TestBasicString16<eastl::basic_string<char16_t, CountingAllocator>>();
 	VERIFY(CountingAllocator::getActiveAllocationCount() == 0); 
 
-#if EA_CHAR32_NATIVE
+#if defined(EA_CHAR32_NATIVE) && EA_CHAR32_NATIVE
 	nErrorCount += TestBasicString32<eastl::basic_string<char32_t, CountingAllocator>>();
 	VERIFY(CountingAllocator::getActiveAllocationCount() == 0); 
 #endif
@@ -73,7 +93,7 @@ int TestString()
 		VERIFY(eastl::to_string(42ull) == "42");
 		VERIFY(eastl::to_string(42.f)  == "42.000000");
 		VERIFY(eastl::to_string(42.0)  == "42.000000");
-	#ifndef EA_COMPILER_GNUC
+	#if !defined(EA_COMPILER_GNUC) && !defined(EA_PLATFORM_MINGW)
 		// todo:  long double sprintf functionality is unrealiable on unix-gcc, requires further debugging.  
 		VERIFY(eastl::to_string(42.0l) == "42.000000");
 	#endif
@@ -89,7 +109,7 @@ int TestString()
 		VERIFY(eastl::to_wstring(42ull) == L"42");
 		VERIFY(eastl::to_wstring(42.f)  == L"42.000000");
 		VERIFY(eastl::to_wstring(42.0)  == L"42.000000");
-	#ifndef EA_COMPILER_GNUC
+	#if !defined(EA_COMPILER_GNUC) && !defined(EA_PLATFORM_MINGW)
 		// todo:  long double sprintf functionality is unrealiable on unix-gcc, requires further debugging.  
 		VERIFY(eastl::to_wstring(42.0l) == L"42.000000");
 	#endif
@@ -101,13 +121,14 @@ int TestString()
 		VERIFY(L"cplusplus"s == L"cplusplus");
 		VERIFY(u"cplusplus"s == u"cplusplus");
 		VERIFY(U"cplusplus"s == U"cplusplus");
+		VERIFY(u8"cplusplus"s == u8"cplusplus");
 	}
 	#endif
 
 
 	{
 		// CustomAllocator has no data members which reduces the size of an eastl::basic_string via the empty base class optimization.
-		typedef eastl::basic_string<char, CustomAllocator> EboString;
+		using EboString = eastl::basic_string<char, CustomAllocator>;
 
 		// this must match the eastl::basic_string heap memory layout struct which is a pointer and 2 eastl_size_t.
 		const int expectedSize = sizeof(EboString::pointer) + (2 * sizeof(EboString::size_type));

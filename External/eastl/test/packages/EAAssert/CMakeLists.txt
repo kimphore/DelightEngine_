@@ -5,14 +5,28 @@ cmake_minimum_required(VERSION 3.1)
 project(EAAssert CXX)
 
 #-------------------------------------------------------------------------------------------
-# Header only library 
+# Options
 #-------------------------------------------------------------------------------------------
-add_library(EAAssert INTERFACE)
+option(EAASSERT_BUILD_TESTS "Enable generation of build files for tests" OFF)
 
 #-------------------------------------------------------------------------------------------
-# Source files
+# Compiler Flags
 #-------------------------------------------------------------------------------------------
-file(GLOB EAASSERT_SOURCES "include/EAAssert/*.h")
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/test/packages/EASTL/scripts/CMake")
+include(CommonCppFlags)
+
+#-------------------------------------------------------------------------------------------
+# Library definition
+#-------------------------------------------------------------------------------------------
+file(GLOB EAASSERT_SOURCES "source/*.cpp")
+add_library(EAAssert ${EAASSERT_SOURCES})
+
+#-------------------------------------------------------------------------------------------
+# Package Tests
+#-------------------------------------------------------------------------------------------
+if(EAASSERT_BUILD_TESTS)
+    add_subdirectory(test)
+endif()
 
 #-------------------------------------------------------------------------------------------
 # Defines
@@ -20,9 +34,12 @@ file(GLOB EAASSERT_SOURCES "include/EAAssert/*.h")
 add_definitions(-D_CHAR16T)
 
 #-------------------------------------------------------------------------------------------
-# exported include directories 
+# Export Include Directories
 #-------------------------------------------------------------------------------------------
-target_include_directories(EAAssert INTERFACE include)
+target_include_directories(EAAssert PUBLIC include)
 
-# Workaround to have header files show up in IDEs
-add_custom_target(EAAssert_ide SOURCES ${EAASSERT_SOURCES})
+#-------------------------------------------------------------------------------------------
+# Package Dependencies 
+#-------------------------------------------------------------------------------------------
+target_link_libraries(EAAssert EABase)
+

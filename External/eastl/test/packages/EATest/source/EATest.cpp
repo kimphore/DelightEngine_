@@ -127,7 +127,7 @@ namespace UnitTest
                     EATEST_VERIFY_IMP(bExpression, nErrorCount, pFile, nLine, buffer);
                 else
                 {
-                    const int nExpectedLen = EA::StdC::Vsnprintf(buffer, 0, pFormat, arguments); // calculate string length for allocation 
+                    const size_t nExpectedLen = EA::StdC::Vsnprintf(buffer, 0, pFormat, arguments); // calculate string length for allocation 
                     char* pBuffer = new char[nExpectedLen + 1];
 
                     if(pBuffer)
@@ -157,7 +157,7 @@ namespace UnitTest
         // Used to implement VERIFY for the global error count. Recall that the global error count is used to
         // count errors that the application somehow can't count itself, such as if they are occurring in an
         // inaccessible thread.
-        int EATEST_VERIFY_F_IMP_G(bool bExpression, const char8_t* pFormat, ...)
+        int EATEST_VERIFY_F_IMP_G(bool bExpression, const char* pFormat, ...)
         {
             int nErrorCount = 0;
 
@@ -183,7 +183,7 @@ namespace UnitTest
                     EATEST_VERIFY_IMP(bExpression, nErrorCount, __FILE__, __LINE__, buffer);
                 else
                 {
-                    const int nExpectedLen = EA::StdC::Vsnprintf(buffer, 0, pFormat, arguments); // calculate string length for allocation 
+                    const size_t nExpectedLen = EA::StdC::Vsnprintf(buffer, 0, pFormat, arguments); // calculate string length for allocation 
                     char* pBuffer = new char[nExpectedLen + 1];
 
                     if(pBuffer)
@@ -225,7 +225,7 @@ EA::EAMain::ReportFunction gpReportFunction = EA::EAMain::GetDefaultReportFuncti
 
 ///////////////////////////////////////////////////////////////////////////////
 // Report Wrapper
-EATEST_API void Report(const char8_t* pFormat, ...)
+EATEST_API void Report(const char* pFormat, ...)
 {
     va_list arguments;
     va_start(arguments, pFormat);
@@ -236,7 +236,7 @@ EATEST_API void Report(const char8_t* pFormat, ...)
 
 ///////////////////////////////////////////////////////////////////////////////
 // ReportVerbosity Wrapper
-EATEST_API void ReportVerbosity(unsigned minVerbosity, const char8_t* pFormat, ...)
+EATEST_API void ReportVerbosity(unsigned minVerbosity, const char* pFormat, ...)
 {
     va_list arguments;
     va_start(arguments, pFormat);
@@ -458,7 +458,7 @@ EATEST_API int IncrementGlobalErrorCount(int count)
 ///////////////////////////////////////////////////////////////////////////////
 // Verify
 //
-EATEST_API bool Verify(bool bValue, const char8_t* pMessage, Test* pTestContext)
+EATEST_API bool Verify(bool bValue, const char* pMessage, Test* pTestContext)
 {
     if(pTestContext)
         pTestContext->Verify(bValue, pMessage);
@@ -739,7 +739,7 @@ EATEST_API void SetRandSeed(uint32_t seed)
 // Test
 ///////////////////////////////////////////////////////////////////////////////
 
-Test::Test(const char8_t* pTestName, EA::EAMain::ReportFunction pReportFunction)
+Test::Test(const char* pTestName, EA::EAMain::ReportFunction pReportFunction)
   : msTestName(pTestName), 
     mpParentSuite(NULL),
     mnSuccessCount(0),
@@ -811,7 +811,7 @@ int Test::Run()
 }
 
 
-bool Test::Verify(bool bValue, const char8_t* pMessage)
+bool Test::Verify(bool bValue, const char* pMessage)
 {
     if(!bValue)
     {
@@ -834,7 +834,7 @@ bool Test::Verify(bool bValue, const char8_t* pMessage)
 }
 
 
-bool Test::VerifyFormatted(bool bValue, const char8_t* pFormat, ...)
+bool Test::VerifyFormatted(bool bValue, const char* pFormat, ...)
 {
     if(!bValue)
     {
@@ -872,7 +872,7 @@ void Test::WriteReport()
 // TestFunction
 ///////////////////////////////////////////////////////////////////////////////
 
-TestFunction::TestFunction(const char8_t* pTestName, FunctionPtr pFunction)
+TestFunction::TestFunction(const char* pTestName, FunctionPtr pFunction)
     : Test(pTestName), mpFunction(pFunction)
 {
     // Empty
@@ -899,7 +899,7 @@ int TestFunction::Run()
             nTestResult = (*mpFunction)();
         #endif
 
-        if((nTestResult != kTestResultOK) && (nTestResult != kTestResultContinue) && (nTestResult != kTestResultContinue))
+        if((nTestResult != kTestResultOK) && (nTestResult != kTestResultContinue))
             mnErrorCount++;
         else
             mnSuccessCount++;
@@ -949,7 +949,7 @@ bool TestCollection::AddTest(Test* pTest, bool bTakeOwnership)
 }
 
 
-void TestCollection::AddTest(const char8_t* pTestName, TestFunction::FunctionPtr pFunction)
+void TestCollection::AddTest(const char* pTestName, TestFunction::FunctionPtr pFunction)
 {
     // The user may want to avoid the use of global memory allocation here and instead 
     // use the general AddTest function with their own supplied TestFunction object.
@@ -993,7 +993,7 @@ bool TestCollection::RemoveTest(Test* pTest, bool bDeleteIfOwned)
 }
 
 
-bool TestCollection::RemoveTest(const char8_t* pTestName, bool bDeleteIfOwned)
+bool TestCollection::RemoveTest(const char* pTestName, bool bDeleteIfOwned)
 {
     eastl::string sName;
 
@@ -1010,14 +1010,14 @@ bool TestCollection::RemoveTest(const char8_t* pTestName, bool bDeleteIfOwned)
 }
 
 
-Test* TestCollection::FindTest(const char8_t* pTestName)
+Test* TestCollection::FindTest(const char* pTestName)
 {
     TestInfo* const pTestInfo = FindTestInfo(pTestName, true);
     return pTestInfo ? pTestInfo->mpTest : NULL;
 }
 
 
-TestCollection::TestInfo* TestCollection::FindTestInfo(const char8_t* pTestName, bool bRecursive)
+TestCollection::TestInfo* TestCollection::FindTestInfo(const char* pTestName, bool bRecursive)
 {
     eastl::string sNameCurrent;
 
@@ -1037,7 +1037,7 @@ TestCollection::TestInfo* TestCollection::FindTestInfo(const char8_t* pTestName,
         // None of the tests matched pTestName, so we check to see if any
         // of our tests were test suites and if the given pName was referring
         // to a child test of one of our tests.
-        const char8_t* pSeparator = strchr(pTestName, '/');
+        const char* pSeparator = strchr(pTestName, '/');
 
         if(pSeparator)
         {
@@ -1087,7 +1087,7 @@ size_t TestCollection::EnumerateTests(Test* pTestArray[], size_t nTestArrayCapac
 // TestSuite
 ///////////////////////////////////////////////////////////////////////////////
 
-TestSuite::TestSuite(const char8_t* pTestName, EA::EAMain::ReportFunction pReportFunction)
+TestSuite::TestSuite(const char* pTestName, EA::EAMain::ReportFunction pReportFunction)
   : Test(pTestName, pReportFunction),
     TestCollection(),
     mnTestResult(kTestResultNone),
@@ -1212,7 +1212,7 @@ int TestSuite::Run()
 }
 
 
-int TestSuite::RunTest(const char8_t* pName)
+int TestSuite::RunTest(const char* pName)
 {
     TestInfo* const pTestInfo = FindTestInfo(pName, true);
     if(!pTestInfo)
@@ -1266,7 +1266,7 @@ bool TestSuite::AddTest(Test* pTest, bool bTakeOwnership)
 }
 
 
-void TestSuite::AddTest(const char8_t* pTestName, TestFunction::FunctionPtr pFunction)
+void TestSuite::AddTest(const char* pTestName, TestFunction::FunctionPtr pFunction)
 {
     TestCollection::AddTest(pTestName, pFunction);
 }
@@ -1291,7 +1291,7 @@ bool TestSuite::RemoveTest(Test* pTest, bool bDeleteIfOwned)
     return TestCollection::RemoveTest(pTest, bDeleteIfOwned);
 }
 
-bool TestSuite::RemoveTest(const char8_t* pTestName, bool bDeleteIfOwned)
+bool TestSuite::RemoveTest(const char* pTestName, bool bDeleteIfOwned)
 {
     return TestCollection::RemoveTest(pTestName, bDeleteIfOwned);
 }
@@ -1362,7 +1362,7 @@ int TestSuite::TeardownTest()
 // TestApplication
 ///////////////////////////////////////////////////////////////////////////////
 
-TestApplication::TestApplication(const char8_t* pTestApplicationName, int argc, char** argv, FunctionPtr pInitFunction, FunctionPtr pShutdownFunction)
+TestApplication::TestApplication(const char* pTestApplicationName, int argc, char** argv, FunctionPtr pInitFunction, FunctionPtr pShutdownFunction)
   : TestSuite(pTestApplicationName),
     mArgc(argc),
     mArgv(argv),

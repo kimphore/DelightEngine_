@@ -17,6 +17,7 @@
 #include <EASTL/sort.h>
 #include <EASTL/bonus/sort_extra.h>
 #include <EASTL/vector.h>
+#include <EASTL/list.h>
 #include <EASTL/deque.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/allocator.h>
@@ -176,7 +177,21 @@ namespace eastl
 				return x;
 			}
 		};
+
+		struct TestNoLessOperator
+		{
+			int i {};
+		};
 	} // namespace Internal
+
+	template <>
+	struct less<Internal::TestNoLessOperator>
+	{
+		bool operator()(const Internal::TestNoLessOperator& lhs, const Internal::TestNoLessOperator& rhs) const noexcept
+		{
+			return lhs.i < rhs.i;
+		}
+	};
 
 } // namespace eastl
 
@@ -286,7 +301,7 @@ int TestSort()
 
 				intArray = intArraySaved;
 				vector<int64_t> buffer(intArray.size());
-				merge_sort_buffer(intArray.begin(), intArray.end(), &buffer[0]);
+				merge_sort_buffer(intArray.begin(), intArray.end(), buffer.data());
 				EATEST_VERIFY(is_sorted(intArray.begin(), intArray.end()));
 				EATEST_VERIFY(eastl::accumulate(begin(intArraySaved), end(intArraySaved), int64_t(0)) == expectedSum);
 
@@ -302,6 +317,34 @@ int TestSort()
 				EATEST_VERIFY(eastl::accumulate(begin(intArraySaved), end(intArraySaved), int64_t(0)) == expectedSum);
 			}
 		}
+	}
+
+	// Test tim sort with a specific array size and seed that caused a crash 
+	{
+		vector<int64_t> intArray;
+		int i = 1000000;
+		{
+			EASTLTest_Rand testRng(232526);
+
+			for (int n = 0; n < i; n++)
+			{
+				intArray.push_back(testRng.Rand());
+			}
+			vector<int64_t> buffer(intArray.size() / 2);
+			tim_sort_buffer(intArray.begin(), intArray.end(), buffer.data());
+			EATEST_VERIFY(is_sorted(intArray.begin(), intArray.end()));
+		}
+	}
+
+	// Test insertion_sort() does not invalidate a BidirectionalIterator by doing --BidirectionalIterator.begin()
+	{
+		// Test Passes if the Test doesn't crash
+		eastl::deque<int> deque;
+		deque.push_back(1);
+
+		insertion_sort(deque.begin(), deque.end());
+
+		insertion_sort(deque.begin(), deque.end(), eastl::less<int>{});
 	}
 
 
@@ -601,6 +644,13 @@ int TestSort()
 			radix_sort<uint32_t*, identity_extract_radix_key<uint32_t>>(begin(input), end(input), buffer);
 			EATEST_VERIFY(is_sorted(begin(input), end(input)));
 		}
+		{
+			// Test case for bug where the last histogram bucket was not being cleared to zero
+			uint32_t input[] = { 0xff00, 0xff };
+			uint32_t buffer[EAArrayCount(input)];
+			radix_sort<uint32_t*, identity_extract_radix_key<uint32_t>>(begin(input), end(input), buffer);
+			EATEST_VERIFY(is_sorted(begin(input), end(input)));
+		}
 	}
 
 	{
@@ -764,7 +814,7 @@ int TestSort()
 	}
 
 	{
-		// EATEST_VERIFY deque sorting can compile.
+		// Test checking that deque sorting can compile.
 		deque<int>  intDeque;
 		vector<int> intVector;
 
@@ -772,6 +822,25 @@ int TestSort()
 		stable_sort(intVector.begin(), intVector.end());
 	}
 
+	{
+		// Test checking that sorting containers having elements of a type without an operator< compiles correctly
+
+		vector<TestNoLessOperator> noLessVector;
+
+		stable_sort(noLessVector.begin(), noLessVector.end());
+		bubble_sort(noLessVector.begin(), noLessVector.end());
+		shaker_sort(noLessVector.begin(), noLessVector.end());
+		insertion_sort(noLessVector.begin(), noLessVector.end());
+		selection_sort(noLessVector.begin(), noLessVector.end());
+		shell_sort(noLessVector.begin(), noLessVector.end());
+		comb_sort(noLessVector.begin(), noLessVector.end());
+		heap_sort(noLessVector.begin(), noLessVector.end());
+		merge_sort(noLessVector.begin(), noLessVector.end(), *get_default_allocator(nullptr));
+		quick_sort(noLessVector.begin(), noLessVector.end());
+
+		vector<TestNoLessOperator> buffer;
+		tim_sort_buffer(noLessVector.begin(), noLessVector.end(), buffer.data());
+}
 
 	{
 		// Test sorting of a container of pointers to objects as opposed to a container of objects themselves.
@@ -821,6 +890,41 @@ int TestSort()
 		EATEST_VERIFY(is_sorted(floatArray.begin(), floatArray.end(), SafeFloatCompare()));
 	}
 
+	{
+		auto test_stable_sort = [&](auto testArray, size_t count)
+		{
+			auto isEven = [](auto val) { return (val % 2) == 0; };
+			auto isOdd  = [](auto val) { return (val % 2) != 0; };
+
+			for (size_t i = 0; i < count; i++)
+				testArray.push_back((uint16_t)rng.Rand());
+
+			vector<uint16_t> evenArray;
+			vector<uint16_t> oddArray;
+
+			eastl::copy_if(testArray.begin(), testArray.end(), eastl::back_inserter(evenArray), isEven);
+			eastl::copy_if(testArray.begin(), testArray.end(), eastl::back_inserter(oddArray), isOdd);
+
+			const auto boundary = eastl::stable_partition(testArray.begin(), testArray.end(), isEven);
+
+			const auto evenCount = eastl::distance(testArray.begin(), boundary);
+			const auto oddCount = eastl::distance(boundary, testArray.end());
+
+			const auto evenExpectedCount = (ptrdiff_t)evenArray.size();
+			const auto oddExpectedCount = (ptrdiff_t)oddArray.size();
+
+			EATEST_VERIFY(evenCount == evenExpectedCount);
+			EATEST_VERIFY(oddCount == oddExpectedCount);
+			EATEST_VERIFY(eastl::equal(testArray.begin(), boundary, evenArray.begin()));
+			EATEST_VERIFY(eastl::equal(boundary, testArray.end(), oddArray.begin()));
+		};
+
+		test_stable_sort(vector<uint16_t>(), 1000); // Test stable_partition
+		test_stable_sort(vector<uint16_t>(), 0);	// Test stable_partition on empty container
+		test_stable_sort(vector<uint16_t>(), 1);	// Test stable_partition on container of one element
+		test_stable_sort(vector<uint16_t>(), 2);	// Test stable_partition on container of two element
+		test_stable_sort(list<uint16_t>(),   0);	// Test stable_partition on bidirectional iterator (not random access)
+	}
 
 	#if 0 // Disabled because it takes a long time and thus far seems to show no bug in quick_sort.
 	{

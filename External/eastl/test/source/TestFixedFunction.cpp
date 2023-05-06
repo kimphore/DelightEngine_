@@ -4,8 +4,12 @@
 
 #include <EABase/eabase.h>
 #include <EAAssert/eaassert.h>
-#include "EASTLTest.h"
+
+// Included prior to EASTLTest.h to guard against the following bug resurfacing:
+// https://github.com/electronicarts/EASTL/issues/275
 #include <EASTL/fixed_function.h>
+
+#include "EASTLTest.h"
 #include <EASTL/numeric.h>
 
 EA_DISABLE_ALL_VC_WARNINGS()
@@ -552,10 +556,16 @@ int TestFixedFunctionBasic()
 		{
 			eastl::fixed_function<16, uint32_t(void)> ff16(ff8);
 			VERIFY(result == ff16());
-			
 		}
+
 		{
 			eastl::fixed_function<16, uint32_t(void)> ff16 = ff8;
+			VERIFY(result == ff16());
+		}
+
+		{
+			eastl::fixed_function<16, uint32_t(void)> ff16; 
+			ff16 = ff8;
 			VERIFY(result == ff16());
 		}
 
@@ -568,6 +578,13 @@ int TestFixedFunctionBasic()
 		{
 			auto ff8Copy = ff8;
 			eastl::fixed_function<16, uint32_t(void)> ff16 = eastl::move(ff8Copy);
+			VERIFY(result == ff16());
+		}
+
+		{
+			auto ff8Copy = ff8;
+			eastl::fixed_function<16, uint32_t(void)> ff16;
+			ff16 = eastl::move(ff8Copy);
 			VERIFY(result == ff16());
 		}
 	}

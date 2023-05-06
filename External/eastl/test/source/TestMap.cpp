@@ -115,8 +115,21 @@ int TestMap()
 
 	{
 		// User reports that EASTL_VALIDATE_COMPARE_ENABLED / EASTL_COMPARE_VALIDATE isn't compiling for this case.
-		eastl::map<eastl::string8, int> m; 
-		m.find_as("some string", eastl::equal_to_2<eastl::string8, const char8_t*>()); 
+		eastl::map<eastl::u8string, int> m; 
+		m.find_as(EA_CHAR8("some string"), eastl::equal_to_2<eastl::u8string, const char8_t*>()); 
+	}
+
+	{
+		eastl::map<int*, int> m;
+		int* ip = (int*)(uintptr_t)0xDEADC0DE;
+
+		m[ip] = 0;
+
+		auto it = m.find_as(ip, eastl::less_2<int*, int*>{});
+		EATEST_VERIFY(it != m.end());
+
+		it = m.find_as((int*)(uintptr_t)0xDEADC0DE, eastl::less_2<int*, int*>{});
+		EATEST_VERIFY(it != m.end());
 	}
 
 	{
@@ -134,15 +147,23 @@ int TestMap()
 	{
 		typedef eastl::map<int, int>     IntIntMap;
 		IntIntMap map1;
+		map1[1] = 1;
+		map1[3] = 3;
 
 		#if EASTL_EXCEPTIONS_ENABLED
 			EATEST_VERIFY_THROW(map1.at(0));
+			EATEST_VERIFY_THROW(map1.at(2));
+			EATEST_VERIFY_THROW(map1.at(4));
 		#endif
-		map1[0]=1;
+		map1[0] = 1;
 		#if EASTL_EXCEPTIONS_ENABLED
 			EATEST_VERIFY_NOTHROW(map1.at(0));
+			EATEST_VERIFY_NOTHROW(map1.at(1));
+			EATEST_VERIFY_NOTHROW(map1.at(3));
 		#endif
 		EATEST_VERIFY(map1.at(0) == 1);
+		EATEST_VERIFY(map1.at(1) == 1);
+		EATEST_VERIFY(map1.at(3) == 3);
 
 		const IntIntMap map2;
 		const IntIntMap map3(map1);
@@ -196,6 +217,78 @@ int TestMap()
 //        EATEST_VERIFY(p1 == p2); 
 //    }
 
+	{ // Test empty base-class optimization
+		struct UnemptyLess : eastl::less<int>
+		{
+			int foo;
+		};
+
+		typedef eastl::map<int, int, eastl::less<int>> VM1;
+		typedef eastl::map<int, int, UnemptyLess> VM2;
+
+		EATEST_VERIFY(sizeof(VM1) < sizeof(VM2));
+	}
+
+	{ // Test erase_if
+		eastl::map<int, int> m = {{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}};
+		auto numErased = eastl::erase_if(m, [](auto p) { return p.first % 2 == 0; });
+		VERIFY((m == eastl::map<int, int>{{1, 1},{3, 3}}));
+		VERIFY(numErased == 3);
+	}
+
+	{ // Test erase_if
+		eastl::multimap<int, int> m = {{0, 0}, {0, 0}, {0, 0}, {1, 1}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {4, 4}, {4, 4}};
+		auto numErased = eastl::erase_if(m, [](auto p) { return p.first % 2 == 0; });
+		VERIFY((m == eastl::multimap<int, int>{{1, 1}, {1, 1}, {3, 3}}));;
+		VERIFY(numErased == 7);
+	}
+
+#if defined(EA_COMPILER_HAS_THREE_WAY_COMPARISON)
+	{ // Test map <=>
+		eastl::map<int, int> m1 = {{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}};
+		eastl::map<int, int> m2 = {{4, 4}, {3, 3}, {2, 2}, {1, 1}, {0, 0}};
+		eastl::map<int, int> m3 = {{0, 1}, {2, 3}, {4, 5}, {6, 7}, {8, 9}};
+		eastl::map<int, int> m4 = {{1, 0}, {3, 2}, {5, 4}, {7, 6}, {9, 8}};
+		eastl::map<int, int> m5 = {{0, 1}, {2, 3}, {4, 5}};
+
+		VERIFY(m1 == m2);
+		VERIFY(m1 != m3);
+		VERIFY(m3 != m4);
+		VERIFY(m3 < m4);
+		VERIFY(m5 < m4);
+		VERIFY(m5 < m3);
+
+
+		VERIFY((m1 <=> m2) == 0);
+		VERIFY((m1 <=> m3) != 0);
+		VERIFY((m3 <=> m4) != 0);
+		VERIFY((m3 <=> m4) < 0);
+		VERIFY((m5 <=> m4) < 0);
+		VERIFY((m5 <=> m3) < 0);
+	}
+
+	{ // Test multimap <=>
+		eastl::multimap<int, int> m1 = {{0, 0}, {0, 0}, {1, 1}, {1, 1}, {2, 2}, {2, 2}, {3, 3}, {3, 3}, {4, 4}, {4, 4}};
+		eastl::multimap<int, int> m2 = {{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {4, 4}, {3, 3}, {2, 2}, {1, 1}, {0, 0}};
+		eastl::multimap<int, int> m3 = {{0, 1}, {2, 3}, {4, 5}, {0, 1}, {2, 3}, {4, 5}, {6, 7}, {8, 9}};
+		eastl::multimap<int, int> m4 = {{1, 0}, {3, 2}, {5, 4}, {1, 0}, {3, 2}, {5, 4}, {7, 6}, {9, 8}};
+		eastl::multimap<int, int> m5 = {{10, 11}, {10, 11}};
+
+		VERIFY(m1 == m2);
+		VERIFY(m1 != m3);
+		VERIFY(m3 != m4);
+		VERIFY(m3 < m4);
+		VERIFY(m5 > m4);
+		VERIFY(m5 > m3);
+
+		VERIFY((m1 <=> m2) == 0);
+		VERIFY((m1 <=> m3) != 0);
+		VERIFY((m3 <=> m4) != 0);
+		VERIFY((m3 <=> m4) < 0);
+		VERIFY((m5 <=> m4) > 0);
+		VERIFY((m5 <=> m3) > 0);
+	}
+#endif
 
 	return nErrorCount;
 }

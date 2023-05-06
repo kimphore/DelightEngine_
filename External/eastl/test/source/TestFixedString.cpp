@@ -131,6 +131,58 @@ int TestFixedSubstring()
 		EATEST_VERIFY(str == "");
 	}
 
+
+	{
+		// Check that copies/moves don't become independent strings.
+		// They should all point to the same sub-string.
+		string str = "hello world";
+		fixed_substring<char> sub(str, 2, 5);
+
+		EATEST_VERIFY(sub.size() == 5);
+		EATEST_VERIFY(sub[0] == 'l');
+		EATEST_VERIFY(sub == "llo w");
+
+		vector<fixed_substring<char>> v;
+		for (eastl_size_t i = 0; i < 1000; ++i) {
+			v.push_back(sub);
+		}
+
+		sub[0] = 'g';
+		EATEST_VERIFY(str == "heglo world");
+		EATEST_VERIFY(sub == "glo w");
+
+		for (const auto& s : v){
+			EATEST_VERIFY(s == "glo w");
+		}
+
+		// copy construct
+		fixed_substring<char> sub2 = sub;
+
+		// copy assign
+		fixed_substring<char> sub3;
+		sub3 = sub;
+
+		// move construct
+		fixed_substring<char> sub4 = eastl::move(sub);
+
+		// move assign
+		fixed_substring<char> sub_again(str, 2, 5);
+		fixed_substring<char> sub5;
+		sub5 = eastl::move(sub_again);
+
+		EATEST_VERIFY(sub2 == "glo w");
+		EATEST_VERIFY(sub3 == "glo w");
+		EATEST_VERIFY(sub4 == "glo w");
+		EATEST_VERIFY(sub5 == "glo w");
+
+		str[5] = 'g';
+		EATEST_VERIFY(sub2 == "glogw");
+		EATEST_VERIFY(sub3 == "glogw");
+		EATEST_VERIFY(sub4 == "glogw");
+		EATEST_VERIFY(sub5 == "glogw");
+
+	}
+
 	return nErrorCount;
 }
 
@@ -140,9 +192,9 @@ int TestFixedString()
 	int nErrorCount = 0;
 
 	{
-		fixed_string<char8_t, 64>::CtorSprintf cs;
+		fixed_string<char, 64>::CtorSprintf cs;
 
-		fixed_string<char8_t, 64> s8(cs, "hello world %d.", 1);
+		fixed_string<char, 64> s8(cs, "hello world %d.", 1);
 		EATEST_VERIFY(s8 == "hello world 1.");
 		EATEST_VERIFY(s8.capacity() == 63); // 63 because the 64 includes the terminating 0, but capacity() subtracts the terminating 0 usage.
 		EATEST_VERIFY(s8.max_size() == 63);
@@ -191,41 +243,41 @@ int TestFixedString()
 		EATEST_VERIFY(fs2.size() == 0);
 		EATEST_VERIFY(fs2.capacity() == 63);
 
-		fs1 = "abc";
+		fs1 = EA_CHAR8("abc");
 		FixedString64 fs3(fs1);
 		EATEST_VERIFY(fs3.size() == 3);
 		EATEST_VERIFY(fs3.capacity() == 63);
-		EATEST_VERIFY(fs3 == "abc");
+		EATEST_VERIFY(fs3 == EA_CHAR8("abc"));
 
 		// fixed_string(const this_type& x, size_type position, size_type n = npos);
 		FixedString64 fs4(fs1, 1, 2);
 		EATEST_VERIFY(fs4.size() == 2);
 		EATEST_VERIFY(fs4.capacity() == 63);
-		EATEST_VERIFY(fs4 == "bc");
+		EATEST_VERIFY(fs4 == EA_CHAR8("bc"));
 
 		// fixed_string(const value_type* p, size_type n);
-		FixedString64 fs5("abcdef", 6);
+		FixedString64 fs5(EA_CHAR8("abcdef"), 6);
 		EATEST_VERIFY(fs5.size() == 6);
 		EATEST_VERIFY(fs5.capacity() == 63);
-		EATEST_VERIFY(fs5 == "abcdef");
+		EATEST_VERIFY(fs5 == EA_CHAR8("abcdef"));
 
 		// fixed_string(const value_type* p);
-		FixedString64 fs6("abcdef");
+		FixedString64 fs6(EA_CHAR8("abcdef"));
 		EATEST_VERIFY(fs6.size() == 6);
 		EATEST_VERIFY(fs6.capacity() == 63);
-		EATEST_VERIFY(fs6 == "abcdef");
+		EATEST_VERIFY(fs6 == EA_CHAR8("abcdef"));
 
 		// fixed_string(size_type n, const value_type& value);
 		FixedString64 fs7(8, 'a');
 		EATEST_VERIFY(fs7.size() == 8);
 		EATEST_VERIFY(fs7.capacity() == 63);
-		EATEST_VERIFY(fs7 == "aaaaaaaa");
+		EATEST_VERIFY(fs7 == EA_CHAR8("aaaaaaaa"));
 
 		// fixed_string(const value_type* pBegin, const value_type* pEnd);
 		FixedString64 fs8(&fs6[0], &fs6[5]);
 		EATEST_VERIFY(fs8.size() == 5);
 		EATEST_VERIFY(fs8.capacity() == 63);
-		EATEST_VERIFY(fs8 == "abcde");
+		EATEST_VERIFY(fs8 == EA_CHAR8("abcde"));
 
 		// fixed_string(CtorDoNotInitialize, size_type n);
 		FixedString64 fs9(cdni, 7);
@@ -233,24 +285,24 @@ int TestFixedString()
 		EATEST_VERIFY(fs9.capacity() == 63);
 
 		// fixed_string(CtorSprintf, const value_type* pFormat, ...);
-		FixedString64 fs10(cs, "%d", 37);
+		FixedString64 fs10(cs, EA_CHAR8("%d"), 37);
 		EATEST_VERIFY(fs10.size() == 2);
 		EATEST_VERIFY(fs10.capacity() == 63);
-		EATEST_VERIFY(fs10 == "37");
+		EATEST_VERIFY(fs10 == EA_CHAR8("37"));
 
 		// this_type& operator=(const const value_type* p);
 		// this_type& operator=(const this_type& x);
-		fs9 = "hello";
-		EATEST_VERIFY(fs9 == "hello");
+		fs9 = EA_CHAR8("hello");
+		EATEST_VERIFY(fs9 == EA_CHAR8("hello"));
 
 		fs9 = fs10;
 		EATEST_VERIFY(fs9 == fs10);
-		EATEST_VERIFY(fs9 == "37");
+		EATEST_VERIFY(fs9 == EA_CHAR8("37"));
 
 		// void swap(this_type& x);
 		swap(fs7, fs9);
-		EATEST_VERIFY(fs7 == "37");
-		EATEST_VERIFY(fs9 == "aaaaaaaa");
+		EATEST_VERIFY(fs7 == EA_CHAR8("37"));
+		EATEST_VERIFY(fs9 == EA_CHAR8("aaaaaaaa"));
 
 		// void set_capacity(size_type n);
 		fs9.set_capacity(100);
@@ -308,7 +360,7 @@ int TestFixedString()
 			// fixed_string operator+(const fixed_string& a, const value_type* p);
 			// fixed_string operator+(const fixed_string& a, value_type c);
 
-			typedef fixed_string<char8_t, 8, true> FSTest; // Make it a small size so it's easily overflowed when we want.
+			typedef fixed_string<char, 8, true> FSTest; // Make it a small size so it's easily overflowed when we want.
 
 			FSTest a("abc");
 			FSTest b("def");
@@ -408,7 +460,7 @@ int TestFixedString()
 
 	{
 		// Regression for compile failure when EASTL_NO_RVALUE_REFERENCES is 0.
-		typedef eastl::fixed_string<char8_t, 32, true, MallocAllocator> TestString;
+		typedef eastl::fixed_string<char, 32, true, MallocAllocator> TestString;
 
 		TestString ts1;
 		TestString ts2(ts1 + "Test");
