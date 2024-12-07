@@ -2,7 +2,7 @@
 
 #include "DefineFlag.h" // 기능 컨트롤을 위해 가장 먼저 선언.
 
-#include <vld.h> // for memory leak detect.
+//#include <vld.h> // for memory leak detect.
 //
 #include "tbb/include/tbb/tbbmalloc_proxy.h"
 #include "tbb/include/tbb/scalable_allocator.h"

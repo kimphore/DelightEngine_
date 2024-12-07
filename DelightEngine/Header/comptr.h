@@ -78,7 +78,7 @@ namespace Delight
 			return nullptr;
 		}
 
-		inline Bool8 IsValid()
+		inline bool8 IsValid()
 		{
 			return (Reference != nullptr);
 		}

@@ -7,9 +7,21 @@
 #define LOGFILENAME_FORMAT "..\\Log\\Launch[%04d-%02d-%02d %02d.%02d.%02d].txt"
 #define TIME_FORMAT "[%04d-%02d-%02d %02d.%02d.%02d]"
 
-CDelightLogger GLogger;
+extern CDelightLogger* GLogger = nullptr;
 
-const Int32 logColorIndex[5] = {
+
+void Delight::InitializeLogger()
+{
+	GLogger = new CDelightLogger;
+}
+
+void Delight::ShutdownLogger()
+{
+	delete GLogger;
+	GLogger = nullptr;
+}
+
+const int32 logColorIndex[5] = {
 	15, // LOG_NORMAL
 	7,  // LOG_INFO
 	14, // LOG_WARN
@@ -33,16 +45,16 @@ CDelightLogger::~CDelightLogger()
 	}
 }
 
-void CDelightLogger::Initialize()
+EEngineResult CDelightLogger::Initialize()
 {
 	std::locale::global(std::locale("kor"));
 
 	// 시간기반 파일생성.	
-	Tchar filename[256];
+	tchar filename[256];
 	time_t timer;
 	tm timeInfo;
 
-	memset(filename, 0, sizeof(Tchar) * 256);
+	memset(filename, 0, sizeof(tchar) * 256);
 
 	timer = time(NULL);
 	localtime_s(&timeInfo, &timer);
@@ -52,7 +64,7 @@ void CDelightLogger::Initialize()
 	
 	logFile.open(filename);
 
-	infof(TEXT("Logger Initialized."));
+	return EEngineResult::SUCESS;
 }
 
 void CDelightLogger::ToggleConsole()
@@ -81,14 +93,14 @@ void CDelightLogger::ToggleConsole()
 	}
 }
 
-void CDelightLogger::LogW(ELogType logType, Int32 LogLevel, Tchar* format, ...)
+void CDelightLogger::LogW(ELogType logType, int32 LogLevel, tchar* format, ...)
 {
-	Tchar StringBuffer[512] = TEXT("");
-	Tchar header[64] = TEXT("");
-	Tchar timeHeader[64] = TEXT("");
+	tchar StringBuffer[512] = TEXT("");
+	tchar header[64] = TEXT("");
+	tchar timeHeader[64] = TEXT("");
 	time_t timer;
 	tm timeInfo;
-	Int32 logColor = Int32(logType);
+	int32 logColor = int32(logType);
 
 	timer = time(NULL);
 	localtime_s(&timeInfo, &timer);
@@ -126,14 +138,14 @@ void CDelightLogger::LogW(ELogType logType, Int32 LogLevel, Tchar* format, ...)
 	logFile << StringBuffer<< std::endl;
 }
 // for char based log
-void CDelightLogger::Log(ELogType logType, Int32 LogLevel, Char* format, ...)
+void CDelightLogger::Log(ELogType logType, int32 LogLevel, char* format, ...)
 {
-	Char StringBuffer[512] = "";
-	Char header[64] = "";
-	Char timeHeader[64] = "";
+	char StringBuffer[512] = "";
+	char header[64] = "";
+	char timeHeader[64] = "";
 	time_t timer;
 	tm timeInfo;
-	Int32 logColor = Int32(logType);
+	int32 logColor = int32(logType);
 
 	timer = time(NULL);
 	localtime_s(&timeInfo, &timer);
@@ -141,17 +153,17 @@ void CDelightLogger::Log(ELogType logType, Int32 LogLevel, Char* format, ...)
 	switch (logType)
 	{
 	case LOG_INFO:
-		sprintf_s(header, sizeof(Char) * 64, "[INFO]");
+		sprintf_s(header, sizeof(char) * 64, "[INFO]");
 		break;
 	case LOG_WARN:
-		sprintf_s(header, sizeof(Char) * 64, "[WARN]");
+		sprintf_s(header, sizeof(char) * 64, "[WARN]");
 		break;
 	case LOG_ERROR:
-		sprintf_s(header, sizeof(Char) * 64, "[ERR]");
+		sprintf_s(header, sizeof(char) * 64, "[ERR]");
 		break;
 	}
 
-	sprintf_s(timeHeader, sizeof(Char) * 64, TIME_FORMAT, timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
+	sprintf_s(timeHeader, sizeof(char) * 64, TIME_FORMAT, timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
 		timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
 
 	va_list Marker;

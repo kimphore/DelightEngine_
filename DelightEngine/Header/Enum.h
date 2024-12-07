@@ -29,4 +29,17 @@ enum EShaderType
 	SHADER_PIXEL,
 	// geometry, tessl, ray, etc..
 	SHADER_END
+
+};
+enum EMemoryType
+{
+	SystemAllocation,
+	TBBAllocation,
+};
+
+enum EEngineResult
+{
+	SUCESS,
+	FAIL,
+
 };

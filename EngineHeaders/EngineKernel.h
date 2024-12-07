@@ -18,9 +18,13 @@ class CRHIDirectX12;
 class ENGINE_DLL CDelightEngineKernel
 {
 public:
-	Result Initialize(HWND _hWnd);
+	result Initialize(HWND _hWnd);
+	~CDelightEngineKernel();
 
 	void TestRenderLoop();
+
+private:
+	void ReleaseEngine();
 
 private:
 	HWND hWnd;

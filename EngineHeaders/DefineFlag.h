@@ -17,3 +17,4 @@
 
 #define USE_EASTL_DLL 1
 #define USE_TBB_ALLOCATION 1
+#define MEMORY_ALLOCATION_TYPE USE_TBB_ALLOCATION // See EMemoryType 0 : Windows Allocation, 1 : TBB Allocation

@@ -28,9 +28,9 @@ public: // pipeline functions.
 
 public:
 	void BindPipelineFunctions();
-	void BuildRenderingPipeline(Tchar* pipelineName);
+	void BuildRenderingPipeline(tchar* pipelineName);
 private:
 	std::map<std::wstring, std::function<void(CDelightSceneView*)>> pipelineMap;
 	std::vector<std::function<void(CDelightSceneView*)>> currentPipeline;
-	Bool8 bBuildedPipeline;
+	bool8 bBuildedPipeline;
 };

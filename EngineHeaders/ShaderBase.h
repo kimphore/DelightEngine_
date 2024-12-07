@@ -18,17 +18,17 @@
 
 struct FShaderDesc
 {
-	Tchar fileName[128];
-	Char entryPoint[64];
-	UInt32 complieFlag;
+	tchar fileName[128];
+	char entryPoint[64];
+	uint32 complieFlag;
 	EShaderType shaderType;
 
 	FShaderDesc()
 		: complieFlag(0),
 		shaderType(SHADER_END)
 	{
-		Delight::memzero(fileName, sizeof(Tchar) * 128);
-		Delight::memzero(entryPoint, sizeof(Char) * 64);
+		Delight::memzero(fileName, sizeof(tchar) * 128);
+		Delight::memzero(entryPoint, sizeof(char) * 64);
 	}
 };
 
@@ -37,7 +37,7 @@ class IDelightShaderBase
 {
 public:
 	IDelightShaderBase()
-		:bInitialized(FALSE)
+		:bInitialized(false)
 	{}
 public:
 	EShaderType GetShaderType() {
@@ -57,5 +57,5 @@ protected:
 	EShaderType ShaderType;
 	Delight::Comptr<ID3DBlob> ShaderObject;
 	Delight::Comptr<ID3DBlob> ShaderErr;
-	Bool8 bInitialized;	 
+	bool8 bInitialized;	 
 };

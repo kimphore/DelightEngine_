@@ -23,27 +23,26 @@ namespace Delight
 	{
 	public:
 		CStackMemoryPool();
-		CStackMemoryPool(size_t _poolSize);
+		CStackMemoryPool(uint64 _poolSize);
 		~CStackMemoryPool();
 
 	public:
-		virtual void* allocate(size_t Size);
-		virtual void* reallocate(void* pointer, size_t Size);
+		virtual void* allocate(uint64 Size);
+		virtual void* reallocate(void* pointer, uint64 Size);
 		virtual void reset();
 		virtual void deallocate();
 		virtual void release();
 
 
 	private:
-		void allocateStack(size_t Size);
-		void updateStackState(size_t Size);
+		void* allocateStack(uint64 Size);
 
 	private:
-		Byte* StackCurrentPointer; // current unused stack pointer.(top)
-		Byte* StackStartPointer; // stack start point.
-		size_t UsedSize;
-		size_t TotalSize;
-		Bool8 DirtyFlag;
+		byte* StackCurrentPointer; // current unused stack pointer.(top)
+		byte* StackStartPointer; // stack start point.
+		uint64 UsedSize;
+		uint64 TotalSize;
+		bool8 DirtyFlag;
 	};
 
 }

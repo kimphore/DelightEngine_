@@ -1,18 +1,36 @@
 #include "Include.h"
 #include "EngineKernel.h"
 #include "RHI_DX12Device.h"
-
-Result CDelightEngineKernel::Initialize(HWND _hWnd)
+#include "MemoryInterface.h"
+#include "Logger.h"
+/*
+* EngineKernal이 시작부...
+*/
+result CDelightEngineKernel::Initialize(HWND _hWnd)
 {
-	GraphicDevice = new CRHIDirectX12;
+	Delight::InitializeMemory(EMemoryType::TBBAllocation);
+	Delight::InitializeLogger();
 
-	GraphicDevice->Initialize(_hWnd);
+	//Delight::GraphicDevice = new CRHIDirectX12;
+
+	//GraphicDevice->Initialize(_hWnd);
 
 	return RET_SUCCES;
+}
+
+CDelightEngineKernel::~CDelightEngineKernel()
+{
+	ReleaseEngine();
 }
 
 void CDelightEngineKernel::TestRenderLoop()
 {
 	// Just Render Test.
-	GraphicDevice->m_commandAllocator->Reset();	
+	/*GraphicDevice->m_commandAllocator->Reset();	*/
+}
+
+void CDelightEngineKernel::ReleaseEngine()
+{
+	Delight::ShutdownLogger();
+	Delight::ShutdownMemory();
 }

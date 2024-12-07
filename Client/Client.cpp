@@ -15,6 +15,12 @@
 #include "allocator.h"
 #include "StackMemoryPool.h"
 
+#include "MemoryInterface.h"
+
+#include "EngineKernel.h"
+
+#include "EASTL/list.h"
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -52,15 +58,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-	GLogger.ToggleConsole();
+    CDelightEngineKernel Engine;
+    
+    Engine.Initialize(gHwnd);
 
-	GLogger.SetIgnoreLogLevel(5);
 
-	GLogger.LogW(LOG_NORMAL, 10, TEXT("This is Normal"));
-	GLogger.LogW(LOG_NORMAL, 3, TEXT("Lower LogLevel"));
-	GLogger.LogW(LOG_ERROR, 10, TEXT("This is Error"));
-	GLogger.LogW(LOG_INFO, 10, TEXT("This is Error"));
-	GLogger.LogW(LOG_WARN, 10, TEXT("This is Warning"));
+	GLogger->ToggleConsole();
+
+	GLogger->SetIgnoreLogLevel(5);
+
+	GLogger->LogW(LOG_NORMAL, 10, TEXT("This is Normal"));
+	GLogger->LogW(LOG_NORMAL, 3, TEXT("Lower LogLevel"));
+	GLogger->LogW(LOG_ERROR, 10, TEXT("This is Error"));
+	GLogger->LogW(LOG_INFO, 10, TEXT("This is Error"));
+	GLogger->LogW(LOG_WARN, 10, TEXT("This is Warning"));
 
 	//FOR_RANGE(index, 0, 100)
 	//{
@@ -68,25 +79,48 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//	Sleep(100);
 	//}
 
-	Delight::CStackMemoryPool Stack(256);
+	//Delight::CStackMemoryPool Stack(256);
 
-	Delight::CAllocator allocator;
+	//Delight::CAllocator allocator;
 
-	allocator.bind_memory_pool(&Stack);
+	//allocator.bind_memory_pool(&Stack);
 
-	int* array = (int*)allocator.allocate(4 * 12);
+	//int* array = (int*)allocator.allocate(4 * 12);
 
 
-	for (int i = 0; i < 12; ++i)
-	{
-		array[i] = i;
-	}
+	//for (int i = 0; i < 12; ++i)
+	//{
+	//	array[i] = i;
+	//}
 
-	for (int i = 0; i < 12; ++i)
-	{
-		std::cout << array[i] << std::endl;
-	}
+	//for (int i = 0; i < 12; ++i)
+	//{
+	//	std::cout << array[i] << std::endl;
+	//}
 
+ //   int* testarray = new int[30];
+
+ //   for (int i = 0; i < 30; ++i)
+ //   {
+ //       testarray[i] = i;
+ //   }
+
+	//for (int i = 0; i < 30; ++i)
+	//{
+ //       std::cout << testarray[i] << std::endl;
+	//}
+
+ //   eastl::list<int> test;
+
+ //   for (int i = 0; i < 30; ++i)
+ //   {
+ //       test.push_back(i);
+ //   }
+
+    //for (eastl::list<int>::iterator Iter(test.begin()); Iter != test.end(); ++Iter)
+    //{
+    //    std::cout << *Iter << std::endl;
+    //}
 
     // 기본 메시지 루프입니다.
     while (GetMessage(&msg, nullptr, 0, 0))
@@ -97,7 +131,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-
 
     return (int) msg.wParam;
 }

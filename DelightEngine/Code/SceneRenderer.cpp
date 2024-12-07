@@ -42,7 +42,7 @@ void CDelightSceneRenderer::BindPipelineFunctions()
 // 실제로 XML불러온 데이터를 기반으로 pipeline 구성.
 // 목적은 랜더링 파이프라인의 유연성 확보.
 // GBuffer, Light, Postprocess, 기타 추가되는 feature들..
-void CDelightSceneRenderer::BuildRenderingPipeline(Tchar* pipelineName)
+void CDelightSceneRenderer::BuildRenderingPipeline(tchar* pipelineName)
 {
 
 	bBuildedPipeline = true;

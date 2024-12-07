@@ -11,8 +11,8 @@ private:
 	void GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);
 
 private:
-	UInt32 m_frameIndex;
-	UInt32 m_rtvDescriptorSize;
+	uint32 m_frameIndex;
+	uint32 m_rtvDescriptorSize;
 public:
 	Delight::Comptr<ID3D12Device> m_Device;
 	Delight::Comptr<ID3D12CommandQueue> m_CommandQueue;

@@ -4,12 +4,12 @@
 
 namespace Delight
 {
-	static inline void memzero(void* ptr, UInt32 size)
+	static inline void memzero(void* ptr, uint32 size)
 	{
 		memset(ptr, 0, size);
 	}
 	
-	static inline void assertImple(Bool8 functionResult, char* assertionText, char* fileName, char* funcName, int cppLine)
+	static inline void assertImple(bool8 functionResult, char* assertionText, char* fileName, char* funcName, int cppLine)
 	{
 		static char assertText[512];
 

@@ -99,23 +99,23 @@ void Delight::CStackMemoryPool::release()
 }
 
 // real memory allocation.
-void* Delight::CStackMemoryPool::allocateStack(size_t Size)
+void* Delight::CStackMemoryPool::allocateStack(uint64 Size)
 {
 	if (StackStartPointer == nullptr)
 	{
 		// first allocation.
-		StackStartPointer = (Byte*)Delight::malloc(Size);
+		StackStartPointer = (byte*)Delight::malloc(Size);
 		StackCurrentPointer = StackStartPointer;
 		reset();
 	}
 	else
 	{
 		// pool reallocation.
-		StackStartPointer = (Byte*)Delight::realloc(StackStartPointer, Size);
+		StackStartPointer = (byte*)Delight::realloc(StackStartPointer, Size);
 	}
 
-	Delight::ASSERT(StackStartPointer == nullptr, "Stack Allocation Failed!");
+	Delight::ASSERT(StackStartPointer != nullptr, "Stack Allocation Failed!");
 	TotalSize = Size;
 
-	return StackStartPointer
+	return StackStartPointer;
 }

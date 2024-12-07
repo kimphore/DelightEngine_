@@ -4,15 +4,15 @@ namespace Delight
 {
 	struct FMD5Hash
 	{
-		Byte hash[128];
+		byte hash[128];
 
-		UInt32 GetSize() {
+		uint32 GetSize() {
 			return 128;
 		}
 
 		FMD5Hash()
 		{
-			memset(hash, 0, sizeof(Byte) * 128);
+			memset(hash, 0, sizeof(byte) * 128);
 		}
 	};
 }
