@@ -1,21 +1,23 @@
 #pragma once
 
+#include "GlobalVariables.h"
+
 // Global Functions.
 
 namespace Delight
 {
-	static inline void memzero(void* ptr, uint32 size)
+	static inline void Memzero(void* ptr, uint32 size)
 	{
 		memset(ptr, 0, size);
 	}
 	
-	static inline void assertImple(bool8 functionResult, char* assertionText, char* fileName, char* funcName, int cppLine)
+	static inline void AssertImple(bool8 functionResult, char* assertionText, char* fileName, char* funcName, int cppLine)
 	{
 		static char assertText[512];
 
 		if (!functionResult)
 		{
-			memzero(assertText, 512);
+			Memzero(assertText, 512);
 
 			sprintf_s(assertText, 512,
 				"FileName : %s\n\rFunction:%s(%d line)\n\r\n\r%s",
@@ -26,5 +28,15 @@ namespace Delight
 		}
 	}
 
-	#define ASSERT(result, caption) assertImple(result, caption, __FILE__, __FUNCTION__, __LINE__)
+	#define ASSERT(result, caption) AssertImple(result, caption, __FILE__, __FUNCTION__, __LINE__)
+
+	static bool8 IsInGameThread()
+	{
+		return GGameThreadID == std::this_thread::get_id();
+	}
+
+	static bool8 IsInRenderThread()
+	{
+		return GRenderThreadID == std::this_thread::get_id();
+	}
 }

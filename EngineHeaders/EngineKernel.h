@@ -21,10 +21,18 @@ public:
 	result Initialize(HWND _hWnd);
 	~CDelightEngineKernel();
 
+	void ReleaseEngine();
+
 	void TestRenderLoop();
 
+public:
+	HWND GetHWND()
+	{
+		return hWnd;
+	}
+
 private:
-	void ReleaseEngine();
+	void InitializeThread();
 
 private:
 	HWND hWnd;

@@ -3,6 +3,16 @@
 #include "RHI_DX12Device.h"
 #include "MemoryInterface.h"
 #include "Logger.h"
+#include "GlobalVariables.h"
+
+#include <processthreadsapi.h>
+
+uint64 GGameThreadFrame = 0;
+uint64 GRenderThreadFrame = 0;
+
+std::thread::id GGameThreadID;
+std::thread::id GRenderThreadID;
+
 /*
 * EngineKernal이 시작부...
 */
@@ -27,6 +37,16 @@ void CDelightEngineKernel::TestRenderLoop()
 {
 	// Just Render Test.
 	/*GraphicDevice->m_commandAllocator->Reset();	*/
+}
+
+void CDelightEngineKernel::InitializeThread()
+{
+	// 1. setup gamethread
+	SetThreadDescription(GetCurrentThread(), TEXT("GameThread"));
+	GGameThreadFrame = 0;
+	GGameThreadID = std::this_thread::get_id();
+
+	// 2.2 setup renderthread
 }
 
 void CDelightEngineKernel::ReleaseEngine()

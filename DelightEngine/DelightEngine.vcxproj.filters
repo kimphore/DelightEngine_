@@ -133,6 +133,12 @@
     <Filter Include="Cores\Memory\Memory\TBBMemory">
       <UniqueIdentifier>{49f5b7e4-a066-4f7c-ad11-9b32c1fdc4c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\RenderThread">
+      <UniqueIdentifier>{d6d67287-fc16-40de-a96e-ef475f4b28d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\RenderCommand">
+      <UniqueIdentifier>{5330d87d-d9dd-4d24-b133-8ebca1913d1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -231,6 +237,15 @@
     <ClInclude Include="Code\WindowsMemory.h">
       <Filter>Cores\Memory\Memory\WindowsMemory</Filter>
     </ClInclude>
+    <ClInclude Include="Header\GlobalVariables.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RenderThread.h">
+      <Filter>Rendering\RenderThread</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RenderCommand.h">
+      <Filter>Rendering\RenderCommand</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -277,6 +292,12 @@
     </ClCompile>
     <ClCompile Include="Code\WindowsMemory.cpp">
       <Filter>Cores\Memory\Memory\WindowsMemory</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RenderThread.cpp">
+      <Filter>Rendering\RenderThread</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RenderCommand.cpp">
+      <Filter>Rendering\RenderCommand</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -160,6 +160,8 @@
     <ClInclude Include="Code\MemoryPoolInterface.h" />
     <ClInclude Include="Code\MemoryTracer.h" />
     <ClInclude Include="Code\PixelShader.h" />
+    <ClInclude Include="Code\RenderCommand.h" />
+    <ClInclude Include="Code\RenderThread.h" />
     <ClInclude Include="Code\RHI.h" />
     <ClInclude Include="Code\RHI_DX12Device.h" />
     <ClInclude Include="Code\SceneRenderer.h" />
@@ -179,6 +181,7 @@
     <ClInclude Include="Header\Enum.h" />
     <ClInclude Include="Header\Exception.h" />
     <ClInclude Include="Header\Function.h" />
+    <ClInclude Include="Header\GlobalVariables.h" />
     <ClInclude Include="Header\Include.h" />
     <ClInclude Include="Header\md5hashing.h" />
     <ClInclude Include="Header\memoryFunctions.h" />
@@ -193,6 +196,8 @@
     <ClCompile Include="Code\MemoryInterface.cpp" />
     <ClCompile Include="Code\MemoryTracer.cpp" />
     <ClCompile Include="Code\PixelShader.cpp" />
+    <ClCompile Include="Code\RenderCommand.cpp" />
+    <ClCompile Include="Code\RenderThread.cpp" />
     <ClCompile Include="Code\RHI_DX12Device.cpp" />
     <ClCompile Include="Code\SceneRenderer.cpp" />
     <ClCompile Include="Code\SceneView.cpp" />
