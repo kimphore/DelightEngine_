@@ -139,6 +139,21 @@
     <Filter Include="Rendering\RenderCommand">
       <UniqueIdentifier>{5330d87d-d9dd-4d24-b133-8ebca1913d1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores\RHI\DX12\Components">
+      <UniqueIdentifier>{3d4140ec-a958-4c3c-aca0-5d3458c1d15e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\CommandList">
+      <UniqueIdentifier>{b8f3f7ec-89fd-4ba5-936c-23604df265e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\SyncObject">
+      <UniqueIdentifier>{78b68bee-afca-44de-8f11-284625a10aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\SyncObject\CritialSection">
+      <UniqueIdentifier>{f7b60ea4-d6e5-4eb4-a21b-428fc334b7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\Rendertarget">
+      <UniqueIdentifier>{098e7da6-8d37-4e03-bb34-615adf44849c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -246,6 +261,15 @@
     <ClInclude Include="Code\RenderCommand.h">
       <Filter>Rendering\RenderCommand</Filter>
     </ClInclude>
+    <ClInclude Include="Code\DX12_CommandList.h">
+      <Filter>Cores\RHI\DX12\Components\CommandList</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\CriticalSection.h">
+      <Filter>Utils\SyncObject\CritialSection</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_Rendertarget.h">
+      <Filter>Cores\RHI\DX12\Components\Rendertarget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -298,6 +322,15 @@
     </ClCompile>
     <ClCompile Include="Code\RenderCommand.cpp">
       <Filter>Rendering\RenderCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_CommandList.cpp">
+      <Filter>Cores\RHI\DX12\Components\CommandList</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\CriticalSection.cpp">
+      <Filter>Utils\SyncObject\CritialSection</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_Rendertarget.cpp">
+      <Filter>Cores\RHI\DX12\Components\Rendertarget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

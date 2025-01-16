@@ -1,5 +1,8 @@
 #pragma once
 
+#include <winerror.h>
+#include <tchar.h>
+
 // Default 
 typedef int					int32;
 typedef unsigned int		uint32;
@@ -13,7 +16,8 @@ typedef double				float64;
 typedef unsigned char		byte;
 typedef TCHAR				tchar;
 typedef bool				bool8;
-typedef INT					bool32;
 
 typedef unsigned int		result;
 typedef HRESULT				hres;
+
+typedef XMFLOAT4

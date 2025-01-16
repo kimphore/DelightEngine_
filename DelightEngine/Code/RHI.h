@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Define.h"
+
 class ENGINE_DLL CRHIInterface
 {
 public:

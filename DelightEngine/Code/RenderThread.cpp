@@ -3,7 +3,7 @@
 
 hres CDelightRenderThread::InitializeAndStartThread()
 {
-
+	return 0;
 }
 
 void CDelightRenderThread::DoWork()

@@ -27,8 +27,8 @@ struct FShaderDesc
 		: complieFlag(0),
 		shaderType(SHADER_END)
 	{
-		Delight::memzero(fileName, sizeof(tchar) * 128);
-		Delight::memzero(entryPoint, sizeof(char) * 64);
+		Delight::Memzero(fileName, sizeof(tchar) * 128);
+		Delight::Memzero(entryPoint, sizeof(char) * 64);
 	}
 };
 

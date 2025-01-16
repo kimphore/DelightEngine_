@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Typedef.h"
+
 namespace Delight
 {
 	// Engine Version. Not Use WRL::ComPtr..

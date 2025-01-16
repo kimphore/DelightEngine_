@@ -154,6 +154,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Code\allocator.h" />
+    <ClInclude Include="Code\CriticalSection.h" />
+    <ClInclude Include="Code\DX12_CommandList.h" />
+    <ClInclude Include="Code\DX12_Rendertarget.h" />
     <ClInclude Include="Code\EngineKernel.h" />
     <ClInclude Include="Code\Logger.h" />
     <ClInclude Include="Code\MemoryInterface.h" />
@@ -191,6 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\allocator.cpp" />
+    <ClCompile Include="Code\CriticalSection.cpp" />
+    <ClCompile Include="Code\DX12_CommandList.cpp" />
+    <ClCompile Include="Code\DX12_Rendertarget.cpp" />
     <ClCompile Include="Code\EngineKernel.cpp" />
     <ClCompile Include="Code\Logger.cpp" />
     <ClCompile Include="Code\MemoryInterface.cpp" />

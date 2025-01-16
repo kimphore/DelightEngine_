@@ -90,10 +90,31 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 			rtvHandle.Offset(1, m_rtvDescriptorSize);
 		}
 	}
+}
 
-	Delight::FailedReturnString(
-		m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-			DELIGHT_IID_PPV_ARGS(&m_commandAllocator)), TEXT(""));
+void CRHIDirectX12::Present(int32 InSyncInterval)
+{
+	Delight::ThrowIfFailed(m_Swapchain->Present(InSyncInterval, 0));
+}
+
+void CRHIDirectX12::WaitForPreviousFrame()
+{
+	// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
+	// This is code implemented as such for simplicity. The D3D12HelloFrameBuffering
+	// sample illustrates how to use fences for efficient resource usage and to
+	// maximize GPU utilization.
+
+	const uint64 Fence = m_fenceValue;
+	Delight::ThrowIfFailed(m_CommandQueue->Signal(m_fence.GetData(), Fence));
+	++m_fenceValue;
+
+	if (m_fence->SetEventOnCompletion(Fence, m_fenceEvent) < Fence)
+	{
+		Delight::ThrowIfFailed(m_fence->SetEventOnCompletion(Fence, m_fenceEvent));
+		WaitForSingleObject(m_fenceEvent, INFINITE);
+	}
+
+	m_frameIndex = m_Swapchain->GetCurrentBackBufferIndex();
 }
 
 void CRHIDirectX12::GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)

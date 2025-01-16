@@ -36,6 +36,7 @@ private:
 
 private:
 	HWND hWnd;
+	std::thread RenderThread;
 
 private: // Cores.
 	CRHIDirectX12* GraphicDevice;
