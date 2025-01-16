@@ -19,5 +19,3 @@ typedef bool				bool8;
 
 typedef unsigned int		result;
 typedef HRESULT				hres;
-
-typedef XMFLOAT4

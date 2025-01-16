@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include <iostream>
 
-#pragma comment(lib, "../Binaries/DelightEngine.lib")
-
 #include "Include.h"
 
 #include "Logger.h"
@@ -20,6 +18,8 @@
 #include "EngineKernel.h"
 
 #include "EASTL/list.h"
+
+#pragma comment(lib, "../Binaries/DelightEngine.lib")
 
 #define MAX_LOADSTRING 100
 
@@ -110,17 +110,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
  //       std::cout << testarray[i] << std::endl;
 	//}
 
- //   eastl::list<int> test;
+	eastl::list<int> test;
 
- //   for (int i = 0; i < 30; ++i)
- //   {
- //       test.push_back(i);
- //   }
+	for (int i = 0; i < 30; ++i)
+	{
+		test.push_back(i);
+	}
 
-    //for (eastl::list<int>::iterator Iter(test.begin()); Iter != test.end(); ++Iter)
-    //{
-    //    std::cout << *Iter << std::endl;
-    //}
+	for (eastl::list<int>::iterator Iter(test.begin()); Iter != test.end(); ++Iter)
+	{
+		std::cout << *Iter << std::endl;
+	}
 
     // 기본 메시지 루프입니다.
     while (GetMessage(&msg, nullptr, 0, 0))

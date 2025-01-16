@@ -18,7 +18,7 @@ public:
 
 	virtual void Present(int32 InSyncInterval = 1);
 	virtual void WaitForPreviousFrame();
-	virtual void Clear(CDX12_CommandList& CommandList)
+	virtual void Clear(CDX12_CommandList& CommandList) {};
 
 private:
 	void GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);
