@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/eabase-populate"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/39619c036c4eea7932726685f8e9096e/eabase-populate.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/54f0ae14e4bbee49dd09b807797ced8f/eabase-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-build.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-download.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-install.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-test.rule"
+		},
+		{
+			"file" : "C:/Depot/DelightEngine_/External/eastl/_deps/eabase-subbuild/CMakeFiles/62e714b83fdea1e02f0d606c8445fc5d/eabase-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"eabase-populate"
+		],
+		"name" : "eabase-populate"
+	}
+}
