@@ -1,9 +1,12 @@
 #pragma once
 #include "Include.h"
 #include "SceneRenderer.h"
+#include "RHI_DX12Device.h"
+#include "DX12_CommandList.h"
 
-CDelightSceneRenderer::CDelightSceneRenderer()
-	: bBuildedPipeline(false)
+CDelightSceneRenderer::CDelightSceneRenderer(CRHIDirectX12* InDevice)
+	: bBuildedPipeline(false),
+	RHI(InDevice)
 {
 
 }
@@ -11,16 +14,22 @@ CDelightSceneRenderer::CDelightSceneRenderer()
 // 실제로 랜더링되는 부분.
 void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 {
-	if (!bBuildedPipeline) return; // 파이프라인이 만들어져 있을 때에만 동작.
+	//if (!bBuildedPipeline) return; // 파이프라인이 만들어져 있을 때에만 동작.
 
 	InitView(SceneView); // Initview는 파이프라인에 관계없이 무조건실행.
-
+	
+	/*
 	// Build된 파이프라인 실행.
 	// 병렬로 진행할수도..?
 	for (auto It : currentPipeline)
 	{
 		It(SceneView);
 	}
+	*/
+	CDX12_CommandList CommandList;
+	CommandList.Init(RHI);
+	RenderDX12Test(SceneView, CommandList);
+	
 }
 
 /*
@@ -29,6 +38,11 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 
 // Culling, Visible Settings 하는곳.
 void CDelightSceneRenderer::InitView(CDelightSceneView* SceneView)
+{
+
+}
+
+void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommnadList)
 {
 
 }

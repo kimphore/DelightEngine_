@@ -1,14 +1,23 @@
 #include "DX12_CommandList.h"
+#include "Include.h"
 #include "Exception.h"
 #include "CriticalSection.h"
+#include "RHI_DX12Device.h"
 
-void CDX12_CommandList::Init(Delight::Comptr<ID3D12Device> InDevice)
+void CDX12_CommandList::Init(CRHIDirectX12* InRHI)
 {
-	Delight::ThrowIfFailed(InDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-		DELIGHT_IID_PPV_ARGS(&commandAllocator)));
+	if(InRHI)
+	{ 
+		ID3D12Device* Device = InRHI->GetDevice();
+		if (Device)
+		{
+			Delight::ThrowIfFailed(Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+				DELIGHT_IID_PPV_ARGS(&commandAllocator)));
 
-	Delight::ThrowIfFailed(InDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.GetData(),
-		nullptr, DELIGHT_IID_PPV_ARGS(&commandList)));
+			Delight::ThrowIfFailed(Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.GetData(),
+				nullptr, DELIGHT_IID_PPV_ARGS(&commandList)));
+		}
+	}
 }
 
 void CDX12_CommandList::Reset()

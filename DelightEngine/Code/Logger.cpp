@@ -84,7 +84,7 @@ void CDelightLogger::ToggleConsole()
 
 		setlocale(LC_ALL, "");
 
-		std::ios::sync_with_stdio();
+		std::ios::sync_with_stdio(true);
 	}
 	else
 	{

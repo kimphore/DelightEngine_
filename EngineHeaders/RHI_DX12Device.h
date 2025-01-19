@@ -10,7 +10,9 @@
 #include "DX12_CommandList.h"
 #include "DX12_Rendertarget.h"
 
-
+struct IDXGIFactory2;
+struct IDXGIAdapter1;
+struct IDXGISwapChain3;
 class ENGINE_DLL CRHIDirectX12 : CRHIInterface
 {
 public:
@@ -19,6 +21,9 @@ public:
 	virtual void Present(int32 InSyncInterval = 1);
 	virtual void WaitForPreviousFrame();
 	virtual void Clear(CDX12_CommandList& CommandList) {};
+
+public:
+	ID3D12Device* GetDevice();
 
 private:
 	void GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);

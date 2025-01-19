@@ -14,22 +14,26 @@
  * \note
 */
 
+class CRHIDirectX12;
 class CDelightSceneView;
+class CDX12_CommandList;
 class ENGINE_DLL CDelightSceneRenderer
 {
 public:
-	CDelightSceneRenderer();
+	CDelightSceneRenderer(CRHIDirectX12* InDevice);
 
 public:
 	void Render(CDelightSceneView* SceneView);
 	void InitView(CDelightSceneView* SceneView);
 
 public: // pipeline functions.
-
+	void RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommnadList);
 public:
 	void BindPipelineFunctions();
 	void BuildRenderingPipeline(tchar* pipelineName);
 private:
+	CRHIDirectX12* RHI;
+
 	std::map<std::wstring, std::function<void(CDelightSceneView*)>> pipelineMap;
 	std::vector<std::function<void(CDelightSceneView*)>> currentPipeline;
 	bool8 bBuildedPipeline;

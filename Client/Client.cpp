@@ -119,7 +119,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	for (eastl::list<int>::iterator Iter(test.begin()); Iter != test.end(); ++Iter)
 	{
-		std::cout << *Iter << std::endl;
+        GLogger->LogW(LOG_WARN, 10, TEXT("%d"), *Iter);
 	}
 
     // 기본 메시지 루프입니다.

@@ -2,6 +2,7 @@
 #include "comptr.h"
 #include "RHI_DX12Device.h"
 #include "DirectXLibs/d3dx12.h"
+#include "dxgi1_4.h"
 
 void CRHIDirectX12::Initialize(HWND hWnd)
 {
@@ -115,6 +116,11 @@ void CRHIDirectX12::WaitForPreviousFrame()
 	}
 
 	m_frameIndex = m_Swapchain->GetCurrentBackBufferIndex();
+}
+
+ID3D12Device* CRHIDirectX12::GetDevice()
+{
+	return m_Device.GetData();
 }
 
 void CRHIDirectX12::GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)

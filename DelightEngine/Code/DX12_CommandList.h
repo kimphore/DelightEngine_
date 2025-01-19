@@ -6,10 +6,11 @@
 #include "comptr.h"
 #include "Define.h"
 
+class CRHIDirectX12;
 class ENGINE_DLL CDX12_CommandList
 {
 public:
-	void Init(Delight::Comptr<ID3D12Device> InDevice);
+	void Init(CRHIDirectX12* InRHI);
 	void Reset();
 	void Close();
 

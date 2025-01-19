@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Define.h"
 #include "Typedef.h"
 
 namespace Delight
