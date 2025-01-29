@@ -17,7 +17,8 @@ class CRHIDirectX12;
 class CDX12_BufferInterface
 {
 public:
-	virtual bool8 CreateBuffer(CRHIDirectX12* RHI, uint32 InSize, EBufferType InType) = 0;
+	virtual bool8 CreateBuffer(CRHIDirectX12* RHI, EBufferType InType, uint32 InSize, void* InData = nullptr) = 0;
+	virtual void SetData(void* InData, uint64 Size) = 0;
 	virtual void ReleaseUploadBuffer() = 0;
 
 public:
@@ -27,7 +28,7 @@ public:
 		{
 		case EBufferType::Static:
 			return D3D12_HEAP_TYPE_DEFAULT;
-		case EBufferType::Dynamic:
+		case EBufferType::Dynamic: // CBV, Small Vertex..
 			return D3D12_HEAP_TYPE_UPLOAD;
 		case EBufferType::Readback:
 			return D3D12_HEAP_TYPE_READBACK;
@@ -38,7 +39,6 @@ public:
 
 protected:
 	Delight::Comptr<ID3D12Resource> Buffer;
-	Delight::Comptr<ID3D12Resource> UploadBuffer;
 
 protected:
 	EBufferType Type;

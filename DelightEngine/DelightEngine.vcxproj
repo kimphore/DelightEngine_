@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;./../External/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\test\packages\EABase\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;./../External/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,9 +156,11 @@
     <ClInclude Include="Code\allocator.h" />
     <ClInclude Include="Code\CriticalSection.h" />
     <ClInclude Include="Code\DX12_Buffer.h" />
-    <ClInclude Include="Code\DX12_BufferPool.h" />
+    <ClInclude Include="Code\DX12_BufferUploadPool.h" />
     <ClInclude Include="Code\DX12_CommandList.h" />
     <ClInclude Include="Code\DX12_Rendertarget.h" />
+    <ClInclude Include="Code\DX12_ResourceUploadPool.h" />
+    <ClInclude Include="Code\DX12_TextureUploadPool.h" />
     <ClInclude Include="Code\DX12_VertexBuffer.h" />
     <ClInclude Include="Code\EngineKernel.h" />
     <ClInclude Include="Code\Logger.h" />
@@ -185,6 +187,7 @@
     <ClInclude Include="Header\crcchecksum.h" />
     <ClInclude Include="Header\Define.h" />
     <ClInclude Include="Header\DefineFlag.h" />
+    <ClInclude Include="Header\DX12_Functions.h" />
     <ClInclude Include="Header\Enum.h" />
     <ClInclude Include="Header\Exception.h" />
     <ClInclude Include="Header\Function.h" />
@@ -200,9 +203,11 @@
     <ClCompile Include="Code\allocator.cpp" />
     <ClCompile Include="Code\CriticalSection.cpp" />
     <ClCompile Include="Code\DX12_Buffer.cpp" />
-    <ClCompile Include="Code\DX12_BufferPool.cpp" />
+    <ClCompile Include="Code\DX12_BufferUploadPool.cpp" />
     <ClCompile Include="Code\DX12_CommandList.cpp" />
     <ClCompile Include="Code\DX12_Rendertarget.cpp" />
+    <ClCompile Include="Code\DX12_ResourceUploadPool.cpp" />
+    <ClCompile Include="Code\DX12_TextureUploadPool.cpp" />
     <ClCompile Include="Code\DX12_VertexBuffer.cpp" />
     <ClCompile Include="Code\EngineKernel.cpp" />
     <ClCompile Include="Code\Logger.cpp" />

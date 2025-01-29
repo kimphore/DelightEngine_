@@ -6,7 +6,7 @@
 
 namespace Delight
 {
-	static inline void Memcpy(void* Dest, void* Src, uint32 Size)
+	static inline void Memcpy(void* Dest, void* Src, uint64 Size)
 	{
 		memcpy(Dest, Src, Size);
 	}

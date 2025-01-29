@@ -43,6 +43,9 @@ static Delight::CCritialSection GCommandListExecuteCS;
 void CDX12_CommandList::Execute(Delight::Comptr<ID3D12CommandQueue> InQueue)
 {
 	Delight::CScopedCS CS(GCommandListExecuteCS); // thread safe..?
+
+	Close();
+
 	ID3D12CommandList* CommandLists[] = { commandList.GetData() };
 
 	InQueue->ExecuteCommandLists(1, CommandLists);

@@ -166,6 +166,15 @@
     <Filter Include="Cores\RHI\DX12\Components\Buffer\BufferPool">
       <UniqueIdentifier>{f0dc1497-eb61-4e6b-86e1-e2fc95223291}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\UploadPool">
+      <UniqueIdentifier>{405f90e9-86d9-4d6f-bd12-2b96da145137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\UploadPool\BufferPool">
+      <UniqueIdentifier>{03577d7b-0d37-4216-9cd6-528d166c3e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\UploadPool\TexturePool">
+      <UniqueIdentifier>{c7e1dd68-0795-452d-b1d1-2bb6dfd14f11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -291,8 +300,17 @@
     <ClInclude Include="Code\DX12_Buffer.h">
       <Filter>Cores\RHI\DX12\Components\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="Code\DX12_BufferPool.h">
-      <Filter>Cores\RHI\DX12\Components\Buffer\BufferPool</Filter>
+    <ClInclude Include="Code\DX12_ResourceUploadPool.h">
+      <Filter>Cores\RHI\DX12\Components\UploadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\DX12_Functions.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_BufferUploadPool.h">
+      <Filter>Cores\RHI\DX12\Components\UploadPool\BufferPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_TextureUploadPool.h">
+      <Filter>Cores\RHI\DX12\Components\UploadPool\TexturePool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -365,8 +383,14 @@
     <ClCompile Include="Code\DX12_Buffer.cpp">
       <Filter>Cores\RHI\DX12\Components\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Code\DX12_BufferPool.cpp">
-      <Filter>Cores\RHI\DX12\Components\Buffer\BufferPool</Filter>
+    <ClCompile Include="Code\DX12_ResourceUploadPool.cpp">
+      <Filter>Cores\RHI\DX12\Components\UploadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_BufferUploadPool.cpp">
+      <Filter>Cores\RHI\DX12\Components\UploadPool\BufferPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_TextureUploadPool.cpp">
+      <Filter>Cores\RHI\DX12\Components\UploadPool\TexturePool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

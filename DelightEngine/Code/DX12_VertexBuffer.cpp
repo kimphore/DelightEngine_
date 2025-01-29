@@ -2,8 +2,9 @@
 
 #include "Include.h"
 #include "RHI_DX12Device.h"
+#include "DX12_ResourceUploadPool.h"
 
-bool8 CDX12_VertexBuffer::CreateBuffer(CRHIDirectX12* RHI, uint32 InSize, EBufferType InType)
+bool8 CDX12_VertexBuffer::CreateBuffer(CRHIDirectX12* RHI, EBufferType InType, uint32 InSize, void* InData)
 {
 	if (RHI && InSize > 0)
 	{
@@ -43,9 +44,26 @@ bool8 CDX12_VertexBuffer::CreateBuffer(CRHIDirectX12* RHI, uint32 InSize, EBuffe
 				nullptr, // initial data?
 				DELIGHT_IID_PPV_ARGS(&Buffer));
 
+			if (InData)
+			{
+				SetData(InData, Size);
+			}
+
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void CDX12_VertexBuffer::SetData(void* InData, uint64 Size)
+{
+	if (Type == Dynamic)
+	{
+		// allocate directly.
+	}
+	else
+	{
+		// allocated by upload pool.
+	}
 }

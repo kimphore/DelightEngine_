@@ -80,3 +80,4 @@ using namespace Microsoft::WRL;
 #pragma warning(disable : 4996) // ignore using unsafe functions..
 
 #include "logger.h"
+#include "comptr.h"
