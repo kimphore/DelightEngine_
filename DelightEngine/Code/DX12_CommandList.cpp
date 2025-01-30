@@ -8,8 +8,8 @@ void CDX12_CommandList::Init(CRHIDirectX12* InRHI)
 {
 	if(InRHI)
 	{ 
-		ID3D12Device* Device = InRHI->GetDevice();
-		if (Device)
+		Device = InRHI->GetDevice();
+		if (Device.IsValid())
 		{
 			Delight::ThrowIfFailed(Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
 				DELIGHT_IID_PPV_ARGS(&commandAllocator)));

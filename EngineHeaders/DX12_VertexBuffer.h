@@ -3,6 +3,8 @@
 #include <DirectXMath.h>
 #include <d3d12.h>
 
+#include "DX12_Buffer.h"
+
 #include "Typedef.h"
 #include "comptr.h"
 
@@ -11,21 +13,19 @@ struct FPositionOnlyVertex
 	DirectX::XMFLOAT3 Position;
 };
 
-enum EVertexBufferType
+enum EVertexType
 {
-	Static,
-	Dynamic,
-	Readback,
+	PositionOnly,
 };
 
 class CRHIDirectX12;
-class CDX12_VertexBuffer
+class CDX12_VertexBuffer : public CDX12_BufferInterface
 {
 public:
-	void CreateBuffer(CRHIDirectX12* RHI, uint32 Size, EVertexBufferType InType);
-	
-	D3D12_HEAP_TYPE TranslateHeapType(EVertexBufferType InType);
-
-private:
-	Delight::Comptr<ID3D12Resource> Buffer;
+	virtual bool8 CreateBuffer(CRHIDirectX12* RHI, CDX12_CommandList* CommandList, EBufferType InType, EVertexType InVertexType, uint32 InSize, void* InData = nullptr);
+	virtual void SetData(CRHIDirectX12* RHI, CDX12_CommandList* CommandList, void* InData, uint64 Size);
+	virtual uint32 GetStrideSize(EVertexType InVertexType);
+protected:
+	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
+	EVertexType VertexType;
 };

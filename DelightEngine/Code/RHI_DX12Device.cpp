@@ -118,9 +118,9 @@ void CRHIDirectX12::WaitForPreviousFrame()
 	m_frameIndex = m_Swapchain->GetCurrentBackBufferIndex();
 }
 
-ID3D12Device* CRHIDirectX12::GetDevice()
+Delight::Comptr<ID3D12Device> CRHIDirectX12::GetDevice()
 {
-	return m_Device.GetData();
+	return m_Device;
 }
 
 void CRHIDirectX12::GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)

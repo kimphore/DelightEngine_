@@ -25,7 +25,7 @@ public:
 	virtual void Clear(CDX12_CommandList& CommandList) {};
 
 public:
-	ID3D12Device* GetDevice();
+	Delight::Comptr<ID3D12Device> GetDevice();
 
 private:
 	void GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);
@@ -36,10 +36,6 @@ private:
 	uint64 m_fenceValue;
 
 	HANDLE m_fenceEvent;
-
-private:
-	// upload -> default된 다음 프레임에 삭제..
-	eastl::list<CDX12_BufferInterface*> DeferredRemoveUpdateBuffers;
 
 public:
 	Delight::Comptr<ID3D12Device> m_Device;

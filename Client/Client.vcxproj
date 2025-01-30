@@ -101,8 +101,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Download\EASTL\_deps\eabase-src\include\Common;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories);$(SolutionDir)EngineHeaders;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test/packages/EAAssert/include;$(SolutionDir)\External\eastl\test/packages/EABase/include/Common;$(SolutionDir)\External\eastl\test/packages/EAMain/include;$(SolutionDir)\External\eastl\test/packages/EAStdC/include;$(SolutionDir)\External\eastl\test/packages/EATest/include;$(SolutionDir)\External\eastl\test/packages/EAThread/include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories);$(SolutionDir)EngineHeaders;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test/packages/EAAssert/include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test/packages/EAMain/include;$(SolutionDir)\External\eastl\test/packages/EAStdC/include;$(SolutionDir)\External\eastl\test/packages/EATest/include;$(SolutionDir)\External\eastl\test/packages/EAThread/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

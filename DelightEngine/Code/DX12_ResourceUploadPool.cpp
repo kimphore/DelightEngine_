@@ -9,8 +9,8 @@ void CDX12_ResourceUpdatePool::Initialize(CRHIDirectX12* RHI)
 {
 	if (RHI)
 	{
-		ID3D12Device* Device = RHI->GetDevice();
-		if (Device)
+		Device = RHI->GetDevice();
+		if (Device.IsValid())
 		{
 			D3D12_HEAP_PROPERTIES HeapProperty = GetUploadHeapProperties();
 			D3D12_RESOURCE_DESC ResourceDesc = GetUploadHeapResourceDesc();
@@ -99,6 +99,7 @@ void CDX12_ResourceUpdatePool::FlushAndWaitRequest(CRHIDirectX12* RHI, CDX12_Com
 
 		if (Fence->GetCompletedValue() < FenceValue)
 		{
+			logf(TEXT("Wait For Resource Copy Finished."));
 			Fence->SetEventOnCompletion(FenceValue, FenceEventHandle);
 			WaitForSingleObject(FenceEventHandle, INFINITE);
 

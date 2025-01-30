@@ -37,9 +37,6 @@
     <Filter Include="Cores\RHI">
       <UniqueIdentifier>{e6a25d39-f64e-49ef-b743-3af7ce8d29ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cores\RHI\DX11">
-      <UniqueIdentifier>{bc492b27-66e6-4682-91e2-3ecc33710067}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Cores\RHI\DX12">
       <UniqueIdentifier>{a6c96aab-0540-4979-a5bc-15951737ae14}</UniqueIdentifier>
     </Filter>
