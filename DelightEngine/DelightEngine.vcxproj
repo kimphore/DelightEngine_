@@ -158,6 +158,7 @@
     <ClInclude Include="Code\DX12_Buffer.h" />
     <ClInclude Include="Code\DX12_BufferUploadPool.h" />
     <ClInclude Include="Code\DX12_CommandList.h" />
+    <ClInclude Include="Code\DX12_DescriptorHeapManager.h" />
     <ClInclude Include="Code\DX12_Rendertarget.h" />
     <ClInclude Include="Code\DX12_ResourceUploadPool.h" />
     <ClInclude Include="Code\DX12_TextureUploadPool.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Code\DX12_Buffer.cpp" />
     <ClCompile Include="Code\DX12_BufferUploadPool.cpp" />
     <ClCompile Include="Code\DX12_CommandList.cpp" />
+    <ClCompile Include="Code\DX12_DescriptorHeapManager.cpp" />
     <ClCompile Include="Code\DX12_Rendertarget.cpp" />
     <ClCompile Include="Code\DX12_ResourceUploadPool.cpp" />
     <ClCompile Include="Code\DX12_TextureUploadPool.cpp" />

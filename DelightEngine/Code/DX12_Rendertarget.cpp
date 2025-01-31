@@ -72,7 +72,10 @@ void CDX12_Rendertarget::CreateRTV()
 	RTVDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 	RTVDesc.Texture2D.MipSlice = 0;
 
-	Device->CreateRenderTargetView(Resource.GetData(), &RTVDesc, RTVHandle);
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+	RTVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::RTV);
+
+	Device->CreateRenderTargetView(Resource.GetData(), &RTVDesc, GetDescriptorCPUHandle(ERenderTargetState::RTV));
 }
 
 void CDX12_Rendertarget::CreateDSV()
@@ -82,7 +85,10 @@ void CDX12_Rendertarget::CreateDSV()
 	DSVDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	DSVDesc.Texture2D.MipSlice = 0;
 
-	Device->CreateDepthStencilView(Resource.GetData(), &DSVDesc, DSVHandle);
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+	DSVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::DSV);
+
+	Device->CreateDepthStencilView(Resource.GetData(), &DSVDesc, GetDescriptorCPUHandle(ERenderTargetState::DSV));
 }
 
 void CDX12_Rendertarget::CreateSRV()
@@ -93,7 +99,10 @@ void CDX12_Rendertarget::CreateSRV()
 	SRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	Device->CreateShaderResourceView(Resource.GetData(), &SRVDesc, SRVHandle);
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+	SRVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::ShaderResource);
+
+	Device->CreateShaderResourceView(Resource.GetData(), &SRVDesc, GetDescriptorCPUHandle(ERenderTargetState::SRV_PS));
 }
 
 void CDX12_Rendertarget::CreateUAV()
@@ -103,7 +112,10 @@ void CDX12_Rendertarget::CreateUAV()
 	UAVDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 	UAVDesc.Texture2D.MipSlice = 0;
 
-	Device->CreateUnorderedAccessView(Resource.GetData(), nullptr, &UAVDesc, UAVHandle);
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+	UAVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::ShaderResource);
+
+	Device->CreateUnorderedAccessView(Resource.GetData(), nullptr, &UAVDesc, GetDescriptorCPUHandle(ERenderTargetState::UAV));
 }
 
 void CDX12_Rendertarget::SetDebugName(TCHAR* InDebugName)
@@ -121,20 +133,37 @@ void CDX12_Rendertarget::SetDebugName(TCHAR* InDebugName)
 	}
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorHandle(ERenderTargetState InType)
+D3D12_CPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorCPUHandle(ERenderTargetState InType)
 {
 	switch (InType)
 	{
 	case RTV:
-		return RTVHandle;
+		return RTVHandle.CPUHandle;
 	case DSV:
-		return DSVHandle;
+		return DSVHandle.CPUHandle;
 	case SRV_PS:
 	case SRV_NonPS:
 	case SRV_ALL:
-		return SRVHandle;
+		return SRVHandle.CPUHandle;
 	case UAV:
-		return UAVHandle;
+		return UAVHandle.CPUHandle;
+	}
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorGPUHandle(ERenderTargetState InType)
+{
+	switch (InType)
+	{
+	case RTV:
+		return RTVHandle.GPUHandle;
+	case DSV:
+		return DSVHandle.GPUHandle;
+	case SRV_PS:
+	case SRV_NonPS:
+	case SRV_ALL:
+		return SRVHandle.GPUHandle;
+	case UAV:
+		return UAVHandle.GPUHandle;
 	}
 }
 

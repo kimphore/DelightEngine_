@@ -34,8 +34,11 @@ private:
 	uint32 m_frameIndex;
 	uint32 m_rtvDescriptorSize;
 	uint64 m_fenceValue;
-
 	HANDLE m_fenceEvent;
+
+private:
+	CDX12_Rendertarget SceneColorBuffer;
+	CDX12_Rendertarget SceneDepthBuffer;
 
 public:
 	Delight::Comptr<ID3D12Device> m_Device;

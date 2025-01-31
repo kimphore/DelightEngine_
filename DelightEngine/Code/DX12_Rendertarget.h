@@ -2,6 +2,7 @@
 
 #include "Include.h"
 #include "EASTL/string.h"
+#include "DX12_DescriptorHeapManager.h"
 
 enum ERenderTargetType
 {
@@ -33,7 +34,8 @@ public:
 	void SetDebugName(TCHAR* InDebugName);
 
 public:
-	D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorHandle(ERenderTargetState InType);
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorCPUHandle(ERenderTargetState InType);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetDescriptorGPUHandle(ERenderTargetState InType);
 
 public:
 	void TransitionToState(CDX12_CommandList* CommandList, ERenderTargetState NextState);
@@ -44,10 +46,10 @@ protected:
 protected:
 	Delight::Comptr<ID3D12Device> Device;
 	Delight::Comptr<ID3D12Resource> Resource;
-	D3D12_CPU_DESCRIPTOR_HANDLE RTVHandle; // RenderTargetView
-	D3D12_CPU_DESCRIPTOR_HANDLE DSVHandle; // DepthStencilView
-	D3D12_CPU_DESCRIPTOR_HANDLE SRVHandle; // ShaderResourceView
-	D3D12_CPU_DESCRIPTOR_HANDLE UAVHandle; // UnorderedAccessView
+	FDescriptorHandleSet RTVHandle; // RenderTargetView
+	FDescriptorHandleSet DSVHandle; // DepthStencilView
+	FDescriptorHandleSet SRVHandle; // ShaderResourceView
+	FDescriptorHandleSet UAVHandle; // UnorderedAccessView
 
 protected:
 	ERenderTargetState CurrentState;

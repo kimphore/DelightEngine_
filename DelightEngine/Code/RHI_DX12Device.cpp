@@ -79,7 +79,7 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 
 		m_rtvDescriptorSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	}
-
+	// 한 커맨드리스트에 디스크립터힙은 하나씩만 할당 가능(타입별.)
 	// create frame resource..?
 	{
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
