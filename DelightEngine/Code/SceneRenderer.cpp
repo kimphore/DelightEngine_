@@ -3,12 +3,24 @@
 #include "SceneRenderer.h"
 #include "RHI_DX12Device.h"
 #include "DX12_CommandList.h"
+#include "DX12_Rendertarget.h"
 
-CDelightSceneRenderer::CDelightSceneRenderer(CRHIDirectX12* InDevice)
-	: bBuildedPipeline(false),
-	RHI(InDevice)
+CDelightSceneRenderer::CDelightSceneRenderer()
+	: bBuildedPipeline(false), RHI(nullptr)
+{}
+
+void CDelightSceneRenderer::Initialize(HWND InHWnd)
 {
+	RHI = new CRHIDirectX12;
+	if (RHI)
+	{
+		RHI->Initialize(InHWnd);
+	}
+}
 
+void CDelightSceneRenderer::Destroy()
+{
+	delete RHI;
 }
 
 // 실제로 랜더링되는 부분.
@@ -26,10 +38,12 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 		It(SceneView);
 	}
 	*/
-	CDX12_CommandList CommandList;
-	CommandList.Init(RHI);
-	RenderDX12Test(SceneView, CommandList);
-	
+	RenderDX12Test(SceneView, RHI->MainCommandList);
+
+
+	RHI->Present();
+	RHI->WaitForPreviousFrame();	
+	RHI->MainCommandList.Reset();
 }
 
 /*
@@ -42,9 +56,18 @@ void CDelightSceneRenderer::InitView(CDelightSceneView* SceneView)
 
 }
 
-void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommnadList)
+void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommandList)
 {
+	CDX12_Rendertarget& Backbuffer = RHI->GetBackbuffer();
 
+	Backbuffer.TransitionToState(&CommandList, RS_RTV);
+	CommandList.Get()->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);
+
+	const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	CommandList.Get()->ClearRenderTargetView(Backbuffer.GetDescriptorCPUHandle(RT_RTV), clearColor, 0, nullptr);
+	Backbuffer.TransitionToState(&CommandList, RS_PRESENT);
+	CommandList.Close();
+	CommandList.Execute(RHI->m_CommandQueue);
 }
 
 // XML에서 각각 함수 파싱할수있도록 대응하는 맵 구성.

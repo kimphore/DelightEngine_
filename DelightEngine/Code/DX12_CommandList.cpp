@@ -24,6 +24,7 @@ void CDX12_CommandList::Reset()
 {
 	// allocator는 할당된 commandlist가 GPU실행이 끝나야지 리셋가능.
 	commandAllocator->Reset();
+	
 	// 항상 쓰기 전에 리셋해줘야됨.
 	commandList->Reset(commandAllocator.GetData(), nullptr);
 }
@@ -43,8 +44,6 @@ static Delight::CCritialSection GCommandListExecuteCS;
 void CDX12_CommandList::Execute(Delight::Comptr<ID3D12CommandQueue> InQueue)
 {
 	Delight::CScopedCS CS(GCommandListExecuteCS); // thread safe..?
-
-	Close();
 
 	ID3D12CommandList* CommandLists[] = { commandList.GetData() };
 

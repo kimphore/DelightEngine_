@@ -20,14 +20,17 @@ class CDX12_CommandList;
 class ENGINE_DLL CDelightSceneRenderer
 {
 public:
-	CDelightSceneRenderer(CRHIDirectX12* InDevice);
+	CDelightSceneRenderer();
+
+	void Initialize(HWND InHWnd);
+	void Destroy();
 
 public:
 	void Render(CDelightSceneView* SceneView);
 	void InitView(CDelightSceneView* SceneView);
 
 public: // pipeline functions.
-	void RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommnadList);
+	void RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommandList);
 public:
 	void BindPipelineFunctions();
 	void BuildRenderingPipeline(tchar* pipelineName);

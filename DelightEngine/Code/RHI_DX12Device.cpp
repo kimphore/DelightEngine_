@@ -4,6 +4,8 @@
 #include "DirectXLibs/d3dx12.h"
 #include "dxgi1_4.h"
 
+#include "DX12_DescriptorHeapManager.h"
+
 void CRHIDirectX12::Initialize(HWND hWnd)
 {
 	UINT dxgiFactoryFlags = 0;
@@ -26,9 +28,8 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 	
 	GetHardwareAdapter(factory.GetData(), &hardwareAdapter);
 
-	Delight::FailedReturnString(D3D12CreateDevice(hardwareAdapter.GetData(), 
-		D3D_FEATURE_LEVEL_11_0, DELIGHT_IID_PPV_ARGS(&m_Device)),
-		TEXT("Failed Create D3D12 Device"));
+	Delight::ThrowIfFailed(D3D12CreateDevice(hardwareAdapter.GetData(), 
+		D3D_FEATURE_LEVEL_11_0, DELIGHT_IID_PPV_ARGS(&m_Device)));
 
 	// Create Command Queue.
 
@@ -40,8 +41,8 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 		TEXT("Failed Create Command Queue."));
 
 	// Creat SwapChain.
-	DXGI_SWAP_CHAIN_DESC1 chainDesc;
-	chainDesc.BufferCount = 2; // double buffering.
+	DXGI_SWAP_CHAIN_DESC1 chainDesc = {};
+	chainDesc.BufferCount = GNumBackbuffer;
 	chainDesc.Width = 1280;
 	chainDesc.Height = 720;
 	chainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -64,33 +65,25 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 	Delight::FailedReturnString(factory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER), TEXT(""));
 	Delight::FailedReturnString(swapChain->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(&m_Swapchain)), TEXT(""));
 
-	m_frameIndex = m_Swapchain->GetCurrentBackBufferIndex();
+	FrameIndex = m_Swapchain->GetCurrentBackBufferIndex();
 
-	// create descriptor heap..?
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+	GDescriptorHeapManager.Initialize(this);
+	
+	// initialize backbuffer
+	for (uint32 i = 0; i < GNumBackbuffer; ++i)
 	{
-		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+		Delight::Comptr<ID3D12Resource> Buffer;
 
-		rtvHeapDesc.NumDescriptors = 2; // double buffer?
-		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-
-		Delight::FailedReturnString(m_Device->CreateDescriptorHeap(&rtvHeapDesc, DELIGHT_IID_PPV_ARGS(&m_rtvHeap)),
-			TEXT("Failed Create Descriptor Heap."));
-
-		m_rtvDescriptorSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		m_Swapchain->GetBuffer(i, DELIGHT_IID_PPV_ARGS(&Buffer));
+		Backbuffers[i].Initialize(this, Buffer);
 	}
-	// 한 커맨드리스트에 디스크립터힙은 하나씩만 할당 가능(타입별.)
-	// create frame resource..?
-	{
-		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 
-		for (uint32 i = 0; i < 2; ++i)
-		{
-			Delight::FailedReturnString(m_Swapchain->GetBuffer(i, DELIGHT_IID_PPV_ARGS(&m_RenderTargets[i])), TEXT(""));
-			m_Device->CreateRenderTargetView(m_RenderTargets[i].GetData(), nullptr, rtvHandle);
-			rtvHandle.Offset(1, m_rtvDescriptorSize);
-		}
-	}
+	// fence 임시생성
+	m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, DELIGHT_IID_PPV_ARGS(&m_fence));
+	m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+
+	MainCommandList.Init(this);
 }
 
 void CRHIDirectX12::Present(int32 InSyncInterval)
@@ -109,13 +102,18 @@ void CRHIDirectX12::WaitForPreviousFrame()
 	Delight::ThrowIfFailed(m_CommandQueue->Signal(m_fence.GetData(), Fence));
 	++m_fenceValue;
 
-	if (m_fence->SetEventOnCompletion(Fence, m_fenceEvent) < Fence)
+	if (m_fence->GetCompletedValue() < Fence)
 	{
 		Delight::ThrowIfFailed(m_fence->SetEventOnCompletion(Fence, m_fenceEvent));
 		WaitForSingleObject(m_fenceEvent, INFINITE);
 	}
 
-	m_frameIndex = m_Swapchain->GetCurrentBackBufferIndex();
+	FrameIndex = m_Swapchain->GetCurrentBackBufferIndex();
+}
+
+CDX12_Rendertarget& CRHIDirectX12::GetBackbuffer()
+{
+	return Backbuffers[FrameIndex % GNumBackbuffer];
 }
 
 Delight::Comptr<ID3D12Device> CRHIDirectX12::GetDevice()
@@ -126,25 +124,58 @@ Delight::Comptr<ID3D12Device> CRHIDirectX12::GetDevice()
 void CRHIDirectX12::GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)
 {
 	Delight::Comptr<IDXGIAdapter1> adapter;	
+	Delight::Comptr<IDXGIFactory6> Factory6;
 	*ppAdapter = nullptr;
 
-	for (uint32 index = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(index, &adapter); ++index)
+	if (SUCCEEDED(pFactory->QueryInterface(DELIGHT_IID_PPV_ARGS(&Factory6))))
 	{
-		DXGI_ADAPTER_DESC1 desc;
-		adapter->GetDesc1(&desc);
-
-		if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+		for (
+			UINT adapterIndex = 0;
+			SUCCEEDED(Factory6->EnumAdapterByGpuPreference(
+				adapterIndex,
+				DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
+				IID_PPV_ARGS(&adapter)));
+				++adapterIndex)
 		{
-			// can't use hardware adapter..
-			continue;
+			DXGI_ADAPTER_DESC1 desc;
+			adapter->GetDesc1(&desc);
+
+			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+			{
+				// Don't select the Basic Render Driver adapter.
+				// If you want a software adapter, pass in "/warp" on the command line.
+				continue;
+			}
+
+			// Check to see whether the adapter supports Direct3D 12, but don't create the
+			// actual device yet.
+			if (SUCCEEDED(D3D12CreateDevice(adapter.GetData(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+			{
+				break;
+			}
 		}
+	}
 
-		if (SUCCEEDED(D3D12CreateDevice(adapter.GetData(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+	if (adapter.GetData() == nullptr)
+	{
+		for (uint32 index = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(index, &adapter); ++index)
 		{
-			break;
+			DXGI_ADAPTER_DESC1 desc;
+			adapter->GetDesc1(&desc);
+
+			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+			{
+				// can't use hardware adapter..
+				continue;
+			}
+
+			if (SUCCEEDED(D3D12CreateDevice(adapter.GetData(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+			{
+				break;
+			}
 		}
 	}
 	
-	*ppAdapter = adapter.GetData();
+	*ppAdapter = adapter.Detach();
 }
 

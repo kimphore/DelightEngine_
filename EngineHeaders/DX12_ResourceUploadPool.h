@@ -54,6 +54,7 @@ protected:
 	virtual D3D12_RESOURCE_DESC GetUploadHeapResourceDesc();
 
 protected:
+	Delight::Comptr<ID3D12Device> Device;
 	Delight::Comptr<ID3D12Resource> PoolResource;
 
 	eastl::list<FChunkInfo> AllocateRequestList;

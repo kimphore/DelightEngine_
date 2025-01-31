@@ -38,8 +38,7 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
-{
+                     _In_ int       nCmdShow){
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -55,7 +54,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
-
     MSG msg;
 
     CDelightEngineKernel Engine;
@@ -122,20 +120,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         GLogger->LogW(LOG_WARN, 10, TEXT("%d"), *Iter);
 	}
 
-    // 기본 메시지 루프입니다.
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (true)
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
+            if (msg.message == WM_QUIT)
+            {
+                return (int)msg.wParam;
+            }
+
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        Engine.Tick_Engine();
     }
 
     return (int) msg.wParam;
 }
-
-
 
 //
 //  함수: MyRegisterClass()

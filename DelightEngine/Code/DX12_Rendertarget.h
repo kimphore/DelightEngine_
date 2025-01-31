@@ -10,14 +10,24 @@ enum ERenderTargetType
 	Depth,
 };
 
-enum ERenderTargetState
+enum EResourceState
 {
-	RTV,
-	DSV,
-	SRV_PS,
-	SRV_NonPS,
-	SRV_ALL,
-	UAV,
+	RS_PRESENT,
+	RS_RTV,
+	RS_DSV,
+	RS_SRV,
+	RS_SRV_PS,
+	RS_SRV_NonPS,
+	RS_SRV_ALL,
+	RS_UAV,
+};
+
+enum EResourceType
+{
+	RT_RTV,
+	RT_DSV,
+	RT_SRV,
+	RT_UAV,
 };
 
 class CDX12_CommandList;
@@ -25,7 +35,8 @@ class CRHIDirectX12;
 class CDX12_Rendertarget
 {
 public:
-	void Initialize(CRHIDirectX12* RHI, ERenderTargetType InType, uint32 InWidth, uint32 InHeight, DXGI_FORMAT InFormat);
+	void Initialize(CRHIDirectX12* RHI, Delight::Comptr<ID3D12Resource> InResource);
+	void Initialize(CRHIDirectX12* RHI, ERenderTargetType InType, uint64 InWidth, uint64 InHeight, DXGI_FORMAT InFormat);
 	void CreateRTV();
 	void CreateDSV();
 	// need to use
@@ -34,14 +45,14 @@ public:
 	void SetDebugName(TCHAR* InDebugName);
 
 public:
-	D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorCPUHandle(ERenderTargetState InType);
-	D3D12_GPU_DESCRIPTOR_HANDLE GetDescriptorGPUHandle(ERenderTargetState InType);
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorCPUHandle(EResourceType InType);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetDescriptorGPUHandle(EResourceType InType);
 
 public:
-	void TransitionToState(CDX12_CommandList* CommandList, ERenderTargetState NextState);
+	void TransitionToState(CDX12_CommandList* CommandList, EResourceState InState);
 
 protected:
-	inline D3D12_RESOURCE_STATES TranslateResourceState(ERenderTargetState InState);
+	inline D3D12_RESOURCE_STATES TranslateResourceState(EResourceState InState);
 
 protected:
 	Delight::Comptr<ID3D12Device> Device;
@@ -52,10 +63,10 @@ protected:
 	FDescriptorHandleSet UAVHandle; // UnorderedAccessView
 
 protected:
-	ERenderTargetState CurrentState;
+	EResourceState CurrentState;
 	ERenderTargetType Type;
 	DXGI_FORMAT Format;
-	uint32 Width;
-	uint32 Height;
+	uint64 Width;
+	uint64 Height;
 	TCHAR DebugName[64];
 };

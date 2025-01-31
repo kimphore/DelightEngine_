@@ -11,6 +11,8 @@
 #include "DX12_Rendertarget.h"
 #include "EASTL/list.h"
 
+static const uint32 GNumBackbuffer = 2;
+
 struct IDXGIFactory2;
 struct IDXGIAdapter1;
 struct IDXGISwapChain3;
@@ -24,22 +26,29 @@ public:
 	virtual void WaitForPreviousFrame();
 	virtual void Clear(CDX12_CommandList& CommandList) {};
 
+	CDX12_Rendertarget& GetBackbuffer();
+
 public:
-	ID3D12Device* GetDevice();
+	Delight::Comptr<ID3D12Device> GetDevice();
 
 private:
 	void GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);
 
 private:
+	uint32 FrameIndex;
+
+
 	uint32 m_frameIndex;
 	uint32 m_rtvDescriptorSize;
 	uint64 m_fenceValue;
-
 	HANDLE m_fenceEvent;
 
 private:
-	// upload -> default된 다음 프레임에 삭제..
-	eastl::list<CDX12_BufferInterface*> DeferredRemoveUpdateBuffers;
+	CDX12_Rendertarget Backbuffers[GNumBackbuffer];
+	CDX12_Rendertarget SceneColorBuffer;
+	CDX12_Rendertarget SceneDepthBuffer;
+public:
+	CDX12_CommandList MainCommandList;
 
 public:
 	Delight::Comptr<ID3D12Device> m_Device;

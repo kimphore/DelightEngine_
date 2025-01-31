@@ -33,3 +33,5 @@
 #define SYSTEM_LOG_LEVEL 1000
 
 #define PURE_FUNCTION = 0
+
+#define INDEX_NONE -1

@@ -38,6 +38,7 @@ public:
 	}
 
 protected:
+	Delight::Comptr<ID3D12Device> Device;
 	Delight::Comptr<ID3D12Resource> Buffer;
 
 protected:

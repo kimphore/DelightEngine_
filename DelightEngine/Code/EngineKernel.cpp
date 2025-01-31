@@ -21,9 +21,7 @@ result CDelightEngineKernel::Initialize(HWND _hWnd)
 	Delight::InitializeMemory(EMemoryType::TBBAllocation);
 	Delight::InitializeLogger();
 
-	//Delight::GraphicDevice = new CRHIDirectX12;
-
-	//GraphicDevice->Initialize(_hWnd);
+	SceneRenderer.Initialize(_hWnd);
 
 	return RET_SUCCES;
 }
@@ -37,6 +35,23 @@ void CDelightEngineKernel::TestRenderLoop()
 {
 	// Just Render Test.
 	/*GraphicDevice->m_commandAllocator->Reset();	*/
+}
+
+// 일단은 싱글쓰레드기반..
+void CDelightEngineKernel::Tick_Engine()
+{
+	Tick_Game();
+	Tick_Render();
+}
+
+void CDelightEngineKernel::Tick_Game()
+{
+
+}
+
+void CDelightEngineKernel::Tick_Render()
+{
+	SceneRenderer.Render(nullptr);
 }
 
 void CDelightEngineKernel::InitializeThread()

@@ -28,6 +28,11 @@ namespace Delight
 			}
 		}
 
+		Comptr(const Comptr& InComPtr) : Reference(InComPtr.Reference)
+		{
+			AddRef();
+		}
+
 		~Comptr()
 		{
 			Release();
@@ -47,6 +52,7 @@ namespace Delight
 		void operator =(Comptr<ReferenceType>& InComPtr)
 		{
 			Attach(InComPtr.GetData());
+			AddRef();
 		}
 
 	public:		
@@ -59,11 +65,9 @@ namespace Delight
 		{
 			if (IsValid())
 			{
-				Detach();
-				Reference = NewReference;
-
-				AddRef();
+				Release();
 			}
+			Reference = NewReference;
 		}
 
 		ReferenceType* Detach()
@@ -71,10 +75,7 @@ namespace Delight
 			if (IsValid())
 			{
 				ReferenceType* RetReference = Reference;
-
-				Release();
 				Reference = nullptr;
-
 				return RetReference;
 			}
 			return nullptr;
@@ -85,14 +86,22 @@ namespace Delight
 			return (Reference != nullptr);
 		}
 
-		inline void AddRef()
+		void AddRef()
 		{
-			Reference->AddRef();
+			if (IsValid())
+			{
+				int32 aa = Reference->AddRef();
+				aa += 1;
+			}
 		}
 
-		inline void Release()
+		void Release()
 		{
-			Reference->Release();
+			if (IsValid())
+			{
+				int32 cc = Reference->Release();
+				cc += 1;
+			}
 		}
 
 	private:

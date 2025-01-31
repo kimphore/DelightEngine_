@@ -19,6 +19,7 @@ public:
 
 	Delight::Comptr<ID3D12GraphicsCommandList> Get();
 private:
+	Delight::Comptr<ID3D12Device> Device;
 	Delight::Comptr<ID3D12CommandAllocator> commandAllocator;
 	Delight::Comptr<ID3D12GraphicsCommandList> commandList;
 	bool bInitialized = false;

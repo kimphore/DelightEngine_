@@ -2,20 +2,20 @@
 #include "RHI_DX12Device.h"
 #include "DX12_Functions.h"
 
-void CDX12_Rendertarget::Initialize(CRHIDirectX12* RHI, ERenderTargetType InType, uint32 InWidth, uint32 InHeight, DXGI_FORMAT InFormat)
+void CDX12_Rendertarget::Initialize(CRHIDirectX12* RHI, ERenderTargetType InType, uint64 InWidth, uint64 InHeight, DXGI_FORMAT InFormat)
 {
 	if (RHI)
 	{
 		Device = RHI->GetDevice();
 		if (Device.IsValid())
 		{
-			bool8 bDepthStencil = Type == Depth;
+			bool8 bIsDepthStencil = Type == Depth;
 
 			Format = InFormat;
 			Width = InWidth;
 			Height = InHeight;
 			Type = InType;
-			CurrentState = bDepthStencil ? DSV : RTV;
+			CurrentState = bIsDepthStencil ? RS_DSV : RS_RTV;
 
 			D3D12_HEAP_PROPERTIES HeapProperty;
 			HeapProperty.Type = D3D12_HEAP_TYPE_DEFAULT;
@@ -35,7 +35,7 @@ void CDX12_Rendertarget::Initialize(CRHIDirectX12* RHI, ERenderTargetType InType
 			ResourceDesc.SampleDesc.Count = 1;
 			ResourceDesc.SampleDesc.Quality = 0;
 			ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-			ResourceDesc.Flags = bDepthStencil ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+			ResourceDesc.Flags = bIsDepthStencil ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 			ResourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 			D3D12_CLEAR_VALUE ClearColor;
@@ -53,7 +53,7 @@ void CDX12_Rendertarget::Initialize(CRHIDirectX12* RHI, ERenderTargetType InType
 				&ClearColor,
 				DELIGHT_IID_PPV_ARGS(&Resource)));
 
-			if (bDepthStencil)
+			if (bIsDepthStencil)
 			{
 				CreateDSV();
 			}
@@ -61,6 +61,35 @@ void CDX12_Rendertarget::Initialize(CRHIDirectX12* RHI, ERenderTargetType InType
 			{
 				CreateRTV();
 			}
+		}
+	}
+}
+
+// 외부에서 이미 만들어진 Target을 대상으로 세팅.
+// 백버퍼만 쓸꺼고, 초기상태는 Present라고함..
+void CDX12_Rendertarget::Initialize(CRHIDirectX12* RHI, Delight::Comptr<ID3D12Resource> InResource)
+{
+	if (RHI && InResource.IsValid())
+	{
+		Device = RHI->GetDevice();
+
+		D3D12_RESOURCE_DESC Desc = InResource->GetDesc();
+		bool8 bIsDepthStencil = (Desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) > 0;
+
+		Format = Desc.Format;
+		Width = Desc.Width;
+		Height = Desc.Height;
+		Type = bIsDepthStencil ? Depth : Color;
+		CurrentState = RS_PRESENT;
+		Resource = InResource;
+
+		if (bIsDepthStencil)
+		{
+			CreateDSV();
+		}
+		else
+		{
+			CreateRTV();
 		}
 	}
 }
@@ -73,9 +102,9 @@ void CDX12_Rendertarget::CreateRTV()
 	RTVDesc.Texture2D.MipSlice = 0;
 
 	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
-	RTVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::RTV);
+	RTVHandle = GDescriptorHeapManager.GetHandle(DHT_RTV);
 
-	Device->CreateRenderTargetView(Resource.GetData(), &RTVDesc, GetDescriptorCPUHandle(ERenderTargetState::RTV));
+	Device->CreateRenderTargetView(Resource.GetData(), &RTVDesc, GetDescriptorCPUHandle(RT_RTV));
 }
 
 void CDX12_Rendertarget::CreateDSV()
@@ -86,9 +115,9 @@ void CDX12_Rendertarget::CreateDSV()
 	DSVDesc.Texture2D.MipSlice = 0;
 
 	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
-	DSVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::DSV);
+	DSVHandle = GDescriptorHeapManager.GetHandle(DHT_DSV);
 
-	Device->CreateDepthStencilView(Resource.GetData(), &DSVDesc, GetDescriptorCPUHandle(ERenderTargetState::DSV));
+	Device->CreateDepthStencilView(Resource.GetData(), &DSVDesc, GetDescriptorCPUHandle(RT_DSV));
 }
 
 void CDX12_Rendertarget::CreateSRV()
@@ -100,9 +129,9 @@ void CDX12_Rendertarget::CreateSRV()
 	SRVDesc.Texture2D.MipLevels = 1;
 
 	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
-	SRVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::ShaderResource);
+	SRVHandle = GDescriptorHeapManager.GetHandle(DHT_ShaderResource);
 
-	Device->CreateShaderResourceView(Resource.GetData(), &SRVDesc, GetDescriptorCPUHandle(ERenderTargetState::SRV_PS));
+	Device->CreateShaderResourceView(Resource.GetData(), &SRVDesc, GetDescriptorCPUHandle(RT_SRV));
 }
 
 void CDX12_Rendertarget::CreateUAV()
@@ -113,16 +142,16 @@ void CDX12_Rendertarget::CreateUAV()
 	UAVDesc.Texture2D.MipSlice = 0;
 
 	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
-	UAVHandle = GDescriptorHeapManager.GetHandle(EDescriptorHeapType::ShaderResource);
+	UAVHandle = GDescriptorHeapManager.GetHandle(DHT_ShaderResource);
 
-	Device->CreateUnorderedAccessView(Resource.GetData(), nullptr, &UAVDesc, GetDescriptorCPUHandle(ERenderTargetState::UAV));
+	Device->CreateUnorderedAccessView(Resource.GetData(), nullptr, &UAVDesc, GetDescriptorCPUHandle(RT_UAV));
 }
 
 void CDX12_Rendertarget::SetDebugName(TCHAR* InDebugName)
 {
 	if (DebugName)
 	{
-		uint32 Length = std::min<size_t>(_tcslen(InDebugName), 64);
+		size_t Length = std::min<size_t>(_tcslen(InDebugName), 64);
 
 		Delight::Memcpy(DebugName, InDebugName, (Length + 1) * 2);
 		
@@ -133,42 +162,47 @@ void CDX12_Rendertarget::SetDebugName(TCHAR* InDebugName)
 	}
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorCPUHandle(ERenderTargetState InType)
+D3D12_CPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorCPUHandle(EResourceType InType)
 {
 	switch (InType)
 	{
-	case RTV:
+	case RT_RTV:
 		return RTVHandle.CPUHandle;
-	case DSV:
+	case RT_DSV:
 		return DSVHandle.CPUHandle;
-	case SRV_PS:
-	case SRV_NonPS:
-	case SRV_ALL:
+	case RT_SRV:
 		return SRVHandle.CPUHandle;
-	case UAV:
+	case RT_UAV:
 		return UAVHandle.CPUHandle;
 	}
+
+	return D3D12_CPU_DESCRIPTOR_HANDLE();
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorGPUHandle(ERenderTargetState InType)
+D3D12_GPU_DESCRIPTOR_HANDLE CDX12_Rendertarget::GetDescriptorGPUHandle(EResourceType InType)
 {
 	switch (InType)
 	{
-	case RTV:
+	case RT_RTV:
 		return RTVHandle.GPUHandle;
-	case DSV:
+	case RT_DSV:
 		return DSVHandle.GPUHandle;
-	case SRV_PS:
-	case SRV_NonPS:
-	case SRV_ALL:
+	case RT_SRV:
 		return SRVHandle.GPUHandle;
-	case UAV:
+	case RT_UAV:
 		return UAVHandle.GPUHandle;
 	}
+
+	return D3D12_GPU_DESCRIPTOR_HANDLE();
 }
 
-void CDX12_Rendertarget::TransitionToState(CDX12_CommandList* CommandList, ERenderTargetState NextState)
+void CDX12_Rendertarget::TransitionToState(CDX12_CommandList* CommandList, EResourceState NextState)
 {
+	if (CurrentState == NextState)
+	{
+		return;
+	}
+
 	D3D12_RESOURCE_BARRIER ResourceBarrier = Delight::DX12::GetTransitionBarrier(Resource.GetData()
 		, TranslateResourceState(CurrentState), TranslateResourceState(NextState));
 
@@ -176,21 +210,25 @@ void CDX12_Rendertarget::TransitionToState(CDX12_CommandList* CommandList, ERend
 	CurrentState = NextState;
 }
 
-D3D12_RESOURCE_STATES CDX12_Rendertarget::TranslateResourceState(ERenderTargetState InState)
+D3D12_RESOURCE_STATES CDX12_Rendertarget::TranslateResourceState(EResourceState InState)
 {
 	switch (InState)
 	{
-	case RTV:
+	case RS_RTV:
 		return D3D12_RESOURCE_STATE_RENDER_TARGET;
-	case DSV:
+	case RS_DSV:
 		return D3D12_RESOURCE_STATE_DEPTH_WRITE;
-	case SRV_PS:
+	case RS_SRV_PS:
 		return D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	case SRV_NonPS:
+	case RS_SRV_NonPS:
 		return D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-	case SRV_ALL:
+	case RS_SRV_ALL:
 		return D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
-	case UAV:
+	case RS_UAV:
 		return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+	case RS_PRESENT:
+		return D3D12_RESOURCE_STATE_PRESENT;
 	}
+
+	return D3D12_RESOURCE_STATE_COMMON;
 }

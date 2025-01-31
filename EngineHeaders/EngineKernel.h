@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Include.h"
+#include "SceneRenderer.h"
+
 /*!
  * \file EngineKernel.h
  * \date 2019/08/01 14:06
@@ -14,7 +17,6 @@
  * \note
 */
 
-class CRHIDirectX12;
 class ENGINE_DLL CDelightEngineKernel
 {
 public:
@@ -24,6 +26,10 @@ public:
 	void ReleaseEngine();
 
 	void TestRenderLoop();
+
+	void Tick_Engine();
+	void Tick_Game();
+	void Tick_Render();
 
 public:
 	HWND GetHWND()
@@ -39,5 +45,5 @@ private:
 	std::thread RenderThread;
 
 private: // Cores.
-	CRHIDirectX12* GraphicDevice;
+	CDelightSceneRenderer SceneRenderer;
 };

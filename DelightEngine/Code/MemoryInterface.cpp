@@ -6,6 +6,10 @@ Delight::IMemoryBase* GMemory = nullptr;
 
 EEngineResult Delight::InitializeMemory(uint32 Type)
 {
+	if (GMemory != nullptr)
+	{
+		return EEngineResult::SUCESS;
+	}
 	Delight::ASSERT(GMemory == nullptr, "Memory Class Already Initialized.");
 
 	// placement new

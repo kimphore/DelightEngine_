@@ -6,7 +6,7 @@ namespace Delight
 {
 	namespace DX12
 	{
-		D3D12_RESOURCE_BARRIER GetTransitionBarrier(ID3D12Resource* InResource, D3D12_RESOURCE_STATES InBeforeState, D3D12_RESOURCE_STATES InAfterState)
+		inline D3D12_RESOURCE_BARRIER GetTransitionBarrier(ID3D12Resource* InResource, D3D12_RESOURCE_STATES InBeforeState, D3D12_RESOURCE_STATES InAfterState)
 		{
 			D3D12_RESOURCE_BARRIER Result;
 			Result.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
