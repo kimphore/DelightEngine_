@@ -181,6 +181,12 @@
     <Filter Include="Cores\RHI\DX12\Components\Fence">
       <UniqueIdentifier>{f9f758b7-1516-4c04-b423-d7a583d71553}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores\GUI">
+      <UniqueIdentifier>{81769a5e-96e0-4ce8-87d0-e0b700f7ee4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\GUI\IMGUI">
+      <UniqueIdentifier>{1f6ae0da-5e8c-4924-8769-91f6c38a42e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -321,6 +327,12 @@
     <ClInclude Include="Code\DX12_DescriptorHeapManager.h">
       <Filter>Cores\RHI\DX12\Components\DescriptorHeapManager</Filter>
     </ClInclude>
+    <ClInclude Include="Code\DX12_Fence.h">
+      <Filter>Cores\RHI\DX12\Components\Fence</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_CommandListPool.h">
+      <Filter>Cores\RHI\DX12\Components\CommandList\Pool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -403,6 +415,12 @@
     </ClCompile>
     <ClCompile Include="Code\DX12_DescriptorHeapManager.cpp">
       <Filter>Cores\RHI\DX12\Components\DescriptorHeapManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_Fence.cpp">
+      <Filter>Cores\RHI\DX12\Components\Fence</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_CommandListPool.cpp">
+      <Filter>Cores\RHI\DX12\Components\CommandList\Pool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,29 +3,26 @@
 
 CDX12_DescriptorHeapManager GDescriptorHeapManager;
 
-void CDX12_DescriptorHeapManager::Initialize(CRHIDirectX12* RHI)
+void CDX12_DescriptorHeapManager::Initialize(Delight::Comptr<ID3D12Device> InDevice)
 {
-	if (RHI)
+	Device = InDevice;
+	if (Device.IsValid())
 	{
-		Device = RHI->GetDevice();
-		if (Device.IsValid())
+		for (int32 i = 0; i < DHT_Max; ++i)
 		{
-			for (int32 i = 0; i < DHT_Max; ++i)
+			D3D12_DESCRIPTOR_HEAP_DESC HeapDesc = GetHeapDesc(i);
+			FDescriptorHeap& Heap = Heaps[i];
+
+			Heap.bUseShader = i >= DHT_ShaderResource;
+			Heap.MaxNumDescriptor = HeapDesc.NumDescriptors;
+			Heap.NumDescriptor = 0;
+			Delight::ThrowIfFailed(Device->CreateDescriptorHeap(&HeapDesc, DELIGHT_IID_PPV_ARGS(&Heap.Heap)));
+
+			Heap.Stride = Device->GetDescriptorHandleIncrementSize(HeapDesc.Type);
+			Heap.CurrentPtr.CPUHandle = Heap.Heap->GetCPUDescriptorHandleForHeapStart();
+			if (i > DHT_DSV) // only shader resource.
 			{
-				D3D12_DESCRIPTOR_HEAP_DESC HeapDesc = GetHeapDesc(i);
-				FDescriptorHeap& Heap = Heaps[i];
-
-				Heap.bUseShader = i >= DHT_ShaderResource;
-				Heap.MaxNumDescriptor = HeapDesc.NumDescriptors;
-				Heap.NumDescriptor = 0;
-				Delight::ThrowIfFailed(Device->CreateDescriptorHeap(&HeapDesc, DELIGHT_IID_PPV_ARGS(&Heap.Heap)));
-
-				Heap.Stride = Device->GetDescriptorHandleIncrementSize(HeapDesc.Type);
-				Heap.CurrentPtr.CPUHandle = Heap.Heap->GetCPUDescriptorHandleForHeapStart();
-				if (i > DHT_DSV) // only shader resource.
-				{
-					Heap.CurrentPtr.GPUHandle = Heap.Heap->GetGPUDescriptorHandleForHeapStart();
-				}
+				Heap.CurrentPtr.GPUHandle = Heap.Heap->GetGPUDescriptorHandleForHeapStart();
 			}
 		}
 	}

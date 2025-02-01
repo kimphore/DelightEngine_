@@ -35,8 +35,8 @@ class CRHIDirectX12;
 class CDX12_Rendertarget
 {
 public:
-	void Initialize(CRHIDirectX12* RHI, Delight::Comptr<ID3D12Resource> InResource);
-	void Initialize(CRHIDirectX12* RHI, ERenderTargetType InType, uint64 InWidth, uint64 InHeight, DXGI_FORMAT InFormat);
+	void Initialize(Delight::Comptr<ID3D12Device> InDevice, Delight::Comptr<ID3D12Resource> InResource);
+	void Initialize(Delight::Comptr<ID3D12Device> InDevice, ERenderTargetType InType, uint64 InWidth, uint64 InHeight, DXGI_FORMAT InFormat);
 	void CreateRTV();
 	void CreateDSV();
 	// need to use

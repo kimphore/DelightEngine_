@@ -4,6 +4,7 @@
 #include "RHI_DX12Device.h"
 #include "DX12_CommandList.h"
 #include "DX12_Rendertarget.h"
+#include "DX12_CommandListPool.h"
 
 CDelightSceneRenderer::CDelightSceneRenderer()
 	: bBuildedPipeline(false), RHI(nullptr)
@@ -38,12 +39,17 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 		It(SceneView);
 	}
 	*/
-	RenderDX12Test(SceneView, RHI->MainCommandList);
+	extern CDX12_CommandListPool GCommandListPool;
+	CDX12_CommandList CommandList;
+
+	GCommandListPool.GetCommandList(CommandList);
+	CommandList.Reset();
+
+	RenderDX12Test(SceneView, CommandList);
 
 
 	RHI->Present();
-	RHI->WaitForPreviousFrame();	
-	RHI->MainCommandList.Reset();
+	RHI->WaitForPreviousFrame();
 }
 
 /*
@@ -67,7 +73,7 @@ void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_C
 	CommandList.Get()->ClearRenderTargetView(Backbuffer.GetDescriptorCPUHandle(RT_RTV), clearColor, 0, nullptr);
 	Backbuffer.TransitionToState(&CommandList, RS_PRESENT);
 	CommandList.Close();
-	CommandList.Execute(RHI->m_CommandQueue);
+	CommandList.Execute(RHI->GetCommandQueue());
 }
 
 // XML에서 각각 함수 파싱할수있도록 대응하는 맵 구성.

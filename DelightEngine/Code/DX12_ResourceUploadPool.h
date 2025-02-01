@@ -3,6 +3,7 @@
 #include "Include.h"
 #include "comptr.h"
 #include "EASTL/list.h"
+#include "DX12_Fence.h"
 
 enum EUploadPoolType
 {
@@ -30,7 +31,7 @@ class CDX12_CommandList;
 class CDX12_ResourceUpdatePool
 {
 public:
-	void Initialize(CRHIDirectX12* RHI);
+	void Initialize(Delight::Comptr<ID3D12Device> InDevice, Delight::Comptr<ID3D12CommandQueue> InCommandQueue);
 	void Release();
 
 public:
@@ -43,7 +44,7 @@ public:
 		return GetRemainSize() <= Size;
 	}
 
-	void FlushAndWaitRequest(CRHIDirectX12* RHI, CDX12_CommandList* CommandList);
+	void FlushAndWaitRequest(CDX12_CommandList* CommandList);
 
 protected:
 	// initialize
@@ -55,6 +56,7 @@ protected:
 
 protected:
 	Delight::Comptr<ID3D12Device> Device;
+	Delight::Comptr<ID3D12CommandQueue> CommandQueue;
 	Delight::Comptr<ID3D12Resource> PoolResource;
 
 	eastl::list<FChunkInfo> AllocateRequestList;
@@ -62,6 +64,8 @@ protected:
 	bool8 bInitialized = false;
 	byte* PoolData = nullptr;
 	uint64 CurrentOffset = 0;
+
+	CDX12_Fence ResourceWaitFence;
 
 	Delight::Comptr<ID3D12Fence> Fence;
 	uint64 FenceValue = 0;

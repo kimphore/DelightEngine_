@@ -4,11 +4,11 @@
 #include "RHI_DX12Device.h"
 #include "DX12_ResourceUploadPool.h"
 
-bool8 CDX12_VertexBuffer::CreateBuffer(CRHIDirectX12* RHI, CDX12_CommandList* CommandList, EBufferType InType, EVertexType InVertexType, uint32 InSize, void* InData)
+bool8 CDX12_VertexBuffer::CreateBuffer(Delight::Comptr<ID3D12Device> InDevice, EBufferType InType, EVertexType InVertexType, uint32 InSize)
 {
-	if (RHI && InSize > 0)
+	if (InSize > 0)
 	{
-		Device = RHI->GetDevice();
+		Device = InDevice;
 		if (Device.IsValid())
 		{
 			Type = InType;
@@ -45,11 +45,6 @@ bool8 CDX12_VertexBuffer::CreateBuffer(CRHIDirectX12* RHI, CDX12_CommandList* Co
 				nullptr, // initial data?
 				DELIGHT_IID_PPV_ARGS(&Buffer));
 
-			if (InData)
-			{
-				SetData(RHI, CommandList, InData, Size);
-			}
-
 			VertexBufferView.BufferLocation = Buffer->GetGPUVirtualAddress();
 			VertexBufferView.StrideInBytes = GetStrideSize(VertexType);
 			VertexBufferView.SizeInBytes = Size;
@@ -61,7 +56,7 @@ bool8 CDX12_VertexBuffer::CreateBuffer(CRHIDirectX12* RHI, CDX12_CommandList* Co
 	return false;
 }
 
-void CDX12_VertexBuffer::SetData(CRHIDirectX12* RHI, CDX12_CommandList* CommandList, void* InData, uint64 Size)
+void CDX12_VertexBuffer::SetData(CDX12_CommandList* CommandList, void* InData, uint64 Size)
 {
 	if (!Buffer.IsValid() || InData == nullptr || Size <= 0 || CommandList == nullptr)
 	{
@@ -81,7 +76,7 @@ void CDX12_VertexBuffer::SetData(CRHIDirectX12* RHI, CDX12_CommandList* CommandL
 		// allocated by upload pool.
 		if (GResourceUpdatePool[UPT_Buffer].PoolIsFull(Size))
 		{
-			GResourceUpdatePool[UPT_Buffer].FlushAndWaitRequest(RHI, CommandList);
+			GResourceUpdatePool[UPT_Buffer].FlushAndWaitRequest(CommandList);
 		}
 		GResourceUpdatePool[UPT_Buffer].RequestUpload(CommandList, Buffer, InData, Size);
 	}

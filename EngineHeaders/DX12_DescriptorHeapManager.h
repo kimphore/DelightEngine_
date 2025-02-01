@@ -49,7 +49,7 @@ class CRHIDirectX12;
 class CDX12_DescriptorHeapManager
 {
 public:
-	void Initialize(CRHIDirectX12* RHI);
+	void Initialize(Delight::Comptr<ID3D12Device> InDevice);
 
 	FDescriptorHandleSet GetHandle(int32 Index);
 	void ReturnToQueue(int32 Index, FDescriptorHandleSet& HandleSet);

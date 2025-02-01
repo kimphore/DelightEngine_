@@ -5,34 +5,30 @@
 
 CDX12_ResourceUpdatePool GResourceUpdatePool[UPT_Max];
 
-void CDX12_ResourceUpdatePool::Initialize(CRHIDirectX12* RHI)
+void CDX12_ResourceUpdatePool::Initialize(Delight::Comptr<ID3D12Device> InDevice, Delight::Comptr<ID3D12CommandQueue> InCommandQueue)
 {
-	if (RHI)
+	Device = InDevice;
+	CommandQueue = InCommandQueue;
+	if (Device.IsValid())
 	{
-		Device = RHI->GetDevice();
-		if (Device.IsValid())
-		{
-			D3D12_HEAP_PROPERTIES HeapProperty = GetUploadHeapProperties();
-			D3D12_RESOURCE_DESC ResourceDesc = GetUploadHeapResourceDesc();
+		D3D12_HEAP_PROPERTIES HeapProperty = GetUploadHeapProperties();
+		D3D12_RESOURCE_DESC ResourceDesc = GetUploadHeapResourceDesc();
 
-			Device->CreateCommittedResource(
-				&HeapProperty,
-				D3D12_HEAP_FLAG_NONE,
-				&ResourceDesc,
-				D3D12_RESOURCE_STATE_COMMON,
-				nullptr,
-				DELIGHT_IID_PPV_ARGS(&PoolResource));
-
-			FenceValue = 0;
-			Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, DELIGHT_IID_PPV_ARGS(&Fence));
-			FenceEventHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-		}
+		Device->CreateCommittedResource(
+			&HeapProperty,
+			D3D12_HEAP_FLAG_NONE,
+			&ResourceDesc,
+			D3D12_RESOURCE_STATE_COMMON,
+			nullptr,
+			DELIGHT_IID_PPV_ARGS(&PoolResource));
 	}
 
 	if (PoolResource.IsValid())
 	{
 		PoolResource->Map(0, nullptr, (void**)&PoolData);
 	}
+
+	ResourceWaitFence.Initialize(Device);
 }
 
 void CDX12_ResourceUpdatePool::Release()
@@ -89,23 +85,17 @@ void CDX12_ResourceUpdatePool::ClearPool()
 	CurrentOffset = 0;
 }
 
-void CDX12_ResourceUpdatePool::FlushAndWaitRequest(CRHIDirectX12* RHI, CDX12_CommandList* CommandList)
+void CDX12_ResourceUpdatePool::FlushAndWaitRequest(CDX12_CommandList* CommandList)
 {
-	if (RHI && CommandList)
+	if (CommandList && CommandQueue.IsValid())
 	{
-		CommandList->Execute(RHI->m_CommandQueue);
-		++FenceValue;
-		RHI->m_CommandQueue->Signal(Fence.GetData(), FenceValue);
+		CommandList->Close();
+		CommandList->Execute(CommandQueue);
 
-		if (Fence->GetCompletedValue() < FenceValue)
-		{
-			logf(TEXT("Wait For Resource Copy Finished."));
-			Fence->SetEventOnCompletion(FenceValue, FenceEventHandle);
-			WaitForSingleObject(FenceEventHandle, INFINITE);
+		ResourceWaitFence.Wait(CommandQueue);
 
-			CommandList->Reset();
-			ClearPool();
-		}
+		CommandList->Reset();
+		ClearPool();
 	}
 }
 

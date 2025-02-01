@@ -18,8 +18,8 @@ class CDX12_CommandList;
 class CDX12_BufferInterface
 {
 public:
-	virtual bool8 CreateBuffer(CRHIDirectX12* RHI, CDX12_CommandList* CommandList, EBufferType InType, uint32 InSize, void* InData = nullptr) { return false; };
-	virtual void SetData(CRHIDirectX12* RHI, CDX12_CommandList* CommandList, void* InData, uint64 Size) = 0;
+	virtual bool8 CreateBuffer(Delight::Comptr<ID3D12Device> InDevice, EBufferType InType, uint32 InSize) { return false; };
+	virtual void SetData(CDX12_CommandList* CommandList, void* InData, uint64 Size) = 0;
 
 public:
 	D3D12_HEAP_TYPE TranslateHeapType(EBufferType InType)

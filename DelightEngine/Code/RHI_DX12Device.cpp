@@ -5,6 +5,7 @@
 #include "dxgi1_4.h"
 
 #include "DX12_DescriptorHeapManager.h"
+#include "DX12_CommandListPool.h"
 
 void CRHIDirectX12::Initialize(HWND hWnd)
 {
@@ -29,16 +30,9 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 	GetHardwareAdapter(factory.GetData(), &hardwareAdapter);
 
 	Delight::ThrowIfFailed(D3D12CreateDevice(hardwareAdapter.GetData(), 
-		D3D_FEATURE_LEVEL_11_0, DELIGHT_IID_PPV_ARGS(&m_Device)));
+		D3D_FEATURE_LEVEL_11_0, DELIGHT_IID_PPV_ARGS(&Device)));
 
-	// Create Command Queue.
-
-	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-
-	Delight::FailedReturnString(m_Device->CreateCommandQueue(&queueDesc, DELIGHT_IID_PPV_ARGS(&m_CommandQueue)),
-		TEXT("Failed Create Command Queue."));
+	CommandQueueInitialize();
 
 	// Creat SwapChain.
 	DXGI_SWAP_CHAIN_DESC1 chainDesc = {};
@@ -50,65 +44,38 @@ void CRHIDirectX12::Initialize(HWND hWnd)
 	chainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	chainDesc.SampleDesc.Count = 1; // multisampling off..?
 
-	Delight::Comptr<IDXGISwapChain1> swapChain;
+	Delight::Comptr<IDXGISwapChain1> TempSwapChain;
 
 	Delight::FailedReturnString(factory->CreateSwapChainForHwnd(
-		m_CommandQueue.GetData(),
+		GetCommandQueue().GetData(),
 		hWnd,
 		&chainDesc,
 		nullptr,
 		nullptr,
-		&swapChain
+		&TempSwapChain
 		), TEXT("Failed Create Swap Chain."));
 
 	// Not Provide Full Screen... Tmp..
-	Delight::FailedReturnString(factory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER), TEXT(""));
-	Delight::FailedReturnString(swapChain->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(&m_Swapchain)), TEXT(""));
+	Delight::ThrowIfFailed(factory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER));
+	Delight::ThrowIfFailed(TempSwapChain->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(&SwapChain)));
 
-	FrameIndex = m_Swapchain->GetCurrentBackBufferIndex();
+	FrameIndex = SwapChain->GetCurrentBackBufferIndex();
 
-	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
-	GDescriptorHeapManager.Initialize(this);
-	
-	// initialize backbuffer
-	for (uint32 i = 0; i < GNumBackbuffer; ++i)
-	{
-		Delight::Comptr<ID3D12Resource> Buffer;
+	ComponentInitialize();
+	RenderTargetInitialize();
 
-		m_Swapchain->GetBuffer(i, DELIGHT_IID_PPV_ARGS(&Buffer));
-		Backbuffers[i].Initialize(this, Buffer);
-	}
-
-	// fence 임시생성
-	m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, DELIGHT_IID_PPV_ARGS(&m_fence));
-	m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-
-	MainCommandList.Init(this);
+	FrameFence.Initialize(GetDevice());
 }
 
 void CRHIDirectX12::Present(int32 InSyncInterval)
 {
-	Delight::ThrowIfFailed(m_Swapchain->Present(InSyncInterval, 0));
+	Delight::ThrowIfFailed(SwapChain->Present(InSyncInterval, 0));
 }
 
 void CRHIDirectX12::WaitForPreviousFrame()
 {
-	// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
-	// This is code implemented as such for simplicity. The D3D12HelloFrameBuffering
-	// sample illustrates how to use fences for efficient resource usage and to
-	// maximize GPU utilization.
-
-	const uint64 Fence = m_fenceValue;
-	Delight::ThrowIfFailed(m_CommandQueue->Signal(m_fence.GetData(), Fence));
-	++m_fenceValue;
-
-	if (m_fence->GetCompletedValue() < Fence)
-	{
-		Delight::ThrowIfFailed(m_fence->SetEventOnCompletion(Fence, m_fenceEvent));
-		WaitForSingleObject(m_fenceEvent, INFINITE);
-	}
-
-	FrameIndex = m_Swapchain->GetCurrentBackBufferIndex();
+	FrameFence.Wait(GetCommandQueue());
+	FrameIndex = SwapChain->GetCurrentBackBufferIndex();
 }
 
 CDX12_Rendertarget& CRHIDirectX12::GetBackbuffer()
@@ -116,9 +83,58 @@ CDX12_Rendertarget& CRHIDirectX12::GetBackbuffer()
 	return Backbuffers[FrameIndex % GNumBackbuffer];
 }
 
+void CRHIDirectX12::ComponentInitialize()
+{
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+	GDescriptorHeapManager.Initialize(GetDevice());
+
+	extern CDX12_CommandListPool GCommandListPool;
+	GCommandListPool.Initialize(GetDevice());
+}
+
+void CRHIDirectX12::CommandQueueInitialize()
+{
+	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+
+	Delight::ThrowIfFailed(Device->CreateCommandQueue(&queueDesc, DELIGHT_IID_PPV_ARGS(&CommandQueue[CQT_Direct])));
+
+	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
+
+	Delight::ThrowIfFailed(Device->CreateCommandQueue(&queueDesc, DELIGHT_IID_PPV_ARGS(&CommandQueue[CQT_Compute])));
+
+	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COPY;
+
+	Delight::ThrowIfFailed(Device->CreateCommandQueue(&queueDesc, DELIGHT_IID_PPV_ARGS(&CommandQueue[CQT_Copy])));
+}
+
+void CRHIDirectX12::RenderTargetInitialize()
+{
+	for (uint32 i = 0; i < GNumBackbuffer; ++i)
+	{
+		Delight::Comptr<ID3D12Resource> Buffer;
+
+		SwapChain->GetBuffer(i, DELIGHT_IID_PPV_ARGS(&Buffer));
+		Backbuffers[i].Initialize(GetDevice(), Buffer);
+	}
+}
+
 Delight::Comptr<ID3D12Device> CRHIDirectX12::GetDevice()
 {
-	return m_Device;
+	return Device;
+}
+
+Delight::Comptr<ID3D12CommandQueue> CRHIDirectX12::GetCommandQueue(ECommandQueueType InType /*= CQT_Direct*/)
+{
+	if (InType > INDEX_NONE && InType < CQT_Max)
+	{
+		return CommandQueue[InType];
+	}
+
+	return CommandQueue[0];
 }
 
 void CRHIDirectX12::GetHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)
