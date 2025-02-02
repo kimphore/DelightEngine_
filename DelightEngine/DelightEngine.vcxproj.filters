@@ -196,6 +196,9 @@
     <Filter Include="Cores\GUI\IMGUI\Library\backend">
       <UniqueIdentifier>{af45cec4-be23-4e3d-9d64-0050094aaab3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores\StateInfo">
+      <UniqueIdentifier>{9114f5ed-c2dc-40ed-a526-2f195eff486b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
