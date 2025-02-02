@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;./../External/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include;$(SolutionDir)\External</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -166,6 +166,7 @@
     <ClInclude Include="Code\DX12_TextureUploadPool.h" />
     <ClInclude Include="Code\DX12_VertexBuffer.h" />
     <ClInclude Include="Code\EngineKernel.h" />
+    <ClInclude Include="Code\IMGUI_GUI.h" />
     <ClInclude Include="Code\Logger.h" />
     <ClInclude Include="Code\MemoryInterface.h" />
     <ClInclude Include="Code\MemoryPoolInterface.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Code\TBBMemory.h" />
     <ClInclude Include="Code\tinyxml2.h" />
     <ClInclude Include="Code\VertexShader.h" />
+    <ClInclude Include="Code\Win32_Input.h" />
     <ClInclude Include="Code\WindowsMemory.h" />
     <ClInclude Include="Header\comptr.h" />
     <ClInclude Include="Header\crcchecksum.h" />
@@ -216,6 +218,7 @@
     <ClCompile Include="Code\DX12_TextureUploadPool.cpp" />
     <ClCompile Include="Code\DX12_VertexBuffer.cpp" />
     <ClCompile Include="Code\EngineKernel.cpp" />
+    <ClCompile Include="Code\IMGUI_GUI.cpp" />
     <ClCompile Include="Code\Logger.cpp" />
     <ClCompile Include="Code\MemoryInterface.cpp" />
     <ClCompile Include="Code\MemoryTracer.cpp" />
@@ -231,6 +234,7 @@
     <ClCompile Include="Code\TBBMemory.cpp" />
     <ClCompile Include="Code\tinyxml2.cpp" />
     <ClCompile Include="Code\VertexShader.cpp" />
+    <ClCompile Include="Code\Win32_Input.cpp" />
     <ClCompile Include="Code\WindowsMemory.cpp" />
   </ItemGroup>
   <ItemGroup>

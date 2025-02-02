@@ -187,6 +187,9 @@
     <Filter Include="Cores\GUI\IMGUI">
       <UniqueIdentifier>{1f6ae0da-5e8c-4924-8769-91f6c38a42e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores\Input\Win32">
+      <UniqueIdentifier>{a1b58d3f-b231-4900-abd7-246ad61a1a3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -333,6 +336,12 @@
     <ClInclude Include="Code\DX12_CommandListPool.h">
       <Filter>Cores\RHI\DX12\Components\CommandList\Pool</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Win32_Input.h">
+      <Filter>Cores\Input\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\IMGUI_GUI.h">
+      <Filter>Cores\GUI\IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -421,6 +430,12 @@
     </ClCompile>
     <ClCompile Include="Code\DX12_CommandListPool.cpp">
       <Filter>Cores\RHI\DX12\Components\CommandList\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Win32_Input.cpp">
+      <Filter>Cores\Input\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\IMGUI_GUI.cpp">
+      <Filter>Cores\GUI\IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

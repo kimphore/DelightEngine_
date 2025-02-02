@@ -41,7 +41,7 @@ void CDelightEngineKernel::TestRenderLoop()
 void CDelightEngineKernel::Tick_Engine()
 {
 	Tick_Game();
-	Tick_Render();
+	Render();
 }
 
 void CDelightEngineKernel::Tick_Game()
@@ -49,7 +49,7 @@ void CDelightEngineKernel::Tick_Game()
 
 }
 
-void CDelightEngineKernel::Tick_Render()
+void CDelightEngineKernel::Render()
 {
 	SceneRenderer.Render(nullptr);
 }

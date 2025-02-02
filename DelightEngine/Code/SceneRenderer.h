@@ -14,6 +14,7 @@
  * \note
 */
 
+class CIMGUI_GUI;
 class CRHIDirectX12;
 class CDelightSceneView;
 class CDX12_CommandList;
@@ -24,9 +25,14 @@ public:
 
 	void Initialize(HWND InHWnd);
 	void Destroy();
+	void BindGUI(CIMGUI_GUI* InGUI) {
+		GUI = InGUI;
+	}
 
 public:
 	void Render(CDelightSceneView* SceneView);
+	void RenderGUI();
+	void WaitGPU();
 	void InitView(CDelightSceneView* SceneView);
 
 public: // pipeline functions.
@@ -36,6 +42,7 @@ public:
 	void BuildRenderingPipeline(tchar* pipelineName);
 private:
 	CRHIDirectX12* RHI;
+	CIMGUI_GUI* GUI;
 
 	std::map<std::wstring, std::function<void(CDelightSceneView*)>> pipelineMap;
 	std::vector<std::function<void(CDelightSceneView*)>> currentPipeline;

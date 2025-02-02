@@ -17,6 +17,8 @@ void CDelightSceneRenderer::Initialize(HWND InHWnd)
 	{
 		RHI->Initialize(InHWnd);
 	}
+
+	BindGUI(GUI);
 }
 
 void CDelightSceneRenderer::Destroy()
@@ -47,7 +49,18 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 
 	RenderDX12Test(SceneView, CommandList);
 
+	RenderGUI();
 
+	WaitGPU();
+}
+
+void CDelightSceneRenderer::RenderGUI()
+{
+
+}
+
+void CDelightSceneRenderer::WaitGPU()
+{
 	RHI->Present();
 	RHI->WaitForPreviousFrame();
 }
