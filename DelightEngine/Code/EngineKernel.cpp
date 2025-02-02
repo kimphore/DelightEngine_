@@ -4,6 +4,7 @@
 #include "MemoryInterface.h"
 #include "Logger.h"
 #include "GlobalVariables.h"
+#include "IMGUI_GUI.h"
 
 #include <processthreadsapi.h>
 
@@ -22,6 +23,7 @@ result CDelightEngineKernel::Initialize(HWND _hWnd)
 	Delight::InitializeLogger();
 
 	SceneRenderer.Initialize(_hWnd);
+	SceneRenderer.InitializeGUI(&GUI);
 
 	return RET_SUCCES;
 }
@@ -47,6 +49,21 @@ void CDelightEngineKernel::Tick_Engine()
 void CDelightEngineKernel::Tick_Game()
 {
 
+}
+
+LRESULT CDelightEngineKernel::WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	if (GUI.WinProcHandler(hWnd, msg, wParam, lParam))
+	{
+		return true;
+	}
+
+	if (Input.WinProcHandler(hWnd, msg, wParam, lParam))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void CDelightEngineKernel::Render()

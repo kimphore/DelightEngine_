@@ -5,6 +5,7 @@
 #include "DX12_CommandList.h"
 #include "DX12_Rendertarget.h"
 #include "DX12_CommandListPool.h"
+#include "IMGUI_GUI.h"
 
 CDelightSceneRenderer::CDelightSceneRenderer()
 	: bBuildedPipeline(false), RHI(nullptr)
@@ -18,12 +19,22 @@ void CDelightSceneRenderer::Initialize(HWND InHWnd)
 		RHI->Initialize(InHWnd);
 	}
 
-	BindGUI(GUI);
+	myHWnd = InHWnd;
 }
 
 void CDelightSceneRenderer::Destroy()
 {
 	delete RHI;
+}
+
+void CDelightSceneRenderer::InitializeGUI(CIMGUI_GUI* InGUI)
+{
+	GUI = InGUI;
+	if (GUI && RHI)
+	{
+		GUI->Initialize(myHWnd, RHI->GetDevice(), RHI->GetCommandQueue(), GNumBackbuffer);
+		bGUIInitialized = true;
+	}
 }
 
 // 실제로 랜더링되는 부분.
@@ -56,7 +67,26 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 
 void CDelightSceneRenderer::RenderGUI()
 {
+	if (GUI && bGUIInitialized)
+	{
+		CDX12_Rendertarget& Backbuffer = RHI->GetBackbuffer();
 
+		extern CDX12_CommandListPool GCommandListPool;
+		CDX12_CommandList CommandList;
+		GCommandListPool.GetCommandList(CommandList);
+		CommandList.Reset();
+
+		RHI->BindDescriptionHeaps(CommandList);
+
+		Backbuffer.TransitionToState(&CommandList, RS_RTV);
+		CommandList.Get()->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);
+
+		GUI->Render(CommandList);
+
+		Backbuffer.TransitionToState(&CommandList, RS_PRESENT);
+		CommandList.Close();
+		CommandList.Execute(RHI->GetCommandQueue());
+	}
 }
 
 void CDelightSceneRenderer::WaitGPU()
@@ -78,6 +108,8 @@ void CDelightSceneRenderer::InitView(CDelightSceneView* SceneView)
 void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommandList)
 {
 	CDX12_Rendertarget& Backbuffer = RHI->GetBackbuffer();
+
+	RHI->BindDescriptionHeaps(CommandList);
 
 	Backbuffer.TransitionToState(&CommandList, RS_RTV);
 	CommandList.Get()->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);

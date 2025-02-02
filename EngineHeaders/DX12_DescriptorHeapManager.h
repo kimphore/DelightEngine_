@@ -15,8 +15,13 @@ enum EDescriptorHeapType
 
 struct FDescriptorHandleSet
 {
-	D3D12_CPU_DESCRIPTOR_HANDLE CPUHandle;
-	D3D12_GPU_DESCRIPTOR_HANDLE GPUHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE CPUHandle = {};
+	D3D12_GPU_DESCRIPTOR_HANDLE GPUHandle = {};
+
+	FDescriptorHandleSet() {}
+	FDescriptorHandleSet(D3D12_CPU_DESCRIPTOR_HANDLE InCPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE InGPUHandle)
+		:CPUHandle(InCPUHandle), GPUHandle(InGPUHandle)
+	{}
 
 	void AddOffset(uint32 Value, bool CPUHandleOnly = false)
 	{
@@ -53,6 +58,16 @@ public:
 
 	FDescriptorHandleSet GetHandle(int32 Index);
 	void ReturnToQueue(int32 Index, FDescriptorHandleSet& HandleSet);
+
+public:
+	FDescriptorHeap* GetHeap(int32 Index) {
+		if (IsValidIndex(Index))
+		{
+			return &Heaps[Index];
+		}
+
+		return nullptr;
+	}
 
 protected:
 	D3D12_DESCRIPTOR_HEAP_DESC GetHeapDesc(int32 Index);

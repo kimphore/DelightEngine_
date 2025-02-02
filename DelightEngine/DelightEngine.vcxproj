@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include;$(SolutionDir)\External</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include;$(SolutionDir)\External;$(SolutionDir)\External\IMGUI</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,6 +153,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\External\IMGUI\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="..\External\IMGUI\backends\imgui_impl_win32.h" />
+    <ClInclude Include="..\External\IMGUI\imconfig.h" />
+    <ClInclude Include="..\External\IMGUI\imgui.h" />
+    <ClInclude Include="..\External\IMGUI\imgui_internal.h" />
+    <ClInclude Include="..\External\IMGUI\imstb_rectpack.h" />
+    <ClInclude Include="..\External\IMGUI\imstb_textedit.h" />
+    <ClInclude Include="..\External\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Code\allocator.h" />
     <ClInclude Include="Code\CriticalSection.h" />
     <ClInclude Include="Code\DX12_Buffer.h" />
@@ -205,6 +213,13 @@
     <ClInclude Include="Header\Typedef.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\External\IMGUI\backends\imgui_impl_dx12.cpp" />
+    <ClCompile Include="..\External\IMGUI\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\External\IMGUI\imgui.cpp" />
+    <ClCompile Include="..\External\IMGUI\imgui_demo.cpp" />
+    <ClCompile Include="..\External\IMGUI\imgui_draw.cpp" />
+    <ClCompile Include="..\External\IMGUI\imgui_tables.cpp" />
+    <ClCompile Include="..\External\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Code\allocator.cpp" />
     <ClCompile Include="Code\CriticalSection.cpp" />
     <ClCompile Include="Code\DX12_Buffer.cpp" />

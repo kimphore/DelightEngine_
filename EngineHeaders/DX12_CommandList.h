@@ -27,6 +27,11 @@ public:
 		return commandList;
 	}
 
+	Delight::Comptr<ID3D12GraphicsCommandList> operator ->()
+	{
+		return commandList;
+	}
+
 	CDX12_CommandList& operator = (CDX12_CommandList& other);
 
 	Delight::Comptr<ID3D12GraphicsCommandList> Get();

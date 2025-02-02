@@ -30,7 +30,7 @@ void CDX12_DescriptorHeapManager::Initialize(Delight::Comptr<ID3D12Device> InDev
 
 FDescriptorHandleSet CDX12_DescriptorHeapManager::GetHandle(int32 Index)
 {
-	FDescriptorHandleSet Handle = {};
+	FDescriptorHandleSet Handle;
 
 	if (IsValidIndex(Index))
 	{

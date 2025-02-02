@@ -35,6 +35,8 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+CDelightEngineKernel GEngine;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -54,12 +56,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
-    MSG msg;
-
-    CDelightEngineKernel Engine;
+    MSG msg;    
     
-    Engine.Initialize(gHwnd);
-
+    GEngine.Initialize(gHwnd);
 
 	GLogger->ToggleConsole();
 
@@ -70,44 +69,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GLogger->LogW(LOG_ERROR, 10, TEXT("This is Error"));
 	GLogger->LogW(LOG_INFO, 10, TEXT("This is Error"));
 	GLogger->LogW(LOG_WARN, 10, TEXT("This is Warning"));
-
-	//FOR_RANGE(index, 0, 100)
-	//{
-	//	GLogger.LogW(LOG_NORMAL, 15, TEXT("Loop Test : %d"), index);
-	//	Sleep(100);
-	//}
-
-	//Delight::CStackMemoryPool Stack(256);
-
-	//Delight::CAllocator allocator;
-
-	//allocator.bind_memory_pool(&Stack);
-
-	//int* array = (int*)allocator.allocate(4 * 12);
-
-
-	//for (int i = 0; i < 12; ++i)
-	//{
-	//	array[i] = i;
-	//}
-
-	//for (int i = 0; i < 12; ++i)
-	//{
-	//	std::cout << array[i] << std::endl;
-	//}
-
- //   int* testarray = new int[30];
-
- //   for (int i = 0; i < 30; ++i)
- //   {
- //       testarray[i] = i;
- //   }
-
-	//for (int i = 0; i < 30; ++i)
-	//{
- //       std::cout << testarray[i] << std::endl;
-	//}
-
 	eastl::list<int> test;
 
 	for (int i = 0; i < 30; ++i)
@@ -132,7 +93,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        Engine.Tick_Engine();
+        GEngine.Tick_Engine();
     }
 
     return (int) msg.wParam;
@@ -184,6 +145,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if (GEngine.WinProcHandler(hWnd, message, wParam, lParam))
+    {
+        return true;
+    }
+
     switch (message)
     {
     case WM_COMMAND:

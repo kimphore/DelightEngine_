@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Include.h"
+
 #include "SceneRenderer.h"
+#include "IMGUI_GUI.h"
+#include "Win32_Input.h"
 
 /*!
  * \file EngineKernel.h
@@ -29,7 +32,10 @@ public:
 
 	void Tick_Engine();
 	void Tick_Game();
-	void Tick_Render();
+	void Render();
+
+public:
+	LRESULT WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 public:
 	HWND GetHWND()
@@ -46,4 +52,6 @@ private:
 
 private: // Cores.
 	CDelightSceneRenderer SceneRenderer;
+	CIMGUI_GUI GUI;
+	CWin32_Input Input;
 };

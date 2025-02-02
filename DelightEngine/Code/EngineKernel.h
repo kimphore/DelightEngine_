@@ -35,6 +35,9 @@ public:
 	void Render();
 
 public:
+	LRESULT WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+public:
 	HWND GetHWND()
 	{
 		return hWnd;

@@ -83,6 +83,17 @@ CDX12_Rendertarget& CRHIDirectX12::GetBackbuffer()
 	return Backbuffers[FrameIndex % GNumBackbuffer];
 }
 
+// 우선 글로벌한 힙으로 하나씩만.
+void CRHIDirectX12::BindDescriptionHeaps(CDX12_CommandList& CommandList)
+{
+	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
+
+	ID3D12DescriptorHeap* Heaps[] = { GDescriptorHeapManager.GetHeap(DHT_ShaderResource)->Heap.GetData(),
+		GDescriptorHeapManager.GetHeap(DHT_Sampler)->Heap.GetData() };
+
+	CommandList->SetDescriptorHeaps(2, Heaps);
+}
+
 void CRHIDirectX12::ComponentInitialize()
 {
 	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;

@@ -37,6 +37,9 @@ public:
 
 	CDX12_Rendertarget& GetBackbuffer();
 
+public:
+	void BindDescriptionHeaps(CDX12_CommandList& CommandList);
+
 private:
 	// initialize manager, pool i've created.
 	void ComponentInitialize();
