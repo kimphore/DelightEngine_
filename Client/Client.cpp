@@ -16,6 +16,7 @@
 #include "MemoryInterface.h"
 
 #include "EngineKernel.h"
+#include "AssimpLoader.h"
 
 #include "EASTL/list.h"
 
@@ -36,6 +37,18 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 CDelightEngineKernel GEngine;
+
+void LoadScene()
+{
+    //Assets\\Scene\\Sponza\\NewSponza_Main_Zup_003.fbx
+    std::string Path("Assets\\Scene\\Sponza_old2\\");
+    std::string FileName("sponza2.gltf");
+	//std::string Path("Assets\\Scene\\Bistro\\");
+	//std::string FileName("BistroExterior.fbx");
+    CDelightAssimpImporter Loader;
+
+    Loader.LoadScene(Path, FileName, ST_PBR, &GEngine);
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -60,26 +73,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     
     GEngine.Initialize(gHwnd);
 
-	GLogger->ToggleConsole();
+	wchar_t path[MAX_PATH];
+	GetCurrentDirectoryW(MAX_PATH, path);
+    OutputDebugString(TEXT("AAAAAAAAAAAAA"));
+	std::wcout << L"Current Directory: " << path << std::endl;
 
-	GLogger->SetIgnoreLogLevel(5);
+    LoadScene();
 
-	GLogger->LogW(LOG_NORMAL, 10, TEXT("This is Normal"));
-	GLogger->LogW(LOG_NORMAL, 3, TEXT("Lower LogLevel"));
-	GLogger->LogW(LOG_ERROR, 10, TEXT("This is Error"));
-	GLogger->LogW(LOG_INFO, 10, TEXT("This is Error"));
-	GLogger->LogW(LOG_WARN, 10, TEXT("This is Warning"));
-	eastl::list<int> test;
+	//GLogger->ToggleConsole();
 
-	for (int i = 0; i < 30; ++i)
-	{
-		test.push_back(i);
-	}
-
-	for (eastl::list<int>::iterator Iter(test.begin()); Iter != test.end(); ++Iter)
-	{
-        GLogger->LogW(LOG_WARN, 10, TEXT("%d"), *Iter);
-	}
+    std::cout << "TEST" << std::endl;
 
     while (true)
     {

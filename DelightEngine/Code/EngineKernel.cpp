@@ -23,6 +23,7 @@ result CDelightEngineKernel::Initialize(HWND _hWnd)
 	Delight::InitializeLogger();
 
 	SceneRenderer.Initialize(_hWnd);
+	GUI.Initialize(_hWnd, GRHI->GetDevice(), GRHI->GetCommandQueue(), GNumBackbuffer);
 	SceneRenderer.InitializeGUI(&GUI);
 
 	return RET_SUCCES;

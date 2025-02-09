@@ -43,6 +43,9 @@ public:
 		return hWnd;
 	}
 
+public:
+	CDelightSceneRenderer* GetRenderer() { return &SceneRenderer; }
+
 private:
 	void InitializeThread();
 

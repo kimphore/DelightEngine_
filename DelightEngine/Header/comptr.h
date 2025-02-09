@@ -90,8 +90,7 @@ namespace Delight
 		{
 			if (IsValid())
 			{
-				int32 aa = Reference->AddRef();
-				aa += 1;
+				Reference->AddRef();
 			}
 		}
 
@@ -99,8 +98,7 @@ namespace Delight
 		{
 			if (IsValid())
 			{
-				int32 cc = Reference->Release();
-				cc += 1;
+				Reference->Release();
 			}
 		}
 

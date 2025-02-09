@@ -7,6 +7,8 @@
 #include "DX12_DescriptorHeapManager.h"
 #include "DX12_CommandListPool.h"
 
+CRHIDirectX12* GRHI = nullptr;
+
 void CRHIDirectX12::Initialize(HWND hWnd)
 {
 	UINT dxgiFactoryFlags = 0;
@@ -76,6 +78,14 @@ void CRHIDirectX12::WaitForPreviousFrame()
 {
 	FrameFence.Wait(GetCommandQueue());
 	FrameIndex = SwapChain->GetCurrentBackBufferIndex();
+}
+
+/*
+* 프레임이 끝났을 때 해줘야 할 추가작업들.
+*/
+void CRHIDirectX12::EndFrame()
+{
+	GCommandListPool.ResetPool();
 }
 
 CDX12_Rendertarget& CRHIDirectX12::GetBackbuffer()

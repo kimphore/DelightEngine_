@@ -1,6 +1,8 @@
 #pragma once
 
 #include "GlobalVariables.h"
+#include "Define.h"
+#include "eastl/string.h"
 
 // Global Functions.
 
@@ -43,5 +45,13 @@ namespace Delight
 	static bool8 IsInRenderThread()
 	{
 		return GRenderThreadID == std::this_thread::get_id();
+	}
+
+	static inline void ConvertCharToTChar(eastl::string& InChar, eastl::basic_string<TCHAR>& outTChar)
+	{
+		int32 Length = MultiByteToWideChar(CP_UTF8, 0, InChar.c_str(), -1, nullptr, 0);
+		outTChar = eastl::basic_string<TCHAR>(Length - 1, L'\0');
+
+		MultiByteToWideChar(CP_UTF8, 0, InChar.c_str(), -1, outTChar.data(), Length);
 	}
 }

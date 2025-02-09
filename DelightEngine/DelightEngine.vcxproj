@@ -108,12 +108,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;$(SolutionDir)\External\eastl\include;$(SolutionDir)\External\eastl\test\packages\EAAssert\include;$(SolutionDir)\External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)\External\eastl\test\packages\EAMain\include;$(SolutionDir)\External\eastl\test\packages\EAStdC\include;$(SolutionDir)\External\eastl\test\packages\EATest\include;$(SolutionDir)\External\eastl\test\packages\EAThread\include;$(SolutionDir)\External;$(SolutionDir)\External\IMGUI</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);./Code/;./Header/;$(SolutionDir)External\eastl\include;$(SolutionDir)External\eastl\test\packages\EAAssert\include;$(SolutionDir)External\eastl\_deps\eabase-src\include\Common;$(SolutionDir)External\eastl\test\packages\EAMain\include;$(SolutionDir)External\eastl\test\packages\EAStdC\include;$(SolutionDir)External\eastl\test\packages\EATest\include;$(SolutionDir)External\eastl\test\packages\EAThread\include;$(SolutionDir)External;$(SolutionDir)External\IMGUI;$(SolutionDir)External\assimp-master\include;$(SolutionDir)External\DirectXTex\DirectXTex</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;eastl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\eastl\Debug;$(SolutionDir)External\tbb\lib\vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\eastl\Debug;$(SolutionDir)External\tbb\lib\vc14;$(SolutionDir)External\assimp-master\lib\Debug;$(SolutionDir)External\DirectXTex\DirectXTex\Bin\Desktop_2022_Win10\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>call "$(SolutionDir)BuildCopy.bat"</Command>
@@ -162,7 +162,11 @@
     <ClInclude Include="..\External\IMGUI\imstb_textedit.h" />
     <ClInclude Include="..\External\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Code\allocator.h" />
+    <ClInclude Include="Code\AssimpLoader.h" />
     <ClInclude Include="Code\CriticalSection.h" />
+    <ClInclude Include="Code\DelightMaterial.h" />
+    <ClInclude Include="Code\DelightMesh.h" />
+    <ClInclude Include="Code\DelightTexture.h" />
     <ClInclude Include="Code\DX12_Buffer.h" />
     <ClInclude Include="Code\DX12_BufferUploadPool.h" />
     <ClInclude Include="Code\DX12_CommandList.h" />
@@ -221,7 +225,11 @@
     <ClCompile Include="..\External\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="..\External\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Code\allocator.cpp" />
+    <ClCompile Include="Code\AssimpLoader.cpp" />
     <ClCompile Include="Code\CriticalSection.cpp" />
+    <ClCompile Include="Code\DelightMaterial.cpp" />
+    <ClCompile Include="Code\DelightMesh.cpp" />
+    <ClCompile Include="Code\DelightTexture.cpp" />
     <ClCompile Include="Code\DX12_Buffer.cpp" />
     <ClCompile Include="Code\DX12_BufferUploadPool.cpp" />
     <ClCompile Include="Code\DX12_CommandList.cpp" />

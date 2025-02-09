@@ -22,6 +22,12 @@ inline void* __cdecl operator new[](size_t size, size_t alignment, size_t alignm
 //#include "eastl/string.h"
 #endif
 
+// assimp debug lib
+#pragma comment(lib, "assimp-vc143-mtd.lib")
+
+// DirectXTex debug lib
+#pragma comment(lib, "DirectXTex.lib")
+
 // tbb
 #include "tbb/include/tbb/tbbmalloc_proxy.h"
 #include "tbb/include/tbb/scalable_allocator.h"

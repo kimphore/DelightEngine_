@@ -1,0 +1,13 @@
+C:/Depot/DelightEngine_/External/assimp-master/CMakeFiles/uninstall.dir
+C:/Depot/DelightEngine_/External/assimp-master/CMakeFiles/UpdateAssimpLibsDebugSymbolsAndDLLs.dir
+C:/Depot/DelightEngine_/External/assimp-master/CMakeFiles/INSTALL.dir
+C:/Depot/DelightEngine_/External/assimp-master/CMakeFiles/ALL_BUILD.dir
+C:/Depot/DelightEngine_/External/assimp-master/CMakeFiles/ZERO_CHECK.dir
+C:/Depot/DelightEngine_/External/assimp-master/contrib/zlib/CMakeFiles/zlibstatic.dir
+C:/Depot/DelightEngine_/External/assimp-master/contrib/zlib/CMakeFiles/INSTALL.dir
+C:/Depot/DelightEngine_/External/assimp-master/contrib/zlib/CMakeFiles/ALL_BUILD.dir
+C:/Depot/DelightEngine_/External/assimp-master/code/CMakeFiles/assimp.dir
+C:/Depot/DelightEngine_/External/assimp-master/code/CMakeFiles/INSTALL.dir
+C:/Depot/DelightEngine_/External/assimp-master/test/CMakeFiles/unit.dir
+C:/Depot/DelightEngine_/External/assimp-master/test/CMakeFiles/INSTALL.dir
+C:/Depot/DelightEngine_/External/assimp-master/test/headercheck/CMakeFiles/INSTALL.dir

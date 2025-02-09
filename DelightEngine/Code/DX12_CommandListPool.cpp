@@ -24,6 +24,13 @@ void CDX12_CommandListPool::Initialize(Delight::Comptr<ID3D12Device> InDevice)
 
 void CDX12_CommandListPool::GetCommandList(CDX12_CommandList& InCommandList)
 {
+	// clear previous commandlist.
+	if (InCommandList.IsValid())
+	{
+		ReturnToPool(&InCommandList);
+		InCommandList.Clear();
+	}
+
 	if (Pool.empty())
 	{
 		InCommandList.Initialize(Device, nullptr);
@@ -37,11 +44,38 @@ void CDX12_CommandListPool::GetCommandList(CDX12_CommandList& InCommandList)
 	InCommandList.SetPoolInfo(this); // pool 밖에서만 리턴을 위해 정보 할당
 }
 
+CDX12_CommandList CDX12_CommandListPool::GetCommandList()
+{
+	CDX12_CommandList Temp;
+
+	if (Pool.empty())
+	{
+		Temp.Initialize(Device, nullptr);
+	}
+	else
+	{
+		Temp = Pool.front();
+		Pool.pop();
+	}
+	Temp.SetPoolInfo(this); // pool 밖에서만 리턴을 위해 정보 할당
+
+	return Temp;
+}
+
 void CDX12_CommandListPool::ReturnToPool(const CDX12_CommandList* InList)
 {
 	CDX12_CommandList Temp(*InList);
 
 	Temp.ClearPoolInfo();
-	Pool.emplace_back(Temp);
+	UsedPool.emplace_back(Temp);
+}
+
+void CDX12_CommandListPool::ResetPool()
+{
+	while (!UsedPool.empty())
+	{
+		Pool.emplace_back(UsedPool.front());
+		UsedPool.pop();
+	}
 }
 

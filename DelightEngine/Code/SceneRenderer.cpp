@@ -17,6 +17,7 @@ void CDelightSceneRenderer::Initialize(HWND InHWnd)
 	if (RHI)
 	{
 		RHI->Initialize(InHWnd);
+		GRHI = RHI;
 	}
 
 	myHWnd = InHWnd;
@@ -27,14 +28,9 @@ void CDelightSceneRenderer::Destroy()
 	delete RHI;
 }
 
-void CDelightSceneRenderer::InitializeGUI(CIMGUI_GUI* InGUI)
+void CDelightSceneRenderer::BindGUI(CIMGUI_GUI* InGUI)
 {
 	GUI = InGUI;
-	if (GUI && RHI)
-	{
-		GUI->Initialize(myHWnd, RHI->GetDevice(), RHI->GetCommandQueue(), GNumBackbuffer);
-		bGUIInitialized = true;
-	}
 }
 
 // 실제로 랜더링되는 부분.
@@ -67,13 +63,10 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 
 void CDelightSceneRenderer::RenderGUI()
 {
-	if (GUI && bGUIInitialized)
+	if (GUI)
 	{
 		CDX12_Rendertarget& Backbuffer = RHI->GetBackbuffer();
-
-		extern CDX12_CommandListPool GCommandListPool;
-		CDX12_CommandList CommandList;
-		GCommandListPool.GetCommandList(CommandList);
+		CDX12_CommandList CommandList = GCommandListPool.GetCommandList();
 		CommandList.Reset();
 
 		RHI->BindDescriptionHeaps(CommandList);
@@ -93,6 +86,7 @@ void CDelightSceneRenderer::WaitGPU()
 {
 	RHI->Present();
 	RHI->WaitForPreviousFrame();
+	RHI->EndFrame(); // 프레임 끝났을 때 실행이 필요한 썸띵(풀 초기화 등)
 }
 
 /*

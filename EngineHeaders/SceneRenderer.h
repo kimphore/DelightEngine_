@@ -38,6 +38,12 @@ public: // pipeline functions.
 public:
 	void BindPipelineFunctions();
 	void BuildRenderingPipeline(tchar* pipelineName);
+
+public:
+	CRHIDirectX12* GetRHI() {
+		return RHI;
+	}
+
 private:
 	CRHIDirectX12* RHI = nullptr;
 	CIMGUI_GUI* GUI = nullptr;
@@ -48,3 +54,5 @@ private:
 	bool8 bBuildedPipeline = false;
 	bool8 bGUIInitialized = false;
 };
+
+extern ENGINE_DLL CRHIDirectX12* GRHI;

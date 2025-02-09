@@ -18,6 +18,14 @@ public:
 	void Initialize(Delight::Comptr<ID3D12Device> InDevice, CDX12_CommandListPool* InListPool = nullptr);
 	void Reset();
 	void Close();
+	void Clear() {
+		commandAllocator.Detach();
+		commandList.Detach();
+	}
+
+	bool8 IsValid() {
+		return commandList.IsValid() && commandAllocator.IsValid();
+	}
 
 	void SetPipeline(Delight::Comptr<ID3D12PipelineState> InPipeline);
 	void Execute(Delight::Comptr<ID3D12CommandQueue> InQueue);
@@ -32,7 +40,7 @@ public:
 		return commandList;
 	}
 
-	CDX12_CommandList& operator = (CDX12_CommandList& other);
+	CDX12_CommandList& operator = (CDX12_CommandList other);
 
 	Delight::Comptr<ID3D12GraphicsCommandList> Get();
 
@@ -42,6 +50,12 @@ public:
 	void ClearPoolInfo() {
 		CommandListPool = nullptr;
 	}
+
+public:
+	Delight::Comptr<ID3D12Device> GetDevice() {
+		return Device;
+	};
+
 private:
 	Delight::Comptr<ID3D12Device> Device;
 	Delight::Comptr<ID3D12CommandAllocator> commandAllocator;
@@ -49,6 +63,7 @@ private:
 
 private:
 	CDX12_CommandListPool* CommandListPool = nullptr;
+	int32 RefCount = 0;
 	bool bInitialized = false;
 	bool bClosed = false;	
 };

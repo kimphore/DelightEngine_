@@ -35,3 +35,7 @@
 #define PURE_FUNCTION = 0
 
 #define INDEX_NONE -1
+
+#define D3D_DEBUG 1
+
+#define DEBUG_D3D_RESOURCE_STRING 1 && D3D_DEBUG

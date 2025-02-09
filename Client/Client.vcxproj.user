@@ -7,5 +7,6 @@
     <LocalDebuggerEnvironment>$(SolutionDir)External\tbb\dll\vc14
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>..\Binaries</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

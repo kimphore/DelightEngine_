@@ -41,39 +41,18 @@ void CDX12_ResourceUpdatePool::Release()
 	}
 }
 
-bool8 CDX12_ResourceUpdatePool::RequestUpload(CDX12_CommandList* CommandList, Delight::Comptr<ID3D12Resource> Dest, void* Data, uint64 Size)
+bool8 CDX12_ResourceUpdatePool::RequestUpload(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData)
 {
-	if (CommandList == nullptr)
-	{
-		return false;
-	}
-
 	if (!bInitialized == false)
 	{
 		D3D12_RESOURCE_BARRIER ResourceBarrier = Delight::DX12::GetTransitionBarrier(PoolResource.GetData(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_SOURCE);
 
-		CommandList->Get()->ResourceBarrier(1, &ResourceBarrier);
+		CommandList->ResourceBarrier(1, &ResourceBarrier);
 	}
 
-	if (CanAllocate(Dest, Data, Size))
+	if (CanAllocate(Dest, InData.Data, InData.Size))
 	{
-		FChunkInfo NewChunkInfo(0, CurrentOffset, Size);
-		void* AllocatePointer = GetAllocatePointer();
-
-		Delight::Memcpy(AllocatePointer, Data, Size);
-
-		D3D12_RESOURCE_BARRIER ResourceBarrier = Delight::DX12::GetTransitionBarrier(Dest.GetData(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
-
-		CommandList->Get()->ResourceBarrier(1, &ResourceBarrier);
-		CommandList->Get()->CopyBufferRegion(Dest.GetData(), 0, PoolResource.GetData(), NewChunkInfo.Offset, NewChunkInfo.Size);
-
-		ResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		ResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
-
-		CommandList->Get()->ResourceBarrier(1, &ResourceBarrier);
-
-		AllocateRequestList.push_back(NewChunkInfo);
-		CurrentOffset += Size;		
+		InternalUploadData(CommandList, Dest, InData);
 	}
 
 	return true;
@@ -85,18 +64,39 @@ void CDX12_ResourceUpdatePool::ClearPool()
 	CurrentOffset = 0;
 }
 
-void CDX12_ResourceUpdatePool::FlushAndWaitRequest(CDX12_CommandList* CommandList)
+void CDX12_ResourceUpdatePool::FlushAndWaitRequest(CDX12_CommandList& CommandList)
 {
-	if (CommandList && CommandQueue.IsValid())
+	if (CommandQueue.IsValid())
 	{
-		CommandList->Close();
-		CommandList->Execute(CommandQueue);
+		CommandList.Close();
+		CommandList.Execute(CommandQueue);
 
 		ResourceWaitFence.Wait(CommandQueue);
 
-		CommandList->Reset();
+		CommandList.Reset();
 		ClearPool();
 	}
+}
+
+void CDX12_ResourceUpdatePool::InternalUploadData(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData)
+{
+	FChunkInfo NewChunkInfo(0, CurrentOffset, InData.Size);
+	void* AllocatePointer = GetAllocatePointer();
+
+	Delight::Memcpy(AllocatePointer, InData.Data, InData.Size);
+
+	D3D12_RESOURCE_BARRIER ResourceBarrier = Delight::DX12::GetTransitionBarrier(Dest.GetData(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
+
+	CommandList->ResourceBarrier(1, &ResourceBarrier);
+	CommandList->CopyBufferRegion(Dest.GetData(), 0, PoolResource.GetData(), NewChunkInfo.Offset, NewChunkInfo.Size);
+
+	ResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	ResourceBarrier.Transition.StateAfter = InData.AfteBarrierState;
+
+	CommandList->ResourceBarrier(1, &ResourceBarrier);
+
+	AllocateRequestList.push_back(NewChunkInfo);
+	CurrentOffset += InData.Size;
 }
 
 void* CDX12_ResourceUpdatePool::GetAllocatePointer()

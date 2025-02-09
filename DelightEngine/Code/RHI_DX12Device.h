@@ -34,6 +34,7 @@ public:
 	virtual void Present(int32 InSyncInterval = 1);
 	virtual void WaitForPreviousFrame();
 	virtual void Clear(CDX12_CommandList& CommandList) {};
+	void EndFrame();
 
 	CDX12_Rendertarget& GetBackbuffer();
 
@@ -69,3 +70,5 @@ private:
 	Delight::Comptr<ID3D12CommandQueue> CommandQueue[CQT_Max];
 	Delight::Comptr<IDXGISwapChain3> SwapChain;
 };
+
+extern ENGINE_DLL CRHIDirectX12* GRHI;

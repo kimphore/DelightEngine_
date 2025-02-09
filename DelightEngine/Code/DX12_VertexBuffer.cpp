@@ -56,9 +56,9 @@ bool8 CDX12_VertexBuffer::CreateBuffer(Delight::Comptr<ID3D12Device> InDevice, E
 	return false;
 }
 
-void CDX12_VertexBuffer::SetData(CDX12_CommandList* CommandList, void* InData, uint64 Size)
+void CDX12_VertexBuffer::SetData(CDX12_CommandList& CommandList, void* InData, uint64 Size)
 {
-	if (!Buffer.IsValid() || InData == nullptr || Size <= 0 || CommandList == nullptr)
+	if (!Buffer.IsValid() || InData == nullptr || Size <= 0)
 	{
 		return;
 	}
@@ -78,7 +78,13 @@ void CDX12_VertexBuffer::SetData(CDX12_CommandList* CommandList, void* InData, u
 		{
 			GResourceUpdatePool[UPT_Buffer].FlushAndWaitRequest(CommandList);
 		}
-		GResourceUpdatePool[UPT_Buffer].RequestUpload(CommandList, Buffer, InData, Size);
+
+		FResourceUploadData UploadData = {};
+		UploadData.Data = InData;
+		UploadData.AfteBarrierState = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+		UploadData.Size = Size;
+
+		GResourceUpdatePool[UPT_Buffer].RequestUpload(CommandList, Buffer, UploadData);
 	}
 }
 

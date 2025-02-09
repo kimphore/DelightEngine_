@@ -7,7 +7,7 @@ namespace Delight
 		Memory Allocation Functions
 	*/
 
-	static uint32 GMemoryType = EMemoryType::TBBAllocation;
+	static uint32 GMemoryType = EMemoryType::SystemAllocation;
 
 	static void* malloc(uint64 size)
 	{

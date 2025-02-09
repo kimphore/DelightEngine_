@@ -5,6 +5,15 @@
 #include "EASTL/list.h"
 #include "DX12_Fence.h"
 
+struct FResourceUploadData
+{
+	void* Data = nullptr;
+	uint64 Size = 0;
+	uint64 RowPitch = 0;
+	uint64 SlicePitch = 0;
+	D3D12_RESOURCE_STATES AfteBarrierState = D3D12_RESOURCE_STATE_COMMON;
+};
+
 enum EUploadPoolType
 {
 	UPT_Buffer,
@@ -35,7 +44,7 @@ public:
 	void Release();
 
 public:
-	bool8 RequestUpload(CDX12_CommandList* CommandList, Delight::Comptr<ID3D12Resource> Dest, void* Data, uint64 Size);
+	bool8 RequestUpload(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData);
 	void ClearPool();
 	virtual uint64 GetPoolSize() {
 		return 0;
@@ -44,7 +53,10 @@ public:
 		return GetRemainSize() <= Size;
 	}
 
-	void FlushAndWaitRequest(CDX12_CommandList* CommandList);
+	void FlushAndWaitRequest(CDX12_CommandList& CommandList);
+
+protected:
+	void InternalUploadData(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData);
 
 protected:
 	// initialize

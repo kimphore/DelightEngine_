@@ -17,7 +17,7 @@ CDX12_CommandList::CDX12_CommandList(const CDX12_CommandList& InList)
 
 CDX12_CommandList::~CDX12_CommandList()
 {
-	if (CommandListPool)
+	if (CommandListPool && IsValid())
 	{
 		CommandListPool->ReturnToPool(this);
 	}
@@ -77,19 +77,19 @@ void CDX12_CommandList::Execute(Delight::Comptr<ID3D12CommandQueue> InQueue)
 	InQueue->ExecuteCommandLists(1, CommandLists);
 }
 
-CDX12_CommandList& CDX12_CommandList::operator=(CDX12_CommandList& other)
+CDX12_CommandList& CDX12_CommandList::operator=(CDX12_CommandList other)
 {
 	if (&other == this)
 	{
 		return *this;
 	}
 
-	this->Device = other.Device;
-	this->commandAllocator = other.commandAllocator;
-	this->commandList = other.commandList;
-	this->CommandListPool = other.CommandListPool;
-	this->bInitialized = other.bInitialized;
-	this->bClosed = other.bClosed;
+	std::swap(this->Device, other.Device);
+	std::swap(this->commandAllocator, other.commandAllocator);
+	std::swap(this->commandList, other.commandList);
+	std::swap(this->CommandListPool, other.CommandListPool);
+	std::swap(this->bInitialized, other.bInitialized);
+	std::swap(this->bClosed, other.bClosed);
 
 	return *this;
 

@@ -16,6 +16,9 @@ public:
 	}
 
 protected:
+	void InternalUploadData(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData);
+
+protected:
 	virtual D3D12_HEAP_PROPERTIES GetUploadHeapProperties();
 	virtual D3D12_RESOURCE_DESC GetUploadHeapResourceDesc();
 };
