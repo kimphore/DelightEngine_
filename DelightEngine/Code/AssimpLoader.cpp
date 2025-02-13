@@ -4,7 +4,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "DelightTexture.h"
+#include "DelightTexture2D.h"
 #include "DelightMaterial.h"
 #include "DelightMesh.h"
 
@@ -109,7 +109,7 @@ void CDelightAssimpImporter::Finalize(CDelightEngineKernel* InEngineKernel)
 
 void CDelightAssimpImporter::LoadTextureForMaterial(CDX12_CommandList& CommandList, aiMaterial* InAssimpMat, CDelightMaterial* InMat, int32 Type, int32 MaterialSlot)
 {
-	CDelightTexture* NewTexture = new CDelightTexture;
+	CDelightTexture* NewTexture = new CDelightTexture2D;
 	aiTextureType ImportType = aiTextureType(Type);
 	ETextureType ExportType = ETextureType(MaterialSlot);
 	eastl::string FullPath, AssetName;

@@ -40,7 +40,7 @@ void CDX12_CommandList::Initialize(Delight::Comptr<ID3D12Device> InDevice, CDX12
 
 void CDX12_CommandList::Reset()
 {
-	// 이건 여러번 호출해도 상관이없음...
+	// 이건 여러번 호출해도 상관이없음...(d3ddebug에서는 에러..)
 	Close();
 
 	// allocator는 할당된 commandlist가 GPU실행이 끝나야지 리셋가능.

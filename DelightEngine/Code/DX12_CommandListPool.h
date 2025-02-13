@@ -12,7 +12,6 @@ public:
 
 public:
 	CDX12_CommandList GetCommandList();
-	void GetCommandList(CDX12_CommandList& InCommandList);
 	void ReturnToPool(const CDX12_CommandList* InList);
 	void ResetPool();
 private:

@@ -14,7 +14,7 @@ enum ESceneType
 	ST_NonPBR
 };
 
-class CDelightTexture;
+class CDelightTexture2D;
 class CDelightMesh;
 class CDelightMaterial;
 struct aiScene;
@@ -36,7 +36,7 @@ private:
 private:
 	ESceneType SceneType;
 	eastl::string Path;
-	eastl::vector<CDelightTexture*> TextureArray;
+	eastl::vector<CDelightTexture2D*> TextureArray;
 	eastl::vector<CDelightMesh*> MeshArray;
 	eastl::vector<CDelightMaterial*> MaterialArray;
 };

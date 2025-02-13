@@ -11,7 +11,7 @@ struct FResourceUploadData
 	uint64 Size = 0;
 	uint64 RowPitch = 0;
 	uint64 SlicePitch = 0;
-	D3D12_RESOURCE_STATES AfteBarrierState = D3D12_RESOURCE_STATE_COMMON;
+	D3D12_RESOURCE_STATES AfterResourceState = D3D12_RESOURCE_STATE_COMMON;
 };
 
 enum EUploadPoolType
@@ -35,7 +35,7 @@ struct FChunkInfo
 	}
 };
 
-class CRHIDirectX12;
+class CDX12_Resource;
 class CDX12_CommandList;
 class CDX12_ResourceUpdatePool
 {
@@ -44,7 +44,7 @@ public:
 	void Release();
 
 public:
-	bool8 RequestUpload(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData);
+	bool8 RequestUpload(CDX12_CommandList& CommandList, CDX12_Resource* DestResource, FResourceUploadData& InData);
 	void ClearPool();
 	virtual uint64 GetPoolSize() {
 		return 0;
@@ -56,13 +56,13 @@ public:
 	void FlushAndWaitRequest(CDX12_CommandList& CommandList);
 
 protected:
-	void InternalUploadData(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData);
+	void InternalUploadData(CDX12_CommandList& CommandList, CDX12_Resource* DestResource, FResourceUploadData& InData);
 
 protected:
 	// initialize
 	void* GetAllocatePointer();
 	uint64 GetRemainSize();
-	bool8 CanAllocate(Delight::Comptr<ID3D12Resource> Target, void* Data, uint64 Size);
+	bool8 CanAllocate(void* Data, uint64 Size);
 	virtual D3D12_HEAP_PROPERTIES GetUploadHeapProperties();
 	virtual D3D12_RESOURCE_DESC GetUploadHeapResourceDesc();
 

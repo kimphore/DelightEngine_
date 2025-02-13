@@ -25,7 +25,7 @@ public:
 
 	void Initialize(HWND InHWnd);
 	void Destroy();
-	void InitializeGUI(CIMGUI_GUI* InGUI);
+	void BindGUI(CIMGUI_GUI* InGUI);
 
 public:
 	void Render(CDelightSceneView* SceneView);

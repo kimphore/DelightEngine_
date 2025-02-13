@@ -18,10 +18,6 @@ public:
 	void Initialize(Delight::Comptr<ID3D12Device> InDevice, CDX12_CommandListPool* InListPool = nullptr);
 	void Reset();
 	void Close();
-	void Clear() {
-		commandAllocator.Detach();
-		commandList.Detach();
-	}
 
 	bool8 IsValid() {
 		return commandList.IsValid() && commandAllocator.IsValid();
@@ -63,7 +59,6 @@ private:
 
 private:
 	CDX12_CommandListPool* CommandListPool = nullptr;
-	int32 RefCount = 0;
 	bool bInitialized = false;
 	bool bClosed = false;	
 };

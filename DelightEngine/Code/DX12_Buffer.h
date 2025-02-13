@@ -3,6 +3,10 @@
 #include <DirectXMath.h>
 #include <d3d12.h>
 
+#include "Include.h"
+
+#include "DX12_Resource.h"
+
 #include "Typedef.h"
 #include "comptr.h"
 
@@ -15,7 +19,7 @@ enum EBufferType
 
 class CRHIDirectX12;
 class CDX12_CommandList;
-class CDX12_BufferInterface
+class CDX12_BufferInterface :public CDX12_Resource
 {
 public:
 	virtual bool8 CreateBuffer(Delight::Comptr<ID3D12Device> InDevice, EBufferType InType, uint32 InSize) { return false; };
@@ -36,10 +40,6 @@ public:
 
 		return D3D12_HEAP_TYPE_DEFAULT;
 	}
-
-protected:
-	Delight::Comptr<ID3D12Device> Device;
-	Delight::Comptr<ID3D12Resource> Buffer;
 
 protected:
 	EBufferType Type;

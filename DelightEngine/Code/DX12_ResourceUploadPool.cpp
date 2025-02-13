@@ -2,6 +2,7 @@
 #include "DX12_Functions.h"
 #include "DX12_CommandList.h"
 #include "RHI_DX12Device.h"
+#include "DX12_Resource.h"
 
 CDX12_ResourceUpdatePool GResourceUpdatePool[UPT_Max];
 
@@ -41,7 +42,7 @@ void CDX12_ResourceUpdatePool::Release()
 	}
 }
 
-bool8 CDX12_ResourceUpdatePool::RequestUpload(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData)
+bool8 CDX12_ResourceUpdatePool::RequestUpload(CDX12_CommandList& CommandList, CDX12_Resource* DestResource, FResourceUploadData& InData)
 {
 	if (!bInitialized == false)
 	{
@@ -50,9 +51,9 @@ bool8 CDX12_ResourceUpdatePool::RequestUpload(CDX12_CommandList& CommandList, De
 		CommandList->ResourceBarrier(1, &ResourceBarrier);
 	}
 
-	if (CanAllocate(Dest, InData.Data, InData.Size))
+	if (DestResource && CanAllocate(InData.Data, InData.Size))
 	{
-		InternalUploadData(CommandList, Dest, InData);
+		InternalUploadData(CommandList, DestResource, InData);
 	}
 
 	return true;
@@ -78,22 +79,21 @@ void CDX12_ResourceUpdatePool::FlushAndWaitRequest(CDX12_CommandList& CommandLis
 	}
 }
 
-void CDX12_ResourceUpdatePool::InternalUploadData(CDX12_CommandList& CommandList, Delight::Comptr<ID3D12Resource> Dest, FResourceUploadData& InData)
+void CDX12_ResourceUpdatePool::InternalUploadData(CDX12_CommandList& CommandList, CDX12_Resource* DestResource, FResourceUploadData& InData)
 {
 	FChunkInfo NewChunkInfo(0, CurrentOffset, InData.Size);
 	void* AllocatePointer = GetAllocatePointer();
 
+	if (DestResource == nullptr)
+	{
+		return;
+	}
+
 	Delight::Memcpy(AllocatePointer, InData.Data, InData.Size);
-
-	D3D12_RESOURCE_BARRIER ResourceBarrier = Delight::DX12::GetTransitionBarrier(Dest.GetData(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
-
-	CommandList->ResourceBarrier(1, &ResourceBarrier);
-	CommandList->CopyBufferRegion(Dest.GetData(), 0, PoolResource.GetData(), NewChunkInfo.Offset, NewChunkInfo.Size);
-
-	ResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-	ResourceBarrier.Transition.StateAfter = InData.AfteBarrierState;
-
-	CommandList->ResourceBarrier(1, &ResourceBarrier);
+	
+	DestResource->TransitionState(CommandList, D3D12_RESOURCE_STATE_COPY_DEST);
+	CommandList->CopyBufferRegion(DestResource->GetResource().GetData(), 0, PoolResource.GetData(), NewChunkInfo.Offset, NewChunkInfo.Size);
+	DestResource->TransitionState(CommandList, InData.AfterResourceState);
 
 	AllocateRequestList.push_back(NewChunkInfo);
 	CurrentOffset += InData.Size;
@@ -109,9 +109,9 @@ uint64 CDX12_ResourceUpdatePool::GetRemainSize()
 	return GetPoolSize() - CurrentOffset;
 }
 
-bool8 CDX12_ResourceUpdatePool::CanAllocate(Delight::Comptr<ID3D12Resource> Target, void* Data, uint64 Size)
+bool8 CDX12_ResourceUpdatePool::CanAllocate(void* Data, uint64 Size)
 {
-	return Target.IsValid() && Data && !PoolIsFull(Size);
+	return Data && !PoolIsFull(Size);
 }
 
 D3D12_HEAP_PROPERTIES CDX12_ResourceUpdatePool::GetUploadHeapProperties()

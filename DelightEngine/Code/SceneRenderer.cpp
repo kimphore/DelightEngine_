@@ -49,13 +49,11 @@ void CDelightSceneRenderer::Render(CDelightSceneView* SceneView)
 	}
 	*/
 	extern CDX12_CommandListPool GCommandListPool;
-	CDX12_CommandList CommandList;
+	CDX12_CommandList CommandList = GCommandListPool.GetCommandList();
 
-	GCommandListPool.GetCommandList(CommandList);
 	CommandList.Reset();
 
 	RenderDX12Test(SceneView, CommandList);
-
 	RenderGUI();
 
 	WaitGPU();
@@ -71,12 +69,12 @@ void CDelightSceneRenderer::RenderGUI()
 
 		RHI->BindDescriptionHeaps(CommandList);
 
-		Backbuffer.TransitionToState(&CommandList, RS_RTV);
-		CommandList.Get()->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);
+		Backbuffer.TransitionState(CommandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		CommandList->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);
 
 		GUI->Render(CommandList);
 
-		Backbuffer.TransitionToState(&CommandList, RS_PRESENT);
+		Backbuffer.TransitionState(CommandList, D3D12_RESOURCE_STATE_PRESENT);
 		CommandList.Close();
 		CommandList.Execute(RHI->GetCommandQueue());
 	}
@@ -105,12 +103,12 @@ void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_C
 
 	RHI->BindDescriptionHeaps(CommandList);
 
-	Backbuffer.TransitionToState(&CommandList, RS_RTV);
-	CommandList.Get()->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);
+	Backbuffer.TransitionState(CommandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	CommandList->OMSetRenderTargets(1, &Backbuffer.GetDescriptorCPUHandle(RT_RTV), FALSE, nullptr);
 
 	const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
-	CommandList.Get()->ClearRenderTargetView(Backbuffer.GetDescriptorCPUHandle(RT_RTV), clearColor, 0, nullptr);
-	Backbuffer.TransitionToState(&CommandList, RS_PRESENT);
+	CommandList->ClearRenderTargetView(Backbuffer.GetDescriptorCPUHandle(RT_RTV), clearColor, 0, nullptr);
+	Backbuffer.TransitionState(CommandList, D3D12_RESOURCE_STATE_PRESENT);
 	CommandList.Close();
 	CommandList.Execute(RHI->GetCommandQueue());
 }

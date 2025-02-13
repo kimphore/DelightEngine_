@@ -87,3 +87,4 @@ using namespace Microsoft::WRL;
 
 #include "logger.h"
 #include "comptr.h"
+#include "SharedPtr.h"

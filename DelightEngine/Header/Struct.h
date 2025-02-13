@@ -14,6 +14,19 @@ namespace Delight
 		{}
 	};
 
+	struct FInt32_3
+	{
+		int32 x = 0;
+		int32 y = 0;
+		int32 z = 0;
+
+		FInt32_3() {}
+		FInt32_3(int32 inX, int32 inY, int32 inZ)
+			:x(inX), y(inY), z(inZ)
+		{
+		}
+	};
+
 	struct FMD5Hash
 	{
 		byte hash[128];

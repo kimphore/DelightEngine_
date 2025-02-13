@@ -43,9 +43,9 @@ bool8 CDX12_VertexBuffer::CreateBuffer(Delight::Comptr<ID3D12Device> InDevice, E
 				&ResourceDesc,
 				D3D12_RESOURCE_STATE_COMMON,
 				nullptr, // initial data?
-				DELIGHT_IID_PPV_ARGS(&Buffer));
+				DELIGHT_IID_PPV_ARGS(&Resource));
 
-			VertexBufferView.BufferLocation = Buffer->GetGPUVirtualAddress();
+			VertexBufferView.BufferLocation = Resource->GetGPUVirtualAddress();
 			VertexBufferView.StrideInBytes = GetStrideSize(VertexType);
 			VertexBufferView.SizeInBytes = Size;
 
@@ -58,7 +58,7 @@ bool8 CDX12_VertexBuffer::CreateBuffer(Delight::Comptr<ID3D12Device> InDevice, E
 
 void CDX12_VertexBuffer::SetData(CDX12_CommandList& CommandList, void* InData, uint64 Size)
 {
-	if (!Buffer.IsValid() || InData == nullptr || Size <= 0)
+	if (!Resource.IsValid() || InData == nullptr || Size <= 0)
 	{
 		return;
 	}
@@ -68,8 +68,8 @@ void CDX12_VertexBuffer::SetData(CDX12_CommandList& CommandList, void* InData, u
 		// allocate directly.
 		void* MappedPointer = nullptr;
 
-		Buffer->Map(0, nullptr, &MappedPointer);
-		Buffer->Unmap(0, nullptr);
+		Resource->Map(0, nullptr, &MappedPointer);
+		Resource->Unmap(0, nullptr);
 	}
 	else
 	{
@@ -81,10 +81,10 @@ void CDX12_VertexBuffer::SetData(CDX12_CommandList& CommandList, void* InData, u
 
 		FResourceUploadData UploadData = {};
 		UploadData.Data = InData;
-		UploadData.AfteBarrierState = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+		UploadData.AfterResourceState = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
 		UploadData.Size = Size;
 
-		GResourceUpdatePool[UPT_Buffer].RequestUpload(CommandList, Buffer, UploadData);
+		GResourceUpdatePool[UPT_Buffer].RequestUpload(CommandList, this, UploadData);
 	}
 }
 

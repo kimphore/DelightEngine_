@@ -7,9 +7,11 @@
 #include "comptr.h"
 #include "Define.h"
 #include "Typedef.h"
+
+#include "EASTL/list.h"
+
 #include "DX12_CommandList.h"
 #include "DX12_Rendertarget.h"
-#include "EASTL/list.h"
 #include "DX12_Fence.h"
 
 static const uint32 GNumBackbuffer = 2;
@@ -26,6 +28,7 @@ struct IDXGIFactory2;
 struct IDXGIAdapter1;
 struct IDXGISwapChain3;
 class CDX12_BufferInterface;
+class CDX12_Resource;
 class ENGINE_DLL CRHIDirectX12 : CRHIInterface
 {
 public:
@@ -41,11 +44,15 @@ public:
 public:
 	void BindDescriptionHeaps(CDX12_CommandList& CommandList);
 
+public:
+	void AddPendingDeleteUploadResource(CDX12_Resource* InResource);
+
 private:
 	// initialize manager, pool i've created.
 	void ComponentInitialize();
 	void CommandQueueInitialize();
 	void RenderTargetInitialize();
+	void DeleteUploadResources();
 
 public:
 	Delight::Comptr<ID3D12Device> GetDevice();
@@ -69,6 +76,10 @@ private:
 	Delight::Comptr<ID3D12Device> Device;
 	Delight::Comptr<ID3D12CommandQueue> CommandQueue[CQT_Max];
 	Delight::Comptr<IDXGISwapChain3> SwapChain;
+
+	// 삭제해야 할 업로드버퍼들.(현재는 텍스쳐만..)
+private:
+	eastl::list<CDX12_Resource*> PendingDeleteUploadResources;
 };
 
 extern ENGINE_DLL CRHIDirectX12* GRHI;

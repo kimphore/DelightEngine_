@@ -24,7 +24,7 @@ result CDelightEngineKernel::Initialize(HWND _hWnd)
 
 	SceneRenderer.Initialize(_hWnd);
 	GUI.Initialize(_hWnd, GRHI->GetDevice(), GRHI->GetCommandQueue(), GNumBackbuffer);
-	SceneRenderer.InitializeGUI(&GUI);
+	SceneRenderer.BindGUI(&GUI);
 
 	return RET_SUCCES;
 }

@@ -196,21 +196,6 @@
     <Filter Include="Cores\StateInfo">
       <UniqueIdentifier>{9114f5ed-c2dc-40ed-a526-2f195eff486b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components">
-      <UniqueIdentifier>{fddd63c7-054a-4a01-b479-b00fa8d486d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Mesh">
-      <UniqueIdentifier>{2e70502c-3c44-4a4e-8fe1-faee4ae87e87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Actor">
-      <UniqueIdentifier>{e93f44ab-14f9-480f-a147-70dce0b76864}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Material">
-      <UniqueIdentifier>{1fb19d57-0e3f-4527-a427-63d62a190d6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Texture">
-      <UniqueIdentifier>{d875997d-85df-4818-978c-5762c156bb4e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Assimp">
       <UniqueIdentifier>{6dad3c6c-177e-4ffb-86ba-99afa8b4580d}</UniqueIdentifier>
     </Filter>
@@ -222,6 +207,39 @@
     </Filter>
     <Filter Include="Cores\RHI\DX12\Components\Rendertarget\Manager">
       <UniqueIdentifier>{408c4780-74d8-400e-8773-0e9012409e83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\Texture">
+      <UniqueIdentifier>{74e48c99-939a-4bc4-bb9b-b18b3c3a8230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\Texture\Texture2D">
+      <UniqueIdentifier>{fc4cca24-5c5b-4242-9530-a4ddf3ac221b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\Texture\Texture3D">
+      <UniqueIdentifier>{8053eba7-4779-4f69-8706-d761c8cf1505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Header">
+      <UniqueIdentifier>{0403ce4a-2dc2-4b4e-8871-d3d9dde1eecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{fddd63c7-054a-4a01-b479-b00fa8d486d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Mesh">
+      <UniqueIdentifier>{2e70502c-3c44-4a4e-8fe1-faee4ae87e87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Actor">
+      <UniqueIdentifier>{e93f44ab-14f9-480f-a147-70dce0b76864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Material">
+      <UniqueIdentifier>{1fb19d57-0e3f-4527-a427-63d62a190d6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Texture">
+      <UniqueIdentifier>{d875997d-85df-4818-978c-5762c156bb4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Texture\Texture2D">
+      <UniqueIdentifier>{46d1791c-068f-4e06-9fd5-53b1f78dbc07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Texture\Texture3D">
+      <UniqueIdentifier>{e2a0be54-5a49-4a3d-96f3-ecb218352cab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -403,13 +421,43 @@
       <Filter>Assimp\Loader</Filter>
     </ClInclude>
     <ClInclude Include="Code\DelightMaterial.h">
-      <Filter>Components\Material</Filter>
+      <Filter>Object\Material</Filter>
     </ClInclude>
     <ClInclude Include="Code\DelightMesh.h">
-      <Filter>Components\Mesh</Filter>
+      <Filter>Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Code\DelightTexture.h">
-      <Filter>Components\Texture</Filter>
+      <Filter>Object\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_Resource.h">
+      <Filter>Cores\RHI\DX12\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_VertexDeclaration.h">
+      <Filter>Cores\RHI\DX12\Components\VertexDeclaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_Texture.h">
+      <Filter>Cores\RHI\DX12\Components\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_Texture2D.h">
+      <Filter>Cores\RHI\DX12\Components\Texture\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_Texture3D.h">
+      <Filter>Cores\RHI\DX12\Components\Texture\Texture3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DelightTexture3D.h">
+      <Filter>Object\Texture\Texture3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DelightTexture2D.h">
+      <Filter>Object\Texture\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_Header.h">
+      <Filter>Cores\RHI\DX12\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\SharedPtr.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DelightReferenceObject.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -531,13 +579,34 @@
       <Filter>Assimp\Loader</Filter>
     </ClCompile>
     <ClCompile Include="Code\DelightMaterial.cpp">
-      <Filter>Components\Material</Filter>
+      <Filter>Object\Material</Filter>
     </ClCompile>
     <ClCompile Include="Code\DelightMesh.cpp">
-      <Filter>Components\Mesh</Filter>
+      <Filter>Object\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Code\DelightTexture.cpp">
-      <Filter>Components\Texture</Filter>
+      <Filter>Object\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_Resource.cpp">
+      <Filter>Cores\RHI\DX12\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_VertexDeclaration.cpp">
+      <Filter>Cores\RHI\DX12\Components\VertexDeclaration</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_Texture.cpp">
+      <Filter>Cores\RHI\DX12\Components\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_Texture2D.cpp">
+      <Filter>Cores\RHI\DX12\Components\Texture\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_Texture3D.cpp">
+      <Filter>Cores\RHI\DX12\Components\Texture\Texture3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DelightTexture3D.cpp">
+      <Filter>Object\Texture\Texture3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DelightTexture2D.cpp">
+      <Filter>Object\Texture\Texture2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

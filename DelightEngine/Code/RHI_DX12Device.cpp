@@ -104,6 +104,11 @@ void CRHIDirectX12::BindDescriptionHeaps(CDX12_CommandList& CommandList)
 	CommandList->SetDescriptorHeaps(2, Heaps);
 }
 
+void CRHIDirectX12::AddPendingDeleteUploadResource(CDX12_Resource* InResource)
+{
+
+}
+
 void CRHIDirectX12::ComponentInitialize()
 {
 	extern CDX12_DescriptorHeapManager GDescriptorHeapManager;
@@ -141,6 +146,11 @@ void CRHIDirectX12::RenderTargetInitialize()
 		SwapChain->GetBuffer(i, DELIGHT_IID_PPV_ARGS(&Buffer));
 		Backbuffers[i].Initialize(GetDevice(), Buffer);
 	}
+}
+
+void CRHIDirectX12::DeleteUploadResources()
+{
+	// 角力 副府令 贸府
 }
 
 Delight::Comptr<ID3D12Device> CRHIDirectX12::GetDevice()
