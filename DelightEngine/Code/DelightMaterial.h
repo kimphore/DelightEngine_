@@ -2,6 +2,8 @@
 
 #include "Include.h"
 #include "eastl/map.h"
+#include "DelightReferenceObject.h"
+#include "DelightTexture.h"
 
 enum ETextureType
 {
@@ -19,13 +21,14 @@ enum ETextureType
 };
 class CDelightShader;
 class CDelightTexture;
-class CDelightMaterial
+class CDelightMaterial : public CDelightReferenceObject
 {
 public:
 	void AddTextureOnSlot(ETextureType InSlot, CDelightTexture* InTexture);
 	void SetProperShader();
+	virtual void InternalRelease();
 
 private:
-	eastl::map<ETextureType, CDelightTexture*> TextureSlots;
+	eastl::map<ETextureType, Delight::SharedPtr<CDelightTexture>> TextureSlots;
 	CDelightShader* MaterialShader;
 };

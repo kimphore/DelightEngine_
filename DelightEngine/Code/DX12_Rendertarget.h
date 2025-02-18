@@ -47,7 +47,7 @@ protected:
 protected:
 	ERenderTargetType Type;
 	DXGI_FORMAT Format;
-	Delight::FInt32_3 Size;
+	FInt32_3 Size;
 	uint64 Width;
 	uint64 Height;
 	TCHAR DebugName[64];

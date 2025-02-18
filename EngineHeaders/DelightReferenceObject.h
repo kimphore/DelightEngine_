@@ -17,6 +17,7 @@ public:
 
 		if (GetReferenceCount() == 0)
 		{
+			InternalRelease();
 			delete this;
 
 			return true; // do null
@@ -28,6 +29,9 @@ public:
 	int32 GetReferenceCount() {
 		return ReferenceCount.load();
 	}
+
+public:
+	virtual void InternalRelease() {};
 
 protected:
 	eastl::atomic<int32> ReferenceCount = 0;

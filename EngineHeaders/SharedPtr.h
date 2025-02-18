@@ -31,12 +31,14 @@ namespace Delight
 
 		SharedPtr& operator = (const SharedPtr& other)
 		{
-			if (this != other)
+			if (Reference != other.Reference)
 			{
 				Release();
 				Reference = other.Reference;
 				AddRef();
 			}
+
+			return *this;
 		}
 
 	public:

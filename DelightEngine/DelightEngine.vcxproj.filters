@@ -241,6 +241,12 @@
     <Filter Include="Object\Texture\Texture3D">
       <UniqueIdentifier>{e2a0be54-5a49-4a3d-96f3-ecb218352cab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\Buffer\IndexBuffer">
+      <UniqueIdentifier>{b479ed3a-9876-4264-b9e5-087590f78434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cores\RHI\DX12\Components\Buffer\ConstantBuffer">
+      <UniqueIdentifier>{8113db3e-4a57-4563-80a2-98a6a4f52fc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -459,6 +465,12 @@
     <ClInclude Include="Code\DelightReferenceObject.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="Code\DX12_ConstantBuffer.h">
+      <Filter>Cores\RHI\DX12\Components\Buffer\ConstantBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DX12_IndexBuffer.h">
+      <Filter>Cores\RHI\DX12\Components\Buffer\IndexBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -608,8 +620,17 @@
     <ClCompile Include="Code\DelightTexture2D.cpp">
       <Filter>Object\Texture\Texture2D</Filter>
     </ClCompile>
+    <ClCompile Include="Code\DX12_ConstantBuffer.cpp">
+      <Filter>Cores\RHI\DX12\Components\Buffer\ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DX12_IndexBuffer.cpp">
+      <Filter>Cores\RHI\DX12\Components\Buffer\IndexBuffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\External\eastl\doc\EASTL.natvis" />
   </ItemGroup>
 </Project>

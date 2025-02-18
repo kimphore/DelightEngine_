@@ -174,7 +174,9 @@
     <ClInclude Include="Code\DX12_BufferUploadPool.h" />
     <ClInclude Include="Code\DX12_CommandList.h" />
     <ClInclude Include="Code\DX12_CommandListPool.h" />
+    <ClInclude Include="Code\DX12_ConstantBuffer.h" />
     <ClInclude Include="Code\DX12_Header.h" />
+    <ClInclude Include="Code\DX12_IndexBuffer.h" />
     <ClInclude Include="Code\DX12_Resource.h" />
     <ClInclude Include="Code\DX12_DescriptorHeapManager.h" />
     <ClInclude Include="Code\DX12_Fence.h" />
@@ -246,6 +248,8 @@
     <ClCompile Include="Code\DX12_BufferUploadPool.cpp" />
     <ClCompile Include="Code\DX12_CommandList.cpp" />
     <ClCompile Include="Code\DX12_CommandListPool.cpp" />
+    <ClCompile Include="Code\DX12_ConstantBuffer.cpp" />
+    <ClCompile Include="Code\DX12_IndexBuffer.cpp" />
     <ClCompile Include="Code\DX12_Resource.cpp" />
     <ClCompile Include="Code\DX12_DescriptorHeapManager.cpp" />
     <ClCompile Include="Code\DX12_Fence.cpp" />
@@ -279,6 +283,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\External\eastl\doc\EASTL.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

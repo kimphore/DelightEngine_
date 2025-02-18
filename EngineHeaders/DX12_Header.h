@@ -1,5 +1,8 @@
 #pragma once
 
+#include <DirectXMath.h>
+#include <d3d12.h>
+
 #include "Include.h"
 
 #include "d3d12.h"
@@ -23,3 +26,21 @@ struct FRendertargetCreateDesc :public FTextureCreateDesc
 {
 	float32 ClearColor[4] = {0.f, 0.f, 0.f, 1.f};
 };
+
+enum EUploadPoolType
+{
+	UPT_VertexBuffer,
+	UPT_IndexBuffer,
+	UPT_Texture,
+	UPT_Max
+};
+
+struct FDefaultVertex
+{
+	FFloat3 Position;
+	FFloat3 Normal;
+	FFloat3 Tangent;
+	FFloat2 UV;
+};
+
+static uint32 GDefaultVertexStride = sizeof(FDefaultVertex);

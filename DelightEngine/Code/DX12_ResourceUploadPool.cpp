@@ -6,6 +6,14 @@
 
 CDX12_ResourceUpdatePool GResourceUpdatePool[UPT_Max];
 
+void FlushAndWaitResourcePoolUpload(CDX12_CommandList& CommandList)
+{
+	for (int32 i = UPT_VertexBuffer; i < UPT_Max; ++i)
+	{
+		GResourceUpdatePool[i].FlushAndWaitRequest(CommandList);
+	}
+}
+
 void CDX12_ResourceUpdatePool::Initialize(Delight::Comptr<ID3D12Device> InDevice, Delight::Comptr<ID3D12CommandQueue> InCommandQueue)
 {
 	Device = InDevice;

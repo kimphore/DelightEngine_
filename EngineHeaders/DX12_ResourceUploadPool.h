@@ -4,6 +4,7 @@
 #include "comptr.h"
 #include "EASTL/list.h"
 #include "DX12_Fence.h"
+#include "DX12_Header.h"
 
 struct FResourceUploadData
 {
@@ -12,13 +13,6 @@ struct FResourceUploadData
 	uint64 RowPitch = 0;
 	uint64 SlicePitch = 0;
 	D3D12_RESOURCE_STATES AfterResourceState = D3D12_RESOURCE_STATE_COMMON;
-};
-
-enum EUploadPoolType
-{
-	UPT_Buffer,
-	UPT_Texture,
-	UPT_Max
 };
 
 struct FChunkInfo
@@ -85,3 +79,4 @@ protected:
 };
 
 extern CDX12_ResourceUpdatePool GResourceUpdatePool[UPT_Max];
+extern void FlushAndWaitResourcePoolUpload(CDX12_CommandList& CommandList);
