@@ -37,10 +37,10 @@ enum EUploadPoolType
 
 struct FDefaultVertex
 {
-	FFloat3 Position;
-	FFloat3 Normal;
-	FFloat3 Tangent;
-	FFloat2 UV;
+	Vector3 Position;
+	Vector3 Normal;
+	Vector3 Tangent;
+	Vector2 UV;
 };
 
 static uint32 GDefaultVertexStride = sizeof(FDefaultVertex);

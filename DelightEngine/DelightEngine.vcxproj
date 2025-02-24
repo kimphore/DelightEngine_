@@ -164,8 +164,10 @@
     <ClInclude Include="Code\allocator.h" />
     <ClInclude Include="Code\AssimpLoader.h" />
     <ClInclude Include="Code\CriticalSection.h" />
+    <ClInclude Include="Code\DelightActor.h" />
     <ClInclude Include="Code\DelightMaterial.h" />
     <ClInclude Include="Code\DelightMesh.h" />
+    <ClInclude Include="Code\DelightStaticMeshActor.h" />
     <ClInclude Include="Code\DelightReferenceObject.h" />
     <ClInclude Include="Code\DelightTexture.h" />
     <ClInclude Include="Code\DelightTexture2D.h" />
@@ -239,8 +241,10 @@
     <ClCompile Include="Code\allocator.cpp" />
     <ClCompile Include="Code\AssimpLoader.cpp" />
     <ClCompile Include="Code\CriticalSection.cpp" />
+    <ClCompile Include="Code\DelightActor.cpp" />
     <ClCompile Include="Code\DelightMaterial.cpp" />
     <ClCompile Include="Code\DelightMesh.cpp" />
+    <ClCompile Include="Code\DelightStaticMeshActor.cpp" />
     <ClCompile Include="Code\DelightTexture.cpp" />
     <ClCompile Include="Code\DelightTexture2D.cpp" />
     <ClCompile Include="Code\DelightTexture3D.cpp" />
@@ -283,6 +287,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />
+    <Text Include="Header\DelightMath.h" />
+    <Text Include="Header\Matrix.h" />
+    <Text Include="Header\Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\External\eastl\doc\EASTL.natvis" />

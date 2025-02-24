@@ -78,6 +78,7 @@ using namespace Microsoft::WRL;
 #include "Enum.h"
 #include "struct.h"
 #include "Function.h"
+#include "DelightMath.h"
 
 #pragma comment(lib, "D3D12.lib")
 

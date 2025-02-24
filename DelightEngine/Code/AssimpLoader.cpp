@@ -4,6 +4,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+#include "DelightActor.h"
 #include "DelightTexture2D.h"
 #include "DelightMaterial.h"
 #include "DelightMesh.h"
@@ -61,7 +62,7 @@ void CDelightAssimpImporter::LoadScene(std::string& InPath, std::string& FileNam
 	CommandList = GCommandListPool.GetCommandList();
 
 	LoadMesh(CommandList, Scene);
-	LoadComponent(Scene);
+	LoadActor(Scene);
 
 	ResourceFence.Wait(CommandQueue);
 
@@ -100,25 +101,6 @@ void CDelightAssimpImporter::LoadMesh(CDX12_CommandList& CommandList, const aiSc
 	MeshArray.reserve(InScene->mNumMeshes);
 	for (uint32 MeshIndex = 0; MeshIndex < InScene->mNumMeshes; ++MeshIndex)
 	{
-		/*
-		* D3D_PRIMITIVE_TOPOLOGY 
-		* 		mPrimitiveTypes	4	unsigned int
-		mNumVertices	3159	unsigned int
-		mNumFaces	3640	unsigned int
-+		mVertices	0x0000017643291040 {x=4.76183176 y=1.28588295 z=-2.24458694 }	aiVector3t<float> *
-+		mNormals	0x0000017641dfeb40 {x=-0.651900887 y=0.0427000597 z=-0.757101119 }	aiVector3t<float> *
-+		mTangents	0x0000017641e07f90 {x=0.289943635 y=-0.908512414 z=-0.300895095 }	aiVector3t<float> *
-+		mBitangents	0x00000176465378d0 {x=0.647832870 y=0.550287008 z=-0.526779771 }	aiVector3t<float> *
-+		mColors	0x00000176419e3100 {0x0000000000000000 <NULL>, 0x0000000000000000 <NULL>, 0x0000000000000000 <NULL>, ...}	aiColor4t<float> *[8]
-+		mTextureCoords	0x00000176419e3140 {0x0000017641e113e0 {x=0.609000027 y=0.667599976 z=0.00000000 }, 0x0000000000000000 <NULL>, ...}	aiVector3t<float> *[8]
-+		mNumUVComponents	0x00000176419e3180 {2, 0, 0, 0, 0, 0, 0, 0}	unsigned int[8]
-+		mFaces	0x0000017641e487f8 {mNumIndices=3 mIndices=0x0000017641d4d020 {2} }	aiFace *
-		mNumBones	0	unsigned int
-+		mBones	0x0000000000000000 {???}	aiBone * *
-		mMaterialIndex	0	unsigned int
-+		mName	{length=9 data=0x00000176419e31c0 "meshes[0]" }	aiString
-mPrimitiveTypes
-		*/
 		aiMesh* Mesh = InScene->mMeshes[MeshIndex];
 
 		uint32 VertexNum = Mesh->mNumVertices;
@@ -127,10 +109,10 @@ mPrimitiveTypes
 		{
 			FDefaultVertex Temp;
 
-			Temp.Position = FFloat3(Mesh->mVertices[VertexIndex].x, Mesh->mVertices[VertexIndex].y, Mesh->mVertices[VertexIndex].z);
-			Temp.Normal = FFloat3(Mesh->mNormals[VertexIndex].x, Mesh->mNormals[VertexIndex].y, Mesh->mNormals[VertexIndex].z);
-			Temp.Tangent = FFloat3(Mesh->mTangents[VertexIndex].x, Mesh->mTangents[VertexIndex].y, Mesh->mTangents[VertexIndex].z);
-			Temp.UV = FFloat2(Mesh->mTextureCoords[0][VertexIndex].x, Mesh->mTextureCoords[0][VertexIndex].y);
+			Temp.Position = Vector3(Mesh->mVertices[VertexIndex].x, Mesh->mVertices[VertexIndex].y, Mesh->mVertices[VertexIndex].z);
+			Temp.Normal = Vector3(Mesh->mNormals[VertexIndex].x, Mesh->mNormals[VertexIndex].y, Mesh->mNormals[VertexIndex].z);
+			Temp.Tangent = Vector3(Mesh->mTangents[VertexIndex].x, Mesh->mTangents[VertexIndex].y, Mesh->mTangents[VertexIndex].z);
+			Temp.UV = Vector2(Mesh->mTextureCoords[0][VertexIndex].x, Mesh->mTextureCoords[0][VertexIndex].y);
 			
 			Vertices.push_back(Temp);
 		}
@@ -195,14 +177,43 @@ mPrimitiveTypes
 	FlushAndWaitResourcePoolUpload(CommandList);
 }
 
-void CDelightAssimpImporter::LoadComponent(const aiScene* InScene)
+void CDelightAssimpImporter::LoadActor(const aiScene* InScene)
 {
-
+	if (InScene->mRootNode)
+	{
+		InternalLoadActor(InScene->mRootNode, InScene->mRootNode->mTransformation);
+	}
 }
 
 void CDelightAssimpImporter::Finalize(CDelightEngineKernel* InEngineKernel)
 {
 
+}
+
+void CDelightAssimpImporter::InternalLoadActor(aiNode* ParentNode, aiMatrix4x4& ParentMatrix)
+{
+	if (ParentNode)
+	{
+		if (ParentNode->mNumMeshes)
+		{
+			for (int32 i = 0; i < ParentNode->mNumMeshes; ++i)
+			{
+				/*
+				* CreateActors.
+				*/
+				CDelightActor* NewActor = new CDelightActor;
+			}
+		}
+
+		if (ParentNode->mNumChildren > 0)
+		{
+			for (int32 i = 0; i < ParentNode->mNumChildren; ++i)
+			{
+				aiMatrix4x4 CurrentMatrix = ParentMatrix * ParentNode->mChildren[i]->mTransformation;
+				InternalLoadActor(ParentNode->mChildren[i], CurrentMatrix);
+			}
+		}
+	}
 }
 
 void CDelightAssimpImporter::LoadTextureForMaterial(CDX12_CommandList& CommandList, aiMaterial* InAssimpMat, CDelightMaterial* InMat, int32 Type, int32 MaterialSlot)

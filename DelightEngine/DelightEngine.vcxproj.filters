@@ -247,6 +247,9 @@
     <Filter Include="Cores\RHI\DX12\Components\Buffer\ConstantBuffer">
       <UniqueIdentifier>{8113db3e-4a57-4563-80a2-98a6a4f52fc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Actor\MeshActor">
+      <UniqueIdentifier>{6f8917fd-6959-4ac3-8094-6fd5996de896}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -471,6 +474,12 @@
     <ClInclude Include="Code\DX12_IndexBuffer.h">
       <Filter>Cores\RHI\DX12\Components\Buffer\IndexBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="Code\DelightActor.h">
+      <Filter>Object\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DelightStaticMeshActor.h">
+      <Filter>Object\Actor\MeshActor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -626,9 +635,24 @@
     <ClCompile Include="Code\DX12_IndexBuffer.cpp">
       <Filter>Cores\RHI\DX12\Components\Buffer\IndexBuffer</Filter>
     </ClCompile>
+    <ClCompile Include="Code\DelightActor.cpp">
+      <Filter>Object\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DelightStaticMeshActor.cpp">
+      <Filter>Object\Actor\MeshActor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />
+    <Text Include="Header\DelightMath.h">
+      <Filter>Headers</Filter>
+    </Text>
+    <Text Include="Header\Matrix.h">
+      <Filter>Headers</Filter>
+    </Text>
+    <Text Include="Header\Vector.h">
+      <Filter>Headers</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\External\eastl\doc\EASTL.natvis" />
