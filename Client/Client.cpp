@@ -75,14 +75,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	wchar_t path[MAX_PATH];
 	GetCurrentDirectoryW(MAX_PATH, path);
-    OutputDebugString(TEXT("AAAAAAAAAAAAA"));
-	std::wcout << L"Current Directory: " << path << std::endl;
+    
+    //LoadScene();
 
-    LoadScene();
-
-	//GLogger->ToggleConsole();
-
-    std::cout << "TEST" << std::endl;
+	GLogger->ToggleConsole();
 
     while (true)
     {

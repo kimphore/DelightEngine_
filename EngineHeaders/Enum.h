@@ -42,3 +42,17 @@ enum EEngineResult
 	SUCESS,
 	FAIL,
 };
+
+enum ESceneActorType
+{
+	SAT_Tickable,
+	SAT_Static,
+	SAT_End
+};
+
+enum EMouseInput
+{
+	Mouse_LBT,
+	Mouse_RBT,
+	Mouse_MBT, // 가운데버튼??
+};

@@ -7,6 +7,9 @@
 #include "DX12_CommandListPool.h"
 #include "IMGUI_GUI.h"
 
+#include "SceneView.h"
+#include "DelightCameraMgr.h"
+
 CDelightSceneRenderer::CDelightSceneRenderer()
 	: bBuildedPipeline(false), RHI(nullptr)
 {}
@@ -94,7 +97,8 @@ void CDelightSceneRenderer::WaitGPU()
 // Culling, Visible Settings ÇÏ´Â°÷.
 void CDelightSceneRenderer::InitView(CDelightSceneView* SceneView)
 {
-
+	SceneView->BackupSceneMatrixInfo();
+	SceneView->SetMatrices(GCameraManager.GetViewMatrix(), GCameraManager.GetProjectionMatrix());
 }
 
 void CDelightSceneRenderer::RenderDX12Test(CDelightSceneView* SceneView, CDX12_CommandList& CommandList)

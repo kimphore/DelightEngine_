@@ -42,6 +42,7 @@ inline void* __cdecl operator new[](size_t size, size_t alignment, size_t alignm
 #include <DirectXMath.h>
 #include <assert.h>
 #include <windows.h>
+#include <windowsx.h>
 //#include <dinput.h>
 #include <wrl.h>
 #include <time.h>

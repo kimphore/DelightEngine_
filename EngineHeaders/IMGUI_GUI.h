@@ -26,4 +26,5 @@ private:
 	Delight::Comptr<ID3D12CommandQueue> CommandQueue;
 	HWND myHWnd;
 	bool8 bShowWindow = true;
+	bool8 bInitialized = false;
 };

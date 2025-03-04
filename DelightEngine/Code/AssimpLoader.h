@@ -20,6 +20,7 @@ class CDelightMaterial;
 class CDelightActor;
 struct aiScene;
 struct aiMaterial;
+struct aiNode;
 class ENGINE_DLL CDelightAssimpImporter
 {
 public:
@@ -32,7 +33,6 @@ private:
 	void Finalize(CDelightEngineKernel* InEngineKernel);
 
 private:
-	void InternalLoadActor(aiNode* ParentNode, aiMatrix4x4& ParentMatrix);
 	void LoadTextureForMaterial(CDX12_CommandList& CommandList, aiMaterial* InAssimpMat, CDelightMaterial* InMat, int32 Type, int32 MaterialSlot);
 
 private:

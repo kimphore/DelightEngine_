@@ -64,6 +64,7 @@ void CIMGUI_GUI::Initialize(HWND InHWnd, Delight::Comptr<ID3D12Device> InDevice,
 	
 	Device = InDevice;
 	CommandQueue = InCommandQueue;
+	bInitialized = true;
 }
 
 void CIMGUI_GUI::Release()
@@ -71,6 +72,8 @@ void CIMGUI_GUI::Release()
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+
+	bInitialized = false;
 }
 
 void CIMGUI_GUI::Render(CDX12_CommandList& CommandList)
@@ -93,10 +96,14 @@ void CIMGUI_GUI::Render(CDX12_CommandList& CommandList)
 
 LRESULT CIMGUI_GUI::WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+	if (bInitialized)
 	{
-		return true;
+		extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+
+		auto& IO = ImGui::GetIO();
+
+		return IO.WantCaptureKeyboard | IO.WantCaptureMouse;
 	}
 
 	return false;

@@ -16,5 +16,5 @@ public:
 	virtual void DeleteUploadBuffer();
 protected:
 	Delight::Comptr<ID3D12Resource> UploadBuffer;
-	FInt32_3 Size;
+	Int32_3 Size;
 };

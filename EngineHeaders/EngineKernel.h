@@ -5,6 +5,7 @@
 #include "SceneRenderer.h"
 #include "IMGUI_GUI.h"
 #include "Win32_Input.h"
+#include "SceneView.h"
 
 /*!
  * \file EngineKernel.h
@@ -57,4 +58,7 @@ private: // Cores.
 	CDelightSceneRenderer SceneRenderer;
 	CIMGUI_GUI GUI;
 	CWin32_Input Input;
+
+private:
+	CDelightSceneView SceneView; // control actors, control render...?
 };

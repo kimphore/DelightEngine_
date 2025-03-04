@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Typedef.h"
+
+#include <cmath>
 #include <DirectXMath.h>
 /*
 *	 저장용 Vector / 연산용 XMVector..?
@@ -121,6 +123,21 @@ struct Vector3
 
 		return *this;
 	}
+
+	DirectX::XMVECTOR ToXMVector()
+	{
+		return DirectX::XMVectorSet(x, y, z, 0);
+	}
+
+	void Normalize()
+	{
+		float Size = x * x + y * y + z * z;
+		Size = sqrt(Size);
+
+		x /= Size;
+		y /= Size;
+		z /= Size;
+	}
 };
 
 struct Vector4
@@ -186,5 +203,18 @@ struct Vector4
 		w /= other.w;
 
 		return *this;
+	}
+};
+
+struct Rotation3
+{
+	float32 roll; // z, x axis rotation
+	float32 pitch; // y, y axis rotation
+	float32 yaw; // x, z axis rotation
+
+	Rotation3(){}
+	Rotation3(float32 _roll, float32 _pitch, float32 _yaw)
+		:roll(_roll), pitch(_pitch), yaw(_yaw)
+	{
 	}
 };

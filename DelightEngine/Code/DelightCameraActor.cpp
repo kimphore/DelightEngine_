@@ -1,5 +1,5 @@
 #include "DelightCameraActor.h"
-#include <DirectXMath.h>
+#include "DelightCameraMgr.h"
 
 CDelightCameraActor::CDelightCameraActor()
 {
@@ -19,10 +19,14 @@ void CDelightCameraActor::Tick(float InDeltaTime)
 void CDelightCameraActor::SetUseCamera(bool bUse)
 {
 	bUse = true;
+	GCameraManager.BindCamera(this);
 }
 
 void CDelightCameraActor::UpdateMatrix()
 {
+	/*
+	*View Matrix
+	*/
 	DirectX::XMVECTOR Pos = Position.ToXMVector();
 	DirectX::XMVECTOR Forward = ForwardVector.ToXMVector();
 	DirectX::XMVECTOR Up = UpVector.ToXMVector();
@@ -55,4 +59,34 @@ void CDelightCameraActor::UpdateMatrix()
 	ViewMatrix.m[3][1] = 0.f;
 	ViewMatrix.m[3][2] = 0.f;
 	ViewMatrix.m[3][3] = 1.f;
+	
+	/*
+	* Projection Matrix(Reverse Projection Matrix)
+	* Default FOV 90, AspectRatio 16 : 9
+	*/
+	float32 TangentHalfFOV = tanf(90.f * 0.5f);
+	float32 InvAspectRatio = 1.f / (16.f / 10.f);
+
+	ProjectionMatrix.m[0][0] = InvAspectRatio / TangentHalfFOV;
+	ProjectionMatrix.m[0][1] = 0.f;
+	ProjectionMatrix.m[0][2] = 0.f;
+	ProjectionMatrix.m[0][3] = 0.f;
+
+	ProjectionMatrix.m[1][0] = 0.f;
+	ProjectionMatrix.m[1][1] = 1.f / TangentHalfFOV;
+	ProjectionMatrix.m[1][2] = 0.f;
+	ProjectionMatrix.m[1][3] = 0.f;
+
+	ProjectionMatrix.m[2][0] = 0.f;
+	ProjectionMatrix.m[2][1] = 0.f;
+	ProjectionMatrix.m[2][2] = 0.f;
+	ProjectionMatrix.m[2][3] = 0.1f; // near, 보통 0.1값으로도 괜찮다네.
+
+
+	ProjectionMatrix.m[3][0] = 0.f;
+	ProjectionMatrix.m[3][1] = 0.f;
+	ProjectionMatrix.m[3][2] = 1.f;
+	ProjectionMatrix.m[3][3] = 0.f;
+
+	// Jitter 적용 (P[0][2], P[1][2] 수정)
 }

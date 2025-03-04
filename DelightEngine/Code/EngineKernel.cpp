@@ -43,13 +43,14 @@ void CDelightEngineKernel::TestRenderLoop()
 // 일단은 싱글쓰레드기반..
 void CDelightEngineKernel::Tick_Engine()
 {
+	Input.Update();
 	Tick_Game();
 	Render();
 }
 
 void CDelightEngineKernel::Tick_Game()
 {
-
+	SceneView.Tick(1.f / 60.f);
 }
 
 LRESULT CDelightEngineKernel::WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -58,6 +59,7 @@ LRESULT CDelightEngineKernel::WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam,
 	{
 		return true;
 	}
+	// gui내부 인풋이 있을 경우 인게임 인풋은 무시
 
 	if (Input.WinProcHandler(hWnd, msg, wParam, lParam))
 	{
@@ -69,7 +71,7 @@ LRESULT CDelightEngineKernel::WinProcHandler(HWND hWnd, UINT msg, WPARAM wParam,
 
 void CDelightEngineKernel::Render()
 {
-	SceneRenderer.Render(nullptr);
+	SceneRenderer.Render(&SceneView);
 }
 
 void CDelightEngineKernel::InitializeThread()

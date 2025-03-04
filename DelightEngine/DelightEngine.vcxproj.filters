@@ -250,6 +250,12 @@
     <Filter Include="Object\Actor\MeshActor">
       <UniqueIdentifier>{6f8917fd-6959-4ac3-8094-6fd5996de896}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Actor\CameraActor">
+      <UniqueIdentifier>{3264f672-ad59-4ee2-93b5-e6a428dce9b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\CameraManager">
+      <UniqueIdentifier>{ff19caab-5a8e-4868-94ee-0bfc7c224114}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Exception.h">
@@ -480,6 +486,9 @@
     <ClInclude Include="Code\DelightStaticMeshActor.h">
       <Filter>Object\Actor\MeshActor</Filter>
     </ClInclude>
+    <ClInclude Include="Code\DelightCameraActor.h">
+      <Filter>Object\Actor\CameraActor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\RHI_DX12Device.cpp">
@@ -641,6 +650,12 @@
     <ClCompile Include="Code\DelightStaticMeshActor.cpp">
       <Filter>Object\Actor\MeshActor</Filter>
     </ClCompile>
+    <ClCompile Include="Code\DelightCameraActor.cpp">
+      <Filter>Object\Actor\CameraActor</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DelightCameraMgr.cpp">
+      <Filter>Object\CameraManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ExternLibList.txt" />
@@ -652,6 +667,9 @@
     </Text>
     <Text Include="Header\Vector.h">
       <Filter>Headers</Filter>
+    </Text>
+    <Text Include="Code\DelightCameraMgr.h">
+      <Filter>Object\CameraManager</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

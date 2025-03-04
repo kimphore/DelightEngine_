@@ -165,6 +165,7 @@
     <ClInclude Include="Code\AssimpLoader.h" />
     <ClInclude Include="Code\CriticalSection.h" />
     <ClInclude Include="Code\DelightActor.h" />
+    <ClInclude Include="Code\DelightCameraActor.h" />
     <ClInclude Include="Code\DelightMaterial.h" />
     <ClInclude Include="Code\DelightMesh.h" />
     <ClInclude Include="Code\DelightStaticMeshActor.h" />
@@ -242,6 +243,8 @@
     <ClCompile Include="Code\AssimpLoader.cpp" />
     <ClCompile Include="Code\CriticalSection.cpp" />
     <ClCompile Include="Code\DelightActor.cpp" />
+    <ClCompile Include="Code\DelightCameraActor.cpp" />
+    <ClCompile Include="Code\DelightCameraMgr.cpp" />
     <ClCompile Include="Code\DelightMaterial.cpp" />
     <ClCompile Include="Code\DelightMesh.cpp" />
     <ClCompile Include="Code\DelightStaticMeshActor.cpp" />
@@ -286,6 +289,7 @@
     <ClCompile Include="Code\WindowsMemory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Code\DelightCameraMgr.h" />
     <Text Include="ExternLibList.txt" />
     <Text Include="Header\DelightMath.h" />
     <Text Include="Header\Matrix.h" />

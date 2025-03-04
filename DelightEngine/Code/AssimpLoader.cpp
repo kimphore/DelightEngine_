@@ -177,20 +177,7 @@ void CDelightAssimpImporter::LoadMesh(CDX12_CommandList& CommandList, const aiSc
 	FlushAndWaitResourcePoolUpload(CommandList);
 }
 
-void CDelightAssimpImporter::LoadActor(const aiScene* InScene)
-{
-	if (InScene->mRootNode)
-	{
-		InternalLoadActor(InScene->mRootNode, InScene->mRootNode->mTransformation);
-	}
-}
-
-void CDelightAssimpImporter::Finalize(CDelightEngineKernel* InEngineKernel)
-{
-
-}
-
-void CDelightAssimpImporter::InternalLoadActor(aiNode* ParentNode, aiMatrix4x4& ParentMatrix)
+void InternalLoadActor(aiNode* ParentNode, aiMatrix4x4& ParentMatrix, CDelightAssimpImporter& Importer)
 {
 	if (ParentNode)
 	{
@@ -210,11 +197,25 @@ void CDelightAssimpImporter::InternalLoadActor(aiNode* ParentNode, aiMatrix4x4& 
 			for (int32 i = 0; i < ParentNode->mNumChildren; ++i)
 			{
 				aiMatrix4x4 CurrentMatrix = ParentMatrix * ParentNode->mChildren[i]->mTransformation;
-				InternalLoadActor(ParentNode->mChildren[i], CurrentMatrix);
+				InternalLoadActor(ParentNode->mChildren[i], CurrentMatrix, Importer);
 			}
 		}
 	}
 }
+
+void CDelightAssimpImporter::LoadActor(const aiScene* InScene)
+{
+	if (InScene->mRootNode)
+	{
+		InternalLoadActor(InScene->mRootNode, InScene->mRootNode->mTransformation, *this);
+	}
+}
+
+void CDelightAssimpImporter::Finalize(CDelightEngineKernel* InEngineKernel)
+{
+
+}
+
 
 void CDelightAssimpImporter::LoadTextureForMaterial(CDX12_CommandList& CommandList, aiMaterial* InAssimpMat, CDelightMaterial* InMat, int32 Type, int32 MaterialSlot)
 {
